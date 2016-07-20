@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 
-public class PlaceBarrels : MonoBehaviour {
+public class PlaceBarrels : NetworkBehaviour
+{
     public int numBarrels;
+    public GameObject barrelPrefab;
     private const float delta = 3.575f;
     private static System.Random rnd = new System.Random();
 
-    // Use this for initialization
-    void Start () {
+    public override void OnStartServer()
+    {
         RandomBarrels(numBarrels);
     }
 
@@ -44,7 +47,8 @@ public class PlaceBarrels : MonoBehaviour {
         for (int i = 0; i < numBarrels; i++)
         {
             int r = rnd.Next(spaces.Count);
-            Instantiate(Resources.Load("Barrel"), spaces[r], new Quaternion());
+            GameObject barrel = Instantiate(barrelPrefab, spaces[r], new Quaternion()) as GameObject;
+            NetworkServer.Spawn(barrel);
             spaces.RemoveAt(r);
         }
     }

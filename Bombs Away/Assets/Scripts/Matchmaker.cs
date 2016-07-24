@@ -23,7 +23,27 @@ public class Matchmaker : PunBehaviour
 
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.Instantiate("Player", new Vector3(-10.78f, -10.78f), Quaternion.identity, 0);
+        CreatePlayer();
+    }
+
+    void CreatePlayer()
+    {
+        int numberPlayers = PhotonNetwork.countOfPlayers;
+        switch(numberPlayers)
+        {
+            case 1:
+                PhotonNetwork.Instantiate("Player", new Vector3(-10.78f, -10.78f), Quaternion.identity, 0);
+                break;
+            case 2:
+                PhotonNetwork.Instantiate("Player", new Vector3(10.78f, 10.78f), Quaternion.identity, 0);
+                break;
+            case 3:
+                PhotonNetwork.Instantiate("Player", new Vector3(10.78f, -10.78f), Quaternion.identity, 0);
+                break;
+            case 4:
+                PhotonNetwork.Instantiate("Player", new Vector3(-10.78f, 10.78f), Quaternion.identity, 0);
+                break;
+        }
     }
 
     public override void OnCreatedRoom()

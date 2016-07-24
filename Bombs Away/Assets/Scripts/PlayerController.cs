@@ -25,6 +25,15 @@ public class PlayerController : Photon.MonoBehaviour
             InputColorChange();
     }
 
+    void Update()
+    {
+        if (photonView.isMine && Input.GetKeyDown("space") && (lastTime == 0 || Time.fixedTime - lastTime >= timeWait))
+        {
+            CreateDynamite();
+            lastTime = Time.fixedTime;
+        }
+    }
+
     void FixedUpdate()
     {
         if (photonView.isMine)
@@ -32,11 +41,6 @@ public class PlayerController : Photon.MonoBehaviour
             float moveH = Input.GetAxis("Horizontal") * speed;
             float moveV = Input.GetAxis("Vertical") * speed;
             rb.AddForce(new Vector2(moveH, moveV));
-            if (Input.GetKeyDown("space") && (lastTime == 0 || Time.fixedTime - lastTime >= timeWait))
-            {
-                CreateDynamite();
-                lastTime = Time.fixedTime;
-            }
         }
         else
         {

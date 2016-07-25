@@ -64,7 +64,7 @@ public class AppleController : MonoBehaviour {
 
 	void resetAppleHeight(){
 		foreach(Apple apple in appleList){
-			apple.setHeight(appleHeight);
+			apple.setHeight(appleHeight, true);
 		}
 	}
 }

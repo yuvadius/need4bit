@@ -43,9 +43,11 @@ public class Apple : MonoBehaviour
 	//TODO: turn recursion into a loop
     private void AvoidOverlap(float height, int retry = 10)
     {
-		for (int i = 0; i < retry; ++i)
+		LayerMask mask = LayerMask.GetMask("apples", "head", "segments");
+        for (int i = 0; i < retry; ++i)
 		{
-			if( !Physics.CheckSphere(randomVector * height, spherCollider.radius, 12))
+			
+			if( !Physics.CheckSphere(randomVector * height, spherCollider.radius, mask))
 			{
 				return; //found a place where we dont collide with anything
 			}

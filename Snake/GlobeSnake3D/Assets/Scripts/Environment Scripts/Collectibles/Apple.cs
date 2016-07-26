@@ -5,12 +5,14 @@ public class Apple : MonoBehaviour
 {
 
 	public Leaf[] leaves;
-	
+	public SphereCollider spherCollider;
 
 	bool isBeforeSet = true;
 	Vector3 randomVector;
 	bool started = false;
 	AppleController controller;
+
+
 
 	public void OnDisable()
 	{
@@ -38,26 +40,21 @@ public class Apple : MonoBehaviour
         transform.LookAt(randomVector * 100);
     }
     
+	//TODO: turn recursion into a loop
     private void AvoidOverlap(float height, int retry = 10)
     {
-        if (retry > 0)
-        {
-            float radius = gameObject.GetComponent<SphereCollider>().radius;
-            Collider[] hitColliders = Physics.OverlapSphere(randomVector * height, radius);
-            for (int i = 0; i < hitColliders.Length; i++)
-            {
-                if (hitColliders[i].tag != "globe" && hitColliders[i].tag != "halo")
-                {
-                    Debug.Log(hitColliders[i].tag);
-                    SetRandomVector();
-                    AvoidOverlap(height, retry - 1);
-                    return;
-                }
-            }
-        }
-        else
-            Debug.Log("something went wrong");
-    }	
+		for (int i = 0; i < retry; ++i)
+		{
+			if( !Physics.CheckSphere(randomVector * height, spherCollider.radius, 12))
+			{
+				return; //found a place where we dont collide with anything
+			}
+
+			SetRandomVector();
+		}
+
+		Debug.LogError("something went wrong, we did not find space for our apple to spawn in");
+	}	
 
 	void OnEnable()
 	{
@@ -97,6 +94,7 @@ public class Apple : MonoBehaviour
 		}
         if (!radiusChanged)
             AvoidOverlap(height);
+
         transform.position = randomVector * height;
 	}
 

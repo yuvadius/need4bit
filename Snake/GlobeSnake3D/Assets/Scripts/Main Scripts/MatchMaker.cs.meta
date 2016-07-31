@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 0e765639ffee38147a0cd8ea818c7ada
+timeCreated: 1469867928
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - snake: {fileID: 162008, guid: 9e43ec663bd371f4bbf49fa26b042a5f, type: 2}
+  - playerPrefab: {fileID: 406232, guid: 9e43ec663bd371f4bbf49fa26b042a5f, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

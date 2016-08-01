@@ -23,26 +23,25 @@ public class MatchMaker : PunBehaviour
 
     public override void OnJoinedRoom()
     {
-        CreatePlayer();
+        GameObject tempSnake = PhotonNetwork.Instantiate("Snake", new Vector3(), Quaternion.identity, 0);
+        //CreatePlayer(tempSnake);
     }
 
-    void CreatePlayer()
+    void CreatePlayer(GameObject tempSnake)
     {
-        // You must be in a Room already
-        // Marco Polo tutorial shows how to connect and join room
-        // See: http://doc.photonengine.com/en/pun/current/tutorials/tutorial-marco-polo
+        PhotonView photonView = tempSnake.GetComponent<PhotonView>();
+        //Destroy(tempSnake);
+        //photonView.RPC("SpawnOnNetwork", PhotonTargets.OthersBuffered, snakeTransformPrefab.position, snakeTransformPrefab.rotation, id1);
 
-        // Manually allocate PhotonViewID
-        int id1 = PhotonNetwork.AllocateViewID();
-        Debug.Log(id1.ToString());
-
-        PhotonView photonView = this.GetComponent<PhotonView>();
-        photonView.RPC("SpawnOnNetwork", PhotonTargets.OthersBuffered, snakeTransformPrefab.position, snakeTransformPrefab.rotation, id1);
-
-        PhotonView view = CopyComponent(snakeTransformPrefab.GetComponent<PhotonView>(), snake);
-        Debug.Log(view.viewID.ToString());
+        PhotonView view = CopyComponent(tempSnake.GetComponent<PhotonView>(), snake);
         PhotonView[] nViews = snakeTransformPrefab.GetComponentsInChildren<PhotonView>();
+        nViews[0].viewID = 1001;
+        Destroy(tempSnake);
+        /*Debug.Log(view.viewID.ToString());
+        PhotonView[] nViews = snakeTransformPrefab.GetComponentsInChildren<PhotonView>();
+        Debug.Log(nViews[0].viewID.ToString() + " yoyoyo");
         nViews[0].viewID = id1;
+        Debug.Log(nViews[0].viewID.ToString() + " yoyoyo");*/
     }
 
     [PunRPC]
@@ -66,12 +65,12 @@ public class MatchMaker : PunBehaviour
         foreach (System.Reflection.FieldInfo field in fields)
         {
             Debug.Log(field.ToString() + ": " + field.GetValue(original));
-            if (field.ToString().Contains("ownerId"))
+            /*if (field.ToString().Contains("ownerId") || (int)field.GetValue(original) == 0)
             {
                 Debug.Log("yo");
                 field.SetValue(copy, 1001);
             }
-            else
+            else*/
                 field.SetValue(copy, field.GetValue(original));
         }
         return copy as T;

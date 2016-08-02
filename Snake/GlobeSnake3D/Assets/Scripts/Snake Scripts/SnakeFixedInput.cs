@@ -3,10 +3,25 @@ using System.Collections;
 
 public class SnakeFixedInput : Photon.MonoBehaviour
 {
+    public static SnakeFixedInput instance;
+    Trail trail;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
+
     void Start()
     {
         /*if (photonView.isMine)
             gameObject.SetActive(false);*/
+        //gameObject.GetComponentInChildren<Trail>();
+       /* trail = gameObject.GetComponentInChildren<Trail>();
+        trail.addSegment();
+        trail.myUpdate();*/
     }
 
 	void Update () {

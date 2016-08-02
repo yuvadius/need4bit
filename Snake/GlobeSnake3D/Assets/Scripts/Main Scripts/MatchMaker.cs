@@ -23,7 +23,7 @@ public class MatchMaker : PunBehaviour
 
     public override void OnJoinedRoom()
     {
-        GameObject tempSnake = PhotonNetwork.Instantiate("Snake", new Vector3(), Quaternion.identity, 0);
+        GameObject tempSnake = PhotonNetwork.Instantiate("Remote Snake", new Vector3(), Quaternion.identity, 0);
         //CreatePlayer(tempSnake);
     }
 

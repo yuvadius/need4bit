@@ -25,7 +25,7 @@ public class TrailPoint
     }
 }
 
-public class Trail : MonoBehaviour
+public class Trail : Photon.MonoBehaviour
 {
 	public static Trail instance;
 	void Awake(){
@@ -68,8 +68,10 @@ public class Trail : MonoBehaviour
     }
 
     bool create = false;
-
+    
+    [PunRPC]
 	public void addSegment(){
+        Debug.Log("addSegment");
 		create = true;
 	}
 	
@@ -110,14 +112,18 @@ public class Trail : MonoBehaviour
         trim_tail();
     }
 
-    void create_segment()
+    public void create_segment(bool rpc = true)
     {
+        Debug.Log("create_segment");
         SegmentScript newSegment = (Instantiate(segment) as GameObject).GetComponent<SegmentScript>();
         newSegment.transform.SetParent(transform.parent);
         newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
         segmentList.AddFirst(newSegment);
         newSegment.set_first(trailPointList.First, tailLength);
         tailLength += trailSize;
+        //RemoteTrail.instance.addSegment();
+        if (rpc)
+            SnakeSync.instance.CreateSegment();
     }
 
     public void set_first_segment_distance(float _firstSegmentDistance)

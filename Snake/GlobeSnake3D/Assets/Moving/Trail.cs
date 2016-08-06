@@ -40,7 +40,6 @@ public class Trail : Photon.MonoBehaviour
     LinkedList<TrailPoint> trailPointList;
 
     float trailSize;
-    float firstTrailSize;
     int num = 0;
     float tailLength;
 	Flying flyingDevice;
@@ -53,7 +52,6 @@ public class Trail : Photon.MonoBehaviour
     void Start()
     {
 		flyingDevice = Flying.instance;
-        tailLength = firstTrailSize;
         segmentList = new LinkedList<SegmentScript>();
         trailPointList = new LinkedList<TrailPoint>();
 
@@ -128,7 +126,8 @@ public class Trail : Photon.MonoBehaviour
 
     public void set_first_segment_distance(float _firstSegmentDistance)
     {
-        firstTrailSize = _firstSegmentDistance;
+        tailLength = _firstSegmentDistance;
+		print("First Trail Size: " + tailLength);
     }
 
     public void set_segment_distance(float _segmentDistance)

@@ -3,46 +3,24 @@ using System.Collections;
 
 public class ScriptOrderController : MonoBehaviour {
 
-    CameraController cameraController;
-    RotateForward rotateForward;
-    RotateSide rotateSide;
-    Scew scew;
-    Trail trail;
-    SnakeController snakeController;
-    TiltSide tiltSide;
-    AttachToPivot attachToPivot;
-    GlobeController globeController;
-	AppleController appleController;
-	BannanaController bannanaController;
-    LerpToCameraPoint lerpToCameraPoint;
-    FinalizeAdjucments finilizeAdjucments;
-    Flying flyingDevice;
-    CameraHeight cameraHeight;
-    CameraSkew cameraSkew;
-	CapacityController capacityController;
+    public CameraController cameraController;
+    public RotateForward rotateForward;
+    public RotateSide rotateSide;
+    public Scew scew;
+    public Trail trail;
+    public SnakeController snakeController;
+    public TiltSide tiltSide;
+    public AttachToPivot attachToPivot;
+    public GlobeController globeController;
+	public AppleController appleController;
+	public BannanaController bannanaController;
+    public LerpToCameraPoint lerpToCameraPoint;
+    public FinalizeAdjucments finilizeAdjucments;
+    public Flying flyingDevice;
+    public CameraHeight cameraHeight;
+    public CameraSkew cameraSkew;
 
     bool haveStarted = false;
-
-    void Start()
-    {
-        cameraController = FindObjectOfType<CameraController>();
-		appleController = FindObjectOfType<AppleController>();
-        rotateForward = FindObjectOfType<RotateForward>();
-        rotateSide = FindObjectOfType<RotateSide>();
-        scew = FindObjectOfType<Scew>();
-        trail = FindObjectOfType<Trail>();
-        snakeController = FindObjectOfType<SnakeController>();
-        tiltSide = FindObjectOfType<TiltSide>();
-        attachToPivot = FindObjectOfType<AttachToPivot>();
-        globeController = FindObjectOfType<GlobeController>();
-        lerpToCameraPoint = FindObjectOfType<LerpToCameraPoint>();
-        finilizeAdjucments = FindObjectOfType<FinalizeAdjucments>();
-        flyingDevice = FindObjectOfType<Flying>();
-        cameraHeight = FindObjectOfType<CameraHeight>();
-        cameraSkew = FindObjectOfType<CameraSkew>();
-		bannanaController = FindObjectOfType<BannanaController>();
- 
-    }
 
     /// <summary>
     /// the order might be important, any known dependencies document here

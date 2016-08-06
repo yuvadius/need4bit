@@ -113,13 +113,10 @@ public class Trail : Photon.MonoBehaviour
     {
         SegmentScript newSegment = (Instantiate(segment) as GameObject).GetComponent<SegmentScript>();
         newSegment.transform.SetParent(transform.parent);
-        int index = newSegment.transform.GetSiblingIndex();
-        newSegment.name = "Segment " + index;
+        newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
         segmentList.AddFirst(newSegment);
         newSegment.set_first(trailPointList.First, tailLength);
         tailLength += trailSize;
-        if (index == 1)
-            newSegment.transform.gameObject.SetActive(false);
         if (rpc)
             SnakeSync.instance.CreateSegment();
     }

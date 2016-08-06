@@ -40,7 +40,6 @@ public class MatchMaker : PunBehaviour
 
     void OnPhotonRandomJoinFailed()
     {
-        Debug.Log("Can't join random room!");
         PhotonNetwork.CreateRoom(null);
     }
 }

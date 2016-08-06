@@ -36,11 +36,11 @@ public class SnakeController : MonoBehaviour {
     public float tiltSpeed = 20f; float prev6;
     public float tiltReturnSpeed = 40f; float prev7;
 
-    Trail trail;
-    RotateForward moveDevice;
-    RotateSide turnDevice;
-    TiltSide tiltDevice;
-    Flying flyDevice;
+    public Trail trail;
+    public RotateForward moveDevice;
+    public RotateSide turnDevice;
+    public TiltSide tiltDevice;
+    public Flying flyDevice;
 
     bool lockSpeed = false;
 
@@ -52,12 +52,6 @@ public class SnakeController : MonoBehaviour {
 
     void Start()
     {
-        trail = FindObjectOfType<Trail>();
-        moveDevice = FindObjectOfType<RotateForward>();
-        turnDevice = FindObjectOfType<RotateSide>();
-        tiltDevice = FindObjectOfType<TiltSide>();
-        flyDevice = FindObjectOfType<Flying>();
-
         prev1 = firstSegmentDistance;
         prev2 = segmentDistance;
         prev3 = moveSpeed;

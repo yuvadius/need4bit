@@ -26,9 +26,9 @@ public class MainController : MonoBehaviour {
     public float endCanvasStrength = 0.7f;
     public string recordKey = "apple_record";
 
-    TiltSide snakeTilt;
-    LevelingSystem levelSystem;
-    Animator snakeAnim;
+    public TiltSide snakeTilt;
+    public LevelingSystem levelSystem;
+    public Animator snakeAnim;
    
 	void Awake(){
 		if( instance == null ){
@@ -39,9 +39,6 @@ public class MainController : MonoBehaviour {
 	}
 
     void Start() {
-        snakeTilt = FindObjectOfType<TiltSide>();
-        snakeAnim = FindObjectOfType<BiteScript>().GetComponent<Animator>();
-        levelSystem = FindObjectOfType<LevelingSystem>();
         gameCanvasGroup.alpha = 1;
         gameCanvasGroup.blocksRaycasts = gameCanvasGroup.interactable = true;
         endCanvasGroup.alpha = 0;

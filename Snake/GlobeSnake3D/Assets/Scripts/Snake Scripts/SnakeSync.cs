@@ -58,13 +58,11 @@ public class SnakeSync : Photon.MonoBehaviour
         {
             stream.SendNext(snake.transform.GetChild(0).position);
             stream.SendNext(snake.transform.GetChild(0).rotation);
-            stream.SendNext(snake.transform.GetChild(0).localScale);
         }
         else
         {
             transform.GetChild(0).position = (Vector3)stream.ReceiveNext();
             transform.GetChild(0).rotation = (Quaternion)stream.ReceiveNext();
-            transform.GetChild(0).localScale = (Vector3)stream.ReceiveNext();
         }
     }
 }

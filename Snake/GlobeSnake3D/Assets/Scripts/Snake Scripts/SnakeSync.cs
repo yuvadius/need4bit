@@ -4,7 +4,6 @@ using System.Collections;
 public class SnakeSync : Photon.MonoBehaviour
 {
     public static SnakeSync instance;
-    public GameObject segment;
     Trail trail;
 
     public float firstSegmentDistance = 0.28f; float prev1;
@@ -12,6 +11,7 @@ public class SnakeSync : Photon.MonoBehaviour
 
     void Awake()
     {
+        DontDestroyOnLoad(transform.gameObject);
         if (instance == null)
         {
             instance = this;
@@ -20,7 +20,8 @@ public class SnakeSync : Photon.MonoBehaviour
 
     void Start()
     {
-        trail = GetComponentInChildren<Trail>();
+        if (!photonView.isMine)
+            trail = GetComponentInChildren<Trail>();
     }
 
     void FixedUpdate()
@@ -52,11 +53,12 @@ public class SnakeSync : Photon.MonoBehaviour
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        GameObject snake = GameObject.Find("Snake");
         if (stream.isWriting)
         {
-            stream.SendNext(transform.parent.position);
-            stream.SendNext(transform.parent.rotation);
-            stream.SendNext(transform.parent.localScale);
+            stream.SendNext(snake.transform.GetChild(0).position);
+            stream.SendNext(snake.transform.GetChild(0).rotation);
+            stream.SendNext(snake.transform.GetChild(0).localScale);
         }
         else
         {

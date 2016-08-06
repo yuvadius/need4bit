@@ -7,7 +7,8 @@ public class MatchMaker : PunBehaviour
 
     void Start()
     {
-        PhotonNetwork.ConnectUsingSettings("0.1");
+        if(PhotonNetwork.connectionState != ConnectionState.Connected)
+            PhotonNetwork.ConnectUsingSettings("0.1");
     }
 
     void OnGUI()
@@ -29,7 +30,6 @@ public class MatchMaker : PunBehaviour
     {
         GameObject tempSnake = PhotonNetwork.Instantiate("Remote Snake", new Vector3(), Quaternion.identity, 0);
         Destroy(tempSnake.transform.GetChild(0).gameObject);
-        tempSnake.transform.SetParent(subSnake);
         tempSnake.name = "Snake Syncer";
     }
 

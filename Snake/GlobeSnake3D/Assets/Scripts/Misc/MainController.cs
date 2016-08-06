@@ -49,7 +49,7 @@ public class MainController : MonoBehaviour {
     }
 
 	public void gameOver(){
-		StartCoroutine(makeGameStop());
+        StartCoroutine(makeGameStop());
 	}
 
     public void Restart() {

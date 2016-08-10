@@ -35,7 +35,7 @@ public class Trail : Photon.MonoBehaviour
 	}
     public GameObject segment;
 
-    LinkedList<SegmentScript> segmentList;
+    public LinkedList<SegmentScript> segmentList;
 
     LinkedList<TrailPoint> trailPointList;
 
@@ -67,7 +67,6 @@ public class Trail : Photon.MonoBehaviour
 
     bool create = false;
     
-    [PunRPC]
 	public void addSegment(){
 		create = true;
 	}
@@ -103,13 +102,14 @@ public class Trail : Photon.MonoBehaviour
         if (create)
         {
             create_segment();
+            SnakeSync.instance.CreateSegment();
             create = false;
         }
 
         trim_tail();
     }
 
-    public void create_segment(bool rpc = true)
+    public void create_segment()
     {
         SegmentScript newSegment = (Instantiate(segment) as GameObject).GetComponent<SegmentScript>();
         newSegment.transform.SetParent(transform.parent);
@@ -117,8 +117,20 @@ public class Trail : Photon.MonoBehaviour
         segmentList.AddFirst(newSegment);
         newSegment.set_first(trailPointList.First, tailLength);
         tailLength += trailSize;
-        if (rpc)
-            SnakeSync.instance.CreateSegment();
+    }
+
+    public void create_segment(Vector3 position, Quaternion rotation)
+    {
+        SegmentScript newSegment = (Instantiate(segment) as GameObject).GetComponent<SegmentScript>();
+        newSegment.transform.position = position;
+        newSegment.transform.rotation = rotation;
+        Debug.Log("Position: " + newSegment.transform.position.x.ToString());
+        Debug.Log("Rotation: " + newSegment.transform.rotation.x.ToString());
+        newSegment.transform.SetParent(transform.parent);
+        newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
+        segmentList.AddFirst(newSegment);
+        newSegment.set_first(trailPointList.First, tailLength);
+        tailLength += trailSize;
     }
 
     public void set_first_segment_distance(float _firstSegmentDistance)

@@ -48,7 +48,21 @@ public class SnakeSync : Photon.MonoBehaviour
         if (photonView.isMine)
             photonView.RPC("CreateSegment", PhotonTargets.Others);
         else
-            trail.create_segment(false);
+            trail.create_segment();
+    }
+
+    [PunRPC]
+    public void CreateSegment(Vector3[] positions, Quaternion[] rotations)
+    {
+        if (!photonView.isMine)
+            for(int i = 0; i < positions.Length; i++)
+                trail.create_segment(positions[i], rotations[i]);
+    }
+
+    public void CreateSegment(PhotonPlayer other, Vector3[] positions, Quaternion[] rotations)
+    {
+        if (photonView.isMine)
+            photonView.RPC("CreateSegment", other, positions, rotations);
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

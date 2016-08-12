@@ -4,6 +4,20 @@ using Photon;
 
 public class MatchMaker : PunBehaviour
 {
+    public static MatchMaker instance;
+    private static GameObject snake = null;
+
+    void Awake()
+    {
+        if(instance)
+            DestroyImmediate(gameObject);
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            instance = this;
+        }
+    }
+
     void Start()
     {
         if(PhotonNetwork.connectionState != ConnectionState.Connected)
@@ -25,11 +39,19 @@ public class MatchMaker : PunBehaviour
         CreatePlayer();
     }
 
-    void CreatePlayer()
+    public static void CreatePlayer()
     {
-        GameObject tempSnake = PhotonNetwork.Instantiate("Remote Snake", new Vector3(), Quaternion.identity, 0);
-        Destroy(tempSnake.transform.GetChild(0).gameObject);
-        tempSnake.name = "Snake Syncer";
+        if (snake == null && PhotonNetwork.connectionStateDetailed == ClientState.Joined)
+        {
+            snake = PhotonNetwork.Instantiate("Remote Snake", new Vector3(), Quaternion.identity, 0);
+            Destroy(snake.transform.GetChild(0).gameObject);
+            snake.name = "Snake Syncer";
+        }
+    }
+
+    public static void DestroyPlayer()
+    {
+        PhotonNetwork.Destroy(snake);
     }
 
     public override void OnCreatedRoom()

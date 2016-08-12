@@ -30,7 +30,7 @@ public class GameStarter : MonoBehaviour {
 
     void startGame() {
         hasStarted = true;
-
+        MatchMaker.CreatePlayer();
         FindObjectOfType<ScriptOrderController>().StartGame();
         welcomeFader.StopFading();
         snakeStarter.ManualStart();

@@ -37,7 +37,7 @@ public class Trail : Photon.MonoBehaviour
 
     public LinkedList<SegmentScript> segmentList;
 
-    LinkedList<TrailPoint> trailPointList;
+    public LinkedList<TrailPoint> trailPointList;
 
     float trailSize;
     int num = 0;

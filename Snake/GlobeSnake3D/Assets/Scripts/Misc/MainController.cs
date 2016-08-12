@@ -46,6 +46,7 @@ public class MainController : MonoBehaviour {
     }
 
 	public void gameOver(){
+        MatchMaker.DestroyPlayer();
         StartCoroutine(makeGameStop());
 	}
 

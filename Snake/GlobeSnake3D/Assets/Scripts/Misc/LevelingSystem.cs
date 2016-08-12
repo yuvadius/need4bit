@@ -19,7 +19,7 @@ public class LevelData {
 public class LevelingSystem : MonoBehaviour {
 
     public LevelData[] levels;
-    
+    public bool CanLevelUp;
     [Header("For inspection only")]
     public int currentLevel = 0;
     public int applesAte = 0, bannanasAte = 0;
@@ -57,12 +57,14 @@ public class LevelingSystem : MonoBehaviour {
     }
 
     void lvlUp() {
-        availablePoints += levels[currentLevel].pointsRwd;
-        appleSystem.maxNumOfApples = levels[currentLevel].applesPresent;
-        appleSystem.ratePerSecond = levels[currentLevel].appleRate;
-        currentLevel++;
-        view.SetUpView();
-        
+        if (CanLevelUp)
+        {
+            availablePoints += levels[currentLevel].pointsRwd;
+            appleSystem.maxNumOfApples = levels[currentLevel].applesPresent;
+            appleSystem.ratePerSecond = levels[currentLevel].appleRate;
+            currentLevel++;
+            view.SetUpView();
+        }
     }
 
 }

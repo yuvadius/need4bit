@@ -67,11 +67,10 @@ public class SnakeSync : Photon.MonoBehaviour
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        GameObject snake = GameObject.Find("Snake");
         if (stream.isWriting)
         {
-            stream.SendNext(snake.transform.GetChild(0).position);
-            stream.SendNext(snake.transform.GetChild(0).rotation);
+            stream.SendNext(LocalSnake.instance.transform.GetChild(0).position);
+            stream.SendNext(LocalSnake.instance.transform.GetChild(0).rotation);
         }
         else
         {

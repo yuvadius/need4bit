@@ -3,7 +3,6 @@ using System.Collections;
 
 public class SnakeSync : Photon.MonoBehaviour
 {
-    public static SnakeSync instance;
     public SnakeColorControl colorControl;
 
     Trail trail;
@@ -14,10 +13,6 @@ public class SnakeSync : Photon.MonoBehaviour
     void Awake()
     {
         DontDestroyOnLoad(transform.gameObject);
-        if (instance == null)
-        {
-            instance = this;
-        }
 
 		if (!photonView.isMine)
 		{

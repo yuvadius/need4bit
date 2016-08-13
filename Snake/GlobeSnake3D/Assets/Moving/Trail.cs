@@ -110,10 +110,10 @@ public class Trail : Photon.MonoBehaviour
         if (create > 0)
         {
             create_segment();
-			if (SnakeSync.instance != null)
-			{
-				SnakeSync.instance.CreateSegment();
-			}
+            if (MatchMaker.instance.mySync != null)
+            {
+                MatchMaker.instance.mySync.CreateSegment();
+            }
 			create--;
         }
 

@@ -4,6 +4,7 @@ using Photon;
 
 public class MatchMaker : PunBehaviour
 {
+    public SnakeSync mySync;
     public static MatchMaker instance;
     private static GameObject snake;
     private static bool isSnake = false;
@@ -79,6 +80,7 @@ public class MatchMaker : PunBehaviour
             
             Destroy(snake.transform.GetChild(0).gameObject);
             snake.name = "Snake Syncer";
+            instance.mySync = snake.GetComponent<SnakeSync>();
             isSnake = true;
         }
     }
@@ -116,7 +118,7 @@ public class MatchMaker : PunBehaviour
                 rotations[counter] = segment.transform.rotation;
                 counter++;
             }
-            SnakeSync.instance.CreateSegment(other, positions, rotations);
+            mySync.CreateSegment(other, positions, rotations);
         }
     }
 }

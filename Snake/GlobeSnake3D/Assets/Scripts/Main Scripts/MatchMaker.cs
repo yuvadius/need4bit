@@ -7,6 +7,7 @@ public class MatchMaker : PunBehaviour
     public static MatchMaker instance;
     private static GameObject snake;
     private static bool isSnake = false;
+    private static int playerNumber;
 
     void Awake()
     {
@@ -38,13 +39,44 @@ public class MatchMaker : PunBehaviour
     public override void OnJoinedRoom()
     {
         CreatePlayer();
+        playerNumber = PhotonNetwork.playerList.Length;
+        //switch (playerNumber % 4)
+        //{
+        //    case 0:
+        //        break;
+        //    case 1:
+        //        SnakeSync.instance.SetPlayerColor(SnakeColor.RED);
+        //        break;
+        //    case 2:
+        //        SnakeSync.instance.SetPlayerColor(SnakeColor.GREEN);
+        //        break;
+        //    case 3:
+        //        SnakeSync.instance.SetPlayerColor(SnakeColor.YELLOW);
+        //        break;
+        //}
     }
 
     public static void CreatePlayer()
     {
         if (!isSnake && PhotonNetwork.connectionStateDetailed == ClientState.Joined)
         {
-            snake = PhotonNetwork.Instantiate("Remote Snake", new Vector3(), Quaternion.identity, 0);
+            playerNumber = PhotonNetwork.playerList.Length;
+            switch (playerNumber % 4)
+            {
+                case 0:
+                    snake = PhotonNetwork.Instantiate("Remote Snake Blue", new Vector3(), Quaternion.identity, 0);
+                    break;
+                case 1:
+                    snake = PhotonNetwork.Instantiate("Remote Snake Red", new Vector3(), Quaternion.identity, 0);
+                    break;
+                case 2:
+                    snake = PhotonNetwork.Instantiate("Remote Snake Yellow", new Vector3(), Quaternion.identity, 0);
+                    break;
+                case 3:
+                    snake = PhotonNetwork.Instantiate("Remote Snake Green", new Vector3(), Quaternion.identity, 0);
+                    break;
+            }
+            
             Destroy(snake.transform.GetChild(0).gameObject);
             snake.name = "Snake Syncer";
             isSnake = true;

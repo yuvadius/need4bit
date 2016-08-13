@@ -130,7 +130,7 @@ public class Trail : Photon.MonoBehaviour
         tailLength += trailSize;
     }
 
-    public void create_segment(Vector3 position, Quaternion rotation)
+    /*public void create_segment(Vector3 position, Quaternion rotation)
     {
         SegmentScript newSegment = (Instantiate(segment) as GameObject).GetComponent<SegmentScript>();
         newSegment.transform.position = position;
@@ -141,7 +141,7 @@ public class Trail : Photon.MonoBehaviour
         segmentList.AddFirst(newSegment);
         newSegment.set_first(trailPointList.First, tailLength);
         tailLength += trailSize;
-    }
+    }*/
 
     public void set_first_segment_distance(float _firstSegmentDistance)
     {

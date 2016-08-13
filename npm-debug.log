@@ -25,86 +25,86 @@
 18 silly mapToRegistry uri https://registry.npmjs.org/unityeditor-cloud-hub-0.0.1.tgz
 19 verbose request uri https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
 20 verbose request no auth needed
-21 info attempt registry request try #1 at 6:44:10 PM
-22 verbose request id ced6ea6cfffc3fe1
+21 info attempt registry request try #1 at 4:21:06 PM
+22 verbose request id b461d8d4f361f383
 23 http request GET https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
 24 verbose request uri https://registry.npmjs.org/unityeditor-cloud-hub-0.0.1.tgz
 25 verbose request no auth needed
-26 info attempt registry request try #1 at 6:44:12 PM
+26 info attempt registry request try #1 at 4:21:06 PM
 27 http request GET https://registry.npmjs.org/unityeditor-cloud-hub-0.0.1.tgz
-28 http 500 https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
-29 info retry will retry, error on last attempt: Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
-30 http 404 https://registry.npmjs.org/unityeditor-cloud-hub-0.0.1.tgz
-31 verbose headers { 'content-type': 'application/json',
-31 verbose headers   'cache-control': 'max-age=0',
-31 verbose headers   'content-length': '39',
-31 verbose headers   'accept-ranges': 'bytes',
-31 verbose headers   date: 'Fri, 12 Aug 2016 15:43:36 GMT',
-31 verbose headers   via: '1.1 varnish',
-31 verbose headers   age: '0',
-31 verbose headers   connection: 'keep-alive',
-31 verbose headers   'x-served-by': 'cache-ams4137-AMS',
-31 verbose headers   'x-cache': 'MISS',
-31 verbose headers   'x-cache-hits': '0',
-31 verbose headers   'x-timer': 'S1471016615.253244,VS0,VE1240' }
-32 silly get cb [ 404,
-32 silly get   { 'content-type': 'application/json',
-32 silly get     'cache-control': 'max-age=0',
-32 silly get     'content-length': '39',
-32 silly get     'accept-ranges': 'bytes',
-32 silly get     date: 'Fri, 12 Aug 2016 15:43:36 GMT',
-32 silly get     via: '1.1 varnish',
-32 silly get     age: '0',
-32 silly get     connection: 'keep-alive',
-32 silly get     'x-served-by': 'cache-ams4137-AMS',
-32 silly get     'x-cache': 'MISS',
-32 silly get     'x-cache-hits': '0',
-32 silly get     'x-timer': 'S1471016615.253244,VS0,VE1240' } ]
-33 silly fetchPackageMetaData Error: package could not be found. : unityeditor-cloud-hub-0.0.1.tgz
-33 silly fetchPackageMetaData     at makeError (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:263:12)
-33 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:251:14)
-33 silly fetchPackageMetaData     at Request._callback (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:171:14)
-33 silly fetchPackageMetaData     at Request.self.callback (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\request\request.js:198:22)
-33 silly fetchPackageMetaData     at Request.emit (events.js:110:17)
-33 silly fetchPackageMetaData     at Request.<anonymous> (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\request\request.js:1073:14)
-33 silly fetchPackageMetaData     at Request.emit (events.js:129:20)
-33 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\request\request.js:1019:12)
-33 silly fetchPackageMetaData     at IncomingMessage.emit (events.js:129:20)
-33 silly fetchPackageMetaData     at _stream_readable.js:908:16
-33 silly fetchPackageMetaData  error for unityeditor-cloud-hub-0.0.1.tgz { [Error: package could not be found. : unityeditor-cloud-hub-0.0.1.tgz]
-33 silly fetchPackageMetaData   pkgid: 'unityeditor-cloud-hub-0.0.1.tgz',
-33 silly fetchPackageMetaData   statusCode: 404,
-33 silly fetchPackageMetaData   code: 'E404' }
-34 info attempt registry request try #2 at 6:44:24 PM
+28 http 404 https://registry.npmjs.org/unityeditor-cloud-hub-0.0.1.tgz
+29 verbose headers { 'content-type': 'application/json',
+29 verbose headers   'cache-control': 'max-age=0',
+29 verbose headers   'content-length': '39',
+29 verbose headers   'accept-ranges': 'bytes',
+29 verbose headers   date: 'Sat, 13 Aug 2016 13:20:29 GMT',
+29 verbose headers   via: '1.1 varnish',
+29 verbose headers   age: '0',
+29 verbose headers   connection: 'keep-alive',
+29 verbose headers   'x-served-by': 'cache-ams4129-AMS',
+29 verbose headers   'x-cache': 'MISS',
+29 verbose headers   'x-cache-hits': '0',
+29 verbose headers   'x-timer': 'S1471094428.490392,VS0,VE802' }
+30 silly get cb [ 404,
+30 silly get   { 'content-type': 'application/json',
+30 silly get     'cache-control': 'max-age=0',
+30 silly get     'content-length': '39',
+30 silly get     'accept-ranges': 'bytes',
+30 silly get     date: 'Sat, 13 Aug 2016 13:20:29 GMT',
+30 silly get     via: '1.1 varnish',
+30 silly get     age: '0',
+30 silly get     connection: 'keep-alive',
+30 silly get     'x-served-by': 'cache-ams4129-AMS',
+30 silly get     'x-cache': 'MISS',
+30 silly get     'x-cache-hits': '0',
+30 silly get     'x-timer': 'S1471094428.490392,VS0,VE802' } ]
+31 silly fetchPackageMetaData Error: package could not be found. : unityeditor-cloud-hub-0.0.1.tgz
+31 silly fetchPackageMetaData     at makeError (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:263:12)
+31 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:251:14)
+31 silly fetchPackageMetaData     at Request._callback (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:171:14)
+31 silly fetchPackageMetaData     at Request.self.callback (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\request\request.js:198:22)
+31 silly fetchPackageMetaData     at Request.emit (events.js:110:17)
+31 silly fetchPackageMetaData     at Request.<anonymous> (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\request\request.js:1073:14)
+31 silly fetchPackageMetaData     at Request.emit (events.js:129:20)
+31 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\request\request.js:1019:12)
+31 silly fetchPackageMetaData     at IncomingMessage.emit (events.js:129:20)
+31 silly fetchPackageMetaData     at _stream_readable.js:908:16
+31 silly fetchPackageMetaData  error for unityeditor-cloud-hub-0.0.1.tgz { [Error: package could not be found. : unityeditor-cloud-hub-0.0.1.tgz]
+31 silly fetchPackageMetaData   pkgid: 'unityeditor-cloud-hub-0.0.1.tgz',
+31 silly fetchPackageMetaData   statusCode: 404,
+31 silly fetchPackageMetaData   code: 'E404' }
+32 http 500 https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
+33 info retry will retry, error on last attempt: Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
+34 info attempt registry request try #2 at 4:21:18 PM
 35 http request GET https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
 36 http 500 https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
 37 info retry will retry, error on last attempt: Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
-38 info attempt registry request try #3 at 6:45:26 PM
+38 info attempt registry request try #3 at 4:22:19 PM
 39 http request GET https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
 40 http 500 https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
 41 verbose headers { 'content-type': 'application/json',
 41 verbose headers   'cache-control': 'max-age=0',
 41 verbose headers   'content-length': '71',
 41 verbose headers   'accept-ranges': 'bytes',
-41 verbose headers   date: 'Fri, 12 Aug 2016 15:44:49 GMT',
+41 verbose headers   date: 'Sat, 13 Aug 2016 13:21:42 GMT',
 41 verbose headers   via: '1.1 varnish',
 41 verbose headers   connection: 'keep-alive',
-41 verbose headers   'x-served-by': 'cache-ams4448-AMS',
+41 verbose headers   'x-served-by': 'cache-ams4138-AMS',
 41 verbose headers   'x-cache': 'MISS',
 41 verbose headers   'x-cache-hits': '0',
-41 verbose headers   'x-timer': 'S1471016688.675937,VS0,VE885' }
+41 verbose headers   'x-timer': 'S1471094502.116168,VS0,VE607' }
 42 silly get cb [ 500,
 42 silly get   { 'content-type': 'application/json',
 42 silly get     'cache-control': 'max-age=0',
 42 silly get     'content-length': '71',
 42 silly get     'accept-ranges': 'bytes',
-42 silly get     date: 'Fri, 12 Aug 2016 15:44:49 GMT',
+42 silly get     date: 'Sat, 13 Aug 2016 13:21:42 GMT',
 42 silly get     via: '1.1 varnish',
 42 silly get     connection: 'keep-alive',
-42 silly get     'x-served-by': 'cache-ams4448-AMS',
+42 silly get     'x-served-by': 'cache-ams4138-AMS',
 42 silly get     'x-cache': 'MISS',
 42 silly get     'x-cache-hits': '0',
-42 silly get     'x-timer': 'S1471016688.675937,VS0,VE885' } ]
+42 silly get     'x-timer': 'S1471094502.116168,VS0,VE607' } ]
 43 silly fetchPackageMetaData Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.0.13.tgz
 43 silly fetchPackageMetaData     at makeError (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:263:12)
 43 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (C:\Program Files\Unity\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:241:14)

@@ -4,6 +4,8 @@ using System.Collections;
 public class SnakeSync : Photon.MonoBehaviour
 {
     public static SnakeSync instance;
+    public SnakeColorControl colorControl;
+
     Trail trail;
 
     public float firstSegmentDistance = 0.28f; float prev1;
@@ -40,6 +42,15 @@ public class SnakeSync : Photon.MonoBehaviour
             }
             trail.myUpdate();
         }
+    }
+
+    [PunRPC]
+    public void SetPlayerColor(SnakeColor color)
+    {
+        colorControl.SetColor(color);
+
+        if (photonView.isMine)
+            photonView.RPC("SetPlayerColor", PhotonTargets.OthersBuffered, color);
     }
 
     [PunRPC]

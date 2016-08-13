@@ -36,7 +36,7 @@ public class SegmentScript : MonoBehaviour
                 distance = -distanceFromNext;//because trailing means standing in place, dont actually need to move anywhere, just count down is enough
                 after = before.Previous;
                 trailing = false;
-				if( num++ != 0 )
+				//if( num++ != 0 )
 					myCollider.enabled = true;
 				myNum = num;
             }

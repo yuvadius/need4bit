@@ -39,6 +39,8 @@ public class Trail : Photon.MonoBehaviour
 
     public LinkedList<TrailPoint> trailPointList;
 
+	public bool isMine = true;
+	public bool hasFirst = false;
     float trailSize;
     int num = 0;
     float tailLength;
@@ -55,24 +57,36 @@ public class Trail : Photon.MonoBehaviour
         segmentList = new LinkedList<SegmentScript>();
         trailPointList = new LinkedList<TrailPoint>();
 
-        Vector3 newPos = transform.position;
-        Quaternion newRot = transform.rotation;
-        ++num;
+		if (isMine == true)
+		{
+			SetFirst();
+        }
+    }
+
+	public void SetFirst()
+	{
+		Vector3 newPos = transform.position;
+		Quaternion newRot = transform.rotation;
+		++num;
 		TrailPoint point = new TrailPoint(newPos, newRot, num, newPos.magnitude);
 		point.state = SegmentState.GROUND;
 		++numOfGround;
 		trailPointList.AddFirst(point);
+		hasFirst = true;
+	}
 
-    }
-
-    bool create = false;
+    int create = 0;
     
 	public void addSegment(){
-		create = true;
+		create++;
 	}
 	
     public void myUpdate()
     {
+		if( isMine == false && hasFirst == false)
+		{
+			return;
+		}
         float delta = 0;
         delta = (transform.position - trailPointList.First.Value.pos).magnitude;
         Vector3 newPos = transform.position;
@@ -99,11 +113,11 @@ public class Trail : Photon.MonoBehaviour
 			runner = runner.Previous;
         }
 
-        if (create)
+        if (create > 0)
         {
             create_segment();
             SnakeSync.instance.CreateSegment();
-            create = false;
+			create--;
         }
 
         trim_tail();
@@ -124,8 +138,7 @@ public class Trail : Photon.MonoBehaviour
         SegmentScript newSegment = (Instantiate(segment) as GameObject).GetComponent<SegmentScript>();
         newSegment.transform.position = position;
         newSegment.transform.rotation = rotation;
-        Debug.Log("Position: " + newSegment.transform.position.x.ToString());
-        Debug.Log("Rotation: " + newSegment.transform.rotation.x.ToString());
+
         newSegment.transform.SetParent(transform.parent);
         newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
         segmentList.AddFirst(newSegment);
@@ -136,7 +149,6 @@ public class Trail : Photon.MonoBehaviour
     public void set_first_segment_distance(float _firstSegmentDistance)
     {
         tailLength = _firstSegmentDistance;
-		print("First Trail Size: " + tailLength);
     }
 
     public void set_segment_distance(float _segmentDistance)

@@ -37,12 +37,12 @@ public class CapacityController : MonoBehaviour {
 	}
 
 	public void myUpdate(){
-		if( capacity < maxCapacity ){
-			capacity += Time.deltaTime * regenerationRate * Trail.instance.getRatio();
-		}
-		if( Trail.instance.getRatio() == 0 ){
-			capacity -= Time.deltaTime * degenerationRate;
-		}
+		//if( capacity < maxCapacity ){
+		//	capacity += Time.deltaTime * regenerationRate * Trail.instance.getRatio();
+		//}
+		//if( Trail.instance.getRatio() == 0 ){
+		//	capacity -= Time.deltaTime * degenerationRate;
+		//}
 	}
 
 

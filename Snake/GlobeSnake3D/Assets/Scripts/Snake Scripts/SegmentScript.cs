@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class SegmentScript : MonoBehaviour
 {
-	public static SegmentScript trailingSegment = null;
 	public Collider myCollider;
 
     public LinkedListNode<TrailPoint> before; //before me
@@ -34,7 +33,6 @@ public class SegmentScript : MonoBehaviour
             distanceFromNext -= distance;
             if (distanceFromNext < 0)//the last segment that entered here is the trailingSegment, no?
             {
-				trailingSegment = this;
                 distance = -distanceFromNext;//because trailing means standing in place, dont actually need to move anywhere, just count down is enough
                 after = before.Previous;
                 trailing = false;

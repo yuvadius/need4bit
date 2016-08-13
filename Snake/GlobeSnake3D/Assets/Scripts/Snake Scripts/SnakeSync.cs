@@ -16,13 +16,13 @@ public class SnakeSync : Photon.MonoBehaviour
         {
             instance = this;
         }
-    }
 
-    void Start()
-    {
-        if (!photonView.isMine)
-            trail = GetComponentInChildren<Trail>();
-    }
+		if (!photonView.isMine)
+		{
+			trail = GetComponentInChildren<Trail>();
+			trail.isMine = false;
+		}
+	}
 
     void FixedUpdate()
     {
@@ -54,9 +54,9 @@ public class SnakeSync : Photon.MonoBehaviour
     [PunRPC]
     public void CreateSegment(Vector3[] positions, Quaternion[] rotations)
     {
-        if (!photonView.isMine)
-            for(int i = 0; i < positions.Length; i++)
-                trail.create_segment(positions[i], rotations[i]);
+		if (!photonView.isMine)
+			for (int i = 0; i < positions.Length; i++)
+				trail.addSegment();
     }
 
     public void CreateSegment(PhotonPlayer other, Vector3[] positions, Quaternion[] rotations)
@@ -76,6 +76,11 @@ public class SnakeSync : Photon.MonoBehaviour
         {
             transform.GetChild(0).position = (Vector3)stream.ReceiveNext();
             transform.GetChild(0).rotation = (Quaternion)stream.ReceiveNext();
+			if (trail.hasFirst == false)
+			{
+				trail.SetFirst();
+				trail.hasFirst = true;
+			}
         }
     }
 }

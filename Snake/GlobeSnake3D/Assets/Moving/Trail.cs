@@ -111,7 +111,7 @@ public class Trail : Photon.MonoBehaviour
 
     public void create_segment()
     {
-        SegmentScript newSegment = (Instantiate(segment) as GameObject).GetComponent<SegmentScript>();
+        SegmentScript newSegment = Instantiate(segment).GetComponent<SegmentScript>();
         newSegment.transform.SetParent(transform.parent);
         newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
         segmentList.AddFirst(newSegment);

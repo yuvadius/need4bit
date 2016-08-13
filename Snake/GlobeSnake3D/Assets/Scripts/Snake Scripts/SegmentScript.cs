@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class SegmentScript : MonoBehaviour
 {
 	public static SegmentScript trailingSegment = null;
+	public Collider myCollider;
 
     public LinkedListNode<TrailPoint> before; //before me
     public LinkedListNode<TrailPoint> after; //after me
@@ -27,7 +28,7 @@ public class SegmentScript : MonoBehaviour
 
     public void move(float distance)
     {
-		GetComponent<Collider>().enabled = false;
+		myCollider.enabled = false;
         if (trailing == true)
         {
             distanceFromNext -= distance;
@@ -38,7 +39,7 @@ public class SegmentScript : MonoBehaviour
                 after = before.Previous;
                 trailing = false;
 				if( num++ != 0 )
-					GetComponent<Collider>().enabled = true;
+					myCollider.enabled = true;
 				myNum = num;
             }
             else
@@ -56,7 +57,7 @@ public class SegmentScript : MonoBehaviour
 				transform.Translate(direction, Space.World);
 
 				if( myNum != 1 )
-					GetComponent<Collider>().enabled = true;
+					myCollider.enabled = true;
                 return;
             }
             else

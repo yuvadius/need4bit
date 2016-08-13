@@ -54,8 +54,8 @@ public class InputDriver : MonoBehaviour {
             Mathf.Clamp(verticalMove + Time.deltaTime * changeMove, verticalMove, verticalAim) : 
             Mathf.Clamp(verticalMove - Time.deltaTime * changeMove, verticalAim, verticalMove);
 
-#if UNITY_EDITOR
-        float inputHorizontalMove = Input.GetAxis("Horizontal");
+#if UNITY_EDITOR || UNITY_STANDALONE
+		float inputHorizontalMove = Input.GetAxis("Horizontal");
         float inputVerticalMove = Input.GetAxis("Vertical");
 
         if (inputHorizontalMove != 0) {

@@ -27,17 +27,12 @@ public class TrailPoint
 
 public class Trail : Photon.MonoBehaviour
 {
-	public static Trail instance;
-	void Awake(){
-		if( instance == null ){
-			instance = this;
-		}
-	}
+
     public GameObject segment;
 
-    public LinkedList<SegmentScript> segmentList;
+    public LinkedList<SegmentScript> segmentList = new LinkedList<SegmentScript>();
 
-    public LinkedList<TrailPoint> trailPointList;
+    public LinkedList<TrailPoint> trailPointList = new LinkedList<TrailPoint>();
 
 	public bool isMine = true;
 	public bool hasFirst = false;
@@ -54,10 +49,8 @@ public class Trail : Photon.MonoBehaviour
     void Start()
     {
 		flyingDevice = Flying.instance;
-        segmentList = new LinkedList<SegmentScript>();
-        trailPointList = new LinkedList<TrailPoint>();
 
-		if (isMine == true)
+		if ((isMine == true && hasFirst == false) || isMine == false)
 		{
 			SetFirst();
         }
@@ -71,6 +64,7 @@ public class Trail : Photon.MonoBehaviour
 		TrailPoint point = new TrailPoint(newPos, newRot, num, newPos.magnitude);
 		point.state = SegmentState.GROUND;
 		++numOfGround;
+
 		trailPointList.AddFirst(point);
 		hasFirst = true;
 	}
@@ -116,7 +110,10 @@ public class Trail : Photon.MonoBehaviour
         if (create > 0)
         {
             create_segment();
-            SnakeSync.instance.CreateSegment();
+			if (SnakeSync.instance != null)
+			{
+				SnakeSync.instance.CreateSegment();
+			}
 			create--;
         }
 

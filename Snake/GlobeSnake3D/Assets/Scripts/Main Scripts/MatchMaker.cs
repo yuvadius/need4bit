@@ -67,12 +67,12 @@ public class MatchMaker : PunBehaviour
     public override void OnPhotonPlayerConnected(PhotonPlayer other)
     {
         Debug.Log("OnPhotonPlayerConnected() " + other.name); // not seen if you're the player connecting
-        if (Trail.instance.segmentList.Count != 0)
+        if ( SnakeController.instance.trail.segmentList.Count != 0)
         {
-            Vector3[] positions = new Vector3[Trail.instance.segmentList.Count];
-            Quaternion[] rotations = new Quaternion[Trail.instance.segmentList.Count];
+            Vector3[] positions = new Vector3[SnakeController.instance.trail.segmentList.Count];
+            Quaternion[] rotations = new Quaternion[SnakeController.instance.trail.segmentList.Count];
             int counter = 0;
-            foreach (SegmentScript segment in Trail.instance.segmentList)
+            foreach (SegmentScript segment in SnakeController.instance.trail.segmentList)
             {
                 positions[counter] = segment.transform.position;
                 rotations[counter] = segment.transform.rotation;

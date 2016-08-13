@@ -5,7 +5,8 @@ using Photon;
 public class MatchMaker : PunBehaviour
 {
     public static MatchMaker instance;
-    private static GameObject snake = null;
+    private static GameObject snake;
+    private static bool isSnake = false;
 
     void Awake()
     {
@@ -41,17 +42,22 @@ public class MatchMaker : PunBehaviour
 
     public static void CreatePlayer()
     {
-        if (snake == null && PhotonNetwork.connectionStateDetailed == ClientState.Joined)
+        if (!isSnake && PhotonNetwork.connectionStateDetailed == ClientState.Joined)
         {
             snake = PhotonNetwork.Instantiate("Remote Snake", new Vector3(), Quaternion.identity, 0);
             Destroy(snake.transform.GetChild(0).gameObject);
             snake.name = "Snake Syncer";
+            isSnake = true;
         }
     }
 
     public static void DestroyPlayer()
     {
-        PhotonNetwork.Destroy(snake);
+        if (isSnake)
+        {
+            PhotonNetwork.Destroy(snake);
+            isSnake = false;
+        }
     }
 
     public override void OnCreatedRoom()
@@ -67,7 +73,7 @@ public class MatchMaker : PunBehaviour
     public override void OnPhotonPlayerConnected(PhotonPlayer other)
     {
         Debug.Log("OnPhotonPlayerConnected() " + other.name); // not seen if you're the player connecting
-        if ( SnakeController.instance.trail.segmentList.Count != 0)
+        if (SnakeController.instance.trail.segmentList.Count != 0 && isSnake)
         {
             Vector3[] positions = new Vector3[SnakeController.instance.trail.segmentList.Count];
             Quaternion[] rotations = new Quaternion[SnakeController.instance.trail.segmentList.Count];

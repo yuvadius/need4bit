@@ -3,12 +3,15 @@ using System.Collections;
 
 public class SnakeSync : Photon.MonoBehaviour
 {
-    public SnakeColorControl colorControl;
-
     Trail trail;
-
     public float firstSegmentDistance = 0.28f; float prev1;
     public float segmentDistance = 0.19f; float prev2;
+
+    private float lastSynchronizationTime = 0f;
+    private float syncDelay = 0f;
+    private float syncTime = 0f;
+    private Vector3 syncStartPosition = Vector3.zero;
+    private Vector3 syncEndPosition = Vector3.zero;
 
     void Awake()
     {
@@ -20,6 +23,27 @@ public class SnakeSync : Photon.MonoBehaviour
 			trail.isMine = false;
 		}
 	}
+
+    void Start()
+    {
+        if (!photonView.isMine)
+        {
+            if (trail.hasFirst == false)
+            {
+                trail.SetFirst();
+                trail.hasFirst = true;
+            }
+        }
+    }
+
+    void Update()
+    {
+        if (photonView.isMine)
+        {
+            transform.GetChild(0).position = LocalSnake.instance.transform.GetChild(0).position;
+            transform.GetChild(0).rotation = LocalSnake.instance.transform.GetChild(0).rotation;
+        }
+    }
 
     void FixedUpdate()
     {
@@ -37,15 +61,6 @@ public class SnakeSync : Photon.MonoBehaviour
             }
             trail.myUpdate();
         }
-    }
-
-    [PunRPC]
-    public void SetPlayerColor(SnakeColor color)
-    {
-        colorControl.SetColor(color);
-
-        if (photonView.isMine)
-            photonView.RPC("SetPlayerColor", PhotonTargets.OthersBuffered, color);
     }
 
     [PunRPC]
@@ -69,24 +84,5 @@ public class SnakeSync : Photon.MonoBehaviour
     {
         if (photonView.isMine)
             photonView.RPC("CreateSegment", other, positions, rotations);
-    }
-
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.isWriting)
-        {
-            stream.SendNext(LocalSnake.instance.transform.GetChild(0).position);
-            stream.SendNext(LocalSnake.instance.transform.GetChild(0).rotation);
-        }
-        else
-        {
-            transform.GetChild(0).position = (Vector3)stream.ReceiveNext();
-            transform.GetChild(0).rotation = (Quaternion)stream.ReceiveNext();
-			if (trail.hasFirst == false)
-			{
-				trail.SetFirst();
-				trail.hasFirst = true;
-			}
-        }
     }
 }

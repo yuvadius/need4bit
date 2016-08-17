@@ -60,7 +60,7 @@ public class MatchMaker : PunBehaviour
                 PhotonNetwork.player.SetCustomProperties(style);
             }
             Debug.Log("Your skin is: " + skin);
-            snake = PhotonNetwork.Instantiate("Remote Snake " + snake, new Vector3(), Quaternion.identity, 0);
+            snake = PhotonNetwork.Instantiate("Remote Snake " + skin, new Vector3(), Quaternion.identity, 0);
             Destroy(snake.transform.GetChild(0).GetChild(0).gameObject);
             Destroy(snake.transform.GetChild(0).GetComponent<Trail>());
             snake.name = "Snake Syncer";

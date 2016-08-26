@@ -85,4 +85,18 @@ public class SnakeSync : Photon.MonoBehaviour
         if (photonView.isMine)
             photonView.RPC("CreateSegment", other, positions, rotations);
     }
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            //stream.SendNext(LocalSnake.instance.transform.GetChild(0).position);
+            stream.SendNext(LocalSnake.instance.transform.GetChild(0).rotation);
+        }
+        else
+        {
+            //transform.GetChild(0).position = (Vector3)stream.ReceiveNext();
+            transform.GetChild(0).rotation = (Quaternion)stream.ReceiveNext();
+        }
+    }
 }

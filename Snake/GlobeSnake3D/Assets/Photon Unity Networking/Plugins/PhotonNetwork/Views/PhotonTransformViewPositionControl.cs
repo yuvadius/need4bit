@@ -106,7 +106,10 @@ public class PhotonTransformViewPositionControl
                 break;
 
             case PhotonTransformViewPositionModel.InterpolateOptions.Lerp:
-                currentPosition = Vector3.Lerp( currentPosition, targetPosition, Time.deltaTime * m_Model.InterpolateLerpSpeed );
+                if (m_Model.Slerp)
+                    currentPosition = Vector3.Slerp(currentPosition, targetPosition, Time.deltaTime * m_Model.InterpolateLerpSpeed);
+                else
+                    currentPosition = Vector3.Lerp(currentPosition, targetPosition, Time.deltaTime * m_Model.InterpolateLerpSpeed);
                 break;
 
             /*case PhotonTransformViewPositionModel.InterpolateOptions.MoveTowardsComplex:

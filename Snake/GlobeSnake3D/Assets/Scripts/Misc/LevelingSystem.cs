@@ -20,6 +20,7 @@ public class LevelingSystem : MonoBehaviour {
 
     public LevelData[] levels;
     public bool CanLevelUp;
+    public bool CanHaveApples;
     [Header("For inspection only")]
     public int currentLevel = 0;
     public int applesAte = 0, bannanasAte = 0;
@@ -31,11 +32,15 @@ public class LevelingSystem : MonoBehaviour {
     void Start() {
         view = FindObjectOfType<LevelingView>();
         appleSystem = FindObjectOfType<AppleController>();
+        appleSystem.SetCanHaveApples(CanHaveApples);
     }
 
     public void AddApple() {
-        applesAte++;
-        checkNExecuteLvlUpCondition();
+        if (CanHaveApples)
+        {
+            applesAte++;
+            checkNExecuteLvlUpCondition();
+        }
     }
 
     public void AddBannana() {

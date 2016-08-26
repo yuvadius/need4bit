@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class AppleController : MonoBehaviour {
 
 	public GameObject applePrefab;
-
+    private bool CanHaveApples;
 	public int maxNumOfApples; int prev1;
 	public float ratePerSecond; float prev2;
 	float appleHeight;
@@ -17,35 +17,50 @@ public class AppleController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	}
+
+    public void SetCanHaveApples(bool CanHaveApples)
+    {
+        this.CanHaveApples = CanHaveApples;
+    }
 	
 	// Update is called once per frame
 	public void myUpdate () {
-		appleHeight = globe.globeRadius;
-		if( prev1 != maxNumOfApples ){
-			prev1 = maxNumOfApples;
-		}
-		if( prev2 != ratePerSecond ){
-			prev2 = ratePerSecond;
-		}
+        if (CanHaveApples)
+        {
+            appleHeight = globe.globeRadius;
+            if (prev1 != maxNumOfApples)
+            {
+                prev1 = maxNumOfApples;
+            }
+            if (prev2 != ratePerSecond)
+            {
+                prev2 = ratePerSecond;
+            }
 
-		if( appleList.Count < maxNumOfApples ){
-			if( Time.deltaTime * ratePerSecond > Random.Range(0.0f, 1.0f) ){
-				//create apple
-				Apple apple = null;
-				if( applePool.Count > 0 ){
-					apple = applePool[applePool.Count-1];
-					applePool.RemoveAt(applePool.Count-1);
-				}else{
-					apple = (GameObject.Instantiate(applePrefab)).GetComponent<Apple>();
-				}
-				apple.setController(this);
-				apple.setHeight(appleHeight);
-				apple.transform.parent = transform;
-				apple.gameObject.name = "Apple";
-				appleList.Add(apple);
-                apple.gameObject.SetActive(true);
-			}
-		}
+            if (appleList.Count < maxNumOfApples)
+            {
+                if (Time.deltaTime * ratePerSecond > Random.Range(0.0f, 1.0f))
+                {
+                    //create apple
+                    Apple apple = null;
+                    if (applePool.Count > 0)
+                    {
+                        apple = applePool[applePool.Count - 1];
+                        applePool.RemoveAt(applePool.Count - 1);
+                    }
+                    else
+                    {
+                        apple = (GameObject.Instantiate(applePrefab)).GetComponent<Apple>();
+                    }
+                    apple.setController(this);
+                    apple.setHeight(appleHeight);
+                    apple.transform.parent = transform;
+                    apple.gameObject.name = "Apple";
+                    appleList.Add(apple);
+                    apple.gameObject.SetActive(true);
+                }
+            }
+        }
 	}
 
 	public void destroy(Apple apple){

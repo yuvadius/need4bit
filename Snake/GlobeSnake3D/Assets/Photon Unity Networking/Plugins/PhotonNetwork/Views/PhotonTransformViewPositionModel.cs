@@ -40,6 +40,7 @@ public class PhotonTransformViewPositionModel
     public InterpolateOptions InterpolateOption = InterpolateOptions.EstimatedSpeed;
     public float InterpolateMoveTowardsSpeed = 1f;
     public float InterpolateLerpSpeed = 1f;
+    public bool Slerp = false;
     public float InterpolateMoveTowardsAcceleration = 2;
     public float InterpolateMoveTowardsDeceleration = 2;
     public AnimationCurve InterpolateSpeedCurve = new AnimationCurve( new Keyframe[] { 

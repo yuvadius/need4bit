@@ -6,6 +6,7 @@ public class SnakeSync : Photon.MonoBehaviour
     Trail trail;
     public float firstSegmentDistance = 0.28f; float prev1;
     public float segmentDistance = 0.19f; float prev2;
+    public RemoteFowardRotate remoteDevice;
 
     private float lastSynchronizationTime = 0f;
     private float syncDelay = 0f;
@@ -90,13 +91,22 @@ public class SnakeSync : Photon.MonoBehaviour
     {
         if (stream.isWriting)
         {
-            //stream.SendNext(LocalSnake.instance.transform.GetChild(0).position);
-            stream.SendNext(LocalSnake.instance.transform.GetChild(0).rotation);
+            stream.SendNext(LocalSnake.instance.transform.GetChild(0).position);
+            //stream.SendNext(LocalSnake.instance.transform.GetChild(0).rotation);
         }
         else
         {
-            //transform.GetChild(0).position = (Vector3)stream.ReceiveNext();
-            transform.GetChild(0).rotation = (Quaternion)stream.ReceiveNext();
+            Vector3 pos = (Vector3)stream.ReceiveNext();
+            
+            //transform.GetChild(0).rotation = (Quaternion)stream.ReceiveNext();
+            if (remoteDevice)
+            {
+                remoteDevice.ManageDestination(pos);
+            }
+            else
+            {
+                transform.GetChild(0).position = pos;
+            }
         }
     }
 }

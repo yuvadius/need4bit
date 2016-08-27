@@ -5,18 +5,20 @@ public class RemoteFowardRotate : MonoBehaviour {
 
 	public Transform forwardLever, sideLever;
 	public float turnSpeed, moveSpeed;
-	public Transform pivot, pivotForward, pivotRight, fakeDestination, projectedDestination;
+	public Transform pivot, pivotForward, pivotRight, projectedDestination;
 
 	Vector3 destination = Vector3.one;
+    bool hasSet = false;
 
 	public float globeRadius = 0.5f;
 
-	void Start() {
-		ManageDestination(fakeDestination.position);
-	}
 
 	[ContextMenu("Try")]
 	void Update() {
+        if (hasSet == false)
+        {
+            return;
+        }
 		//set up some vectors
 		Vector3 myForwardVector = pivotForward.position - pivot.position;
 		Vector3 myRightVector = pivotRight.position - pivot.position;
@@ -50,6 +52,7 @@ public class RemoteFowardRotate : MonoBehaviour {
 	/// </summary>
 	public void ManageDestination(Vector3 destination) {
         this.destination = destination;
+        hasSet = true;
 	}
 
 	/// <summary>

@@ -3,7 +3,6 @@ using System.Collections;
 
 public class SnakeSync : Photon.MonoBehaviour
 {
-    //bruce lee showered here
     Trail trail;
     public float firstSegmentDistance = 0.28f; float prev1;
     public float segmentDistance = 0.19f; float prev2;

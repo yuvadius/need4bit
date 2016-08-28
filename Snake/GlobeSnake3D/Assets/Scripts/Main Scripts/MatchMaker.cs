@@ -71,7 +71,7 @@ public class MatchMaker : PunBehaviour
 
     private static int GetSkin()
     {
-        return 2;
+        return 3;
         int[] colors = new int[Enum.GetValues(typeof(skins)).Length];
         foreach (var player in PhotonNetwork.otherPlayers)
             colors[(int)player.customProperties["Skin"]]++;

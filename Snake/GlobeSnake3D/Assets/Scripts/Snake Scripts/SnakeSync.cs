@@ -10,6 +10,7 @@ public class SnakeSync : Photon.MonoBehaviour
     public RemoteFowardRotate remoteDevice;
 
 	public RotateForward finalSpeeder;
+	public Transform normal;
 
     public float positionInterpolationOffset;
     public float rotationInterpolationOffset;
@@ -144,8 +145,9 @@ public class SnakeSync : Photon.MonoBehaviour
         extrapolateAngle = extrapolateAngle * (1 / syncDelay);
 
         float angle = Vector3.Angle(transform.GetChild(0).position, networkPosition);
-        Vector3 normal = Vector3.Cross(transform.GetChild(0).position, networkPosition);
-        Quaternion rotation = Quaternion.AngleAxis(GetExtrapolatedAngle(), normal);
+        //Vector3 normal = Vector3.Cross(transform.GetChild(0).position, networkPosition);
+	
+		Quaternion rotation = Quaternion.AngleAxis(GetExtrapolatedAngle(), normal.localPosition);
         Debug.Log(angle);
 		Vector3 extrapolatePosition = rotation * position;
         return extrapolatePosition;

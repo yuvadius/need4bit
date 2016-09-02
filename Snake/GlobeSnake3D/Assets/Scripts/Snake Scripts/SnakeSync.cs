@@ -153,7 +153,7 @@ public class SnakeSync : Photon.MonoBehaviour
 
     public float GetExtrapolatedAngle()
     {
-		float val = syncDelay * networkSpeed;
+		float val = syncDelay * networkSpeed * delay;
 		print("Val: " + val + " Lagg: " + syncDelay + " speed: " + networkSpeed);
 		return val;
 	}

@@ -153,8 +153,10 @@ public class SnakeSync : Photon.MonoBehaviour
 
     public float GetExtrapolatedAngle()
     {
-        return (syncDelay * networkSpeed * 360) / (2 * Mathf.PI * networkPosition.magnitude);
-    }
+		float val = syncDelay * networkSpeed;
+		print("Val: " + val + " Lagg: " + syncDelay + " speed: " + networkSpeed);
+		return val;
+	}
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -162,7 +164,7 @@ public class SnakeSync : Photon.MonoBehaviour
         {
             stream.SendNext(LocalSnake.instance.transform.GetChild(0).position);
             stream.SendNext(LocalSnake.instance.transform.GetChild(0).rotation);
-			stream.SendNext(finalSpeeder.finalSpeed);
+			stream.SendNext(finalSpeeder.degsPerSec);
         }
         else
         {

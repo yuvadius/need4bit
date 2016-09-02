@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SnakeSync : Photon.MonoBehaviour
 {
@@ -14,11 +15,14 @@ public class SnakeSync : Photon.MonoBehaviour
     public bool useExtrapolation;
     public float delay;
     private bool firstSync = false;
+    Queue<Vector3> oldNetworkPositions = new Queue<Vector3>();
+    public int extrapolateNumberOfStoredPositions;
 
     private float lastSynchronizationTime = 0f;
     private float syncDelay = 0f;
     private float syncTime = 0f;
     private Vector3 networkPosition = Vector3.zero;
+    private Vector3 extrapolatedNetworkPosition = Vector3.zero;
     private Quaternion networkRotation = Quaternion.identity;
 
     void Awake()
@@ -65,7 +69,8 @@ public class SnakeSync : Photon.MonoBehaviour
         {
             if (!remoteDevice && firstSync)
             {
-                transform.GetChild(0).position = Vector3.Slerp(transform.GetChild(0).position, networkPosition, positionInterpolationOffset);
+                Vector3 position = (useExtrapolation) ? extrapolatedNetworkPosition : networkPosition;
+                transform.GetChild(0).position = Vector3.Slerp(transform.GetChild(0).position, position, positionInterpolationOffset);
                 if (lerpRotation)
                     transform.GetChild(0).rotation = Quaternion.Lerp(transform.GetChild(0).rotation, networkRotation, rotationInterpolationOffset);
                 else
@@ -108,6 +113,16 @@ public class SnakeSync : Photon.MonoBehaviour
             photonView.RPC("CreateSegment", other, positions, rotations);
     }
 
+    Vector3 GetOldestStoredNetworkPosition()
+    {
+        Vector3 oldPosition = networkPosition;
+        if (oldNetworkPositions.Count > 0)
+        {
+            oldPosition = oldNetworkPositions.Peek();
+        }
+        return oldPosition;
+    }
+
     /// <summary>
     /// Calculates an estimated position based on the last synchronized position,
     /// the time when the last position was received and the movement speed of the object
@@ -122,7 +137,8 @@ public class SnakeSync : Photon.MonoBehaviour
 
         float angle = Vector3.Angle(transform.GetChild(0).position, networkPosition);
         Vector3 normal = Vector3.Cross(transform.GetChild(0).position, networkPosition);
-        Quaternion rotation = Quaternion.AngleAxis(angle * syncDelay * delay, normal);
+        Quaternion rotation = Quaternion.AngleAxis(delay, normal);
+        Debug.Log(angle);
         Vector3 extrapolatePosition = rotation * position;
         return extrapolatePosition;
     }
@@ -136,7 +152,7 @@ public class SnakeSync : Photon.MonoBehaviour
         }
         else
         {
-            networkPosition = (Vector3)stream.ReceiveNext();
+            Vector3 readPosition = (Vector3)stream.ReceiveNext();
             networkRotation = (Quaternion)stream.ReceiveNext();
             if (!firstSync)
             {
@@ -144,12 +160,29 @@ public class SnakeSync : Photon.MonoBehaviour
                 transform.GetChild(0).rotation = networkRotation;
                 firstSync = true;
             }
+
             if (useExtrapolation)
-                networkPosition = GetExtrapolatedPositionOffset(networkPosition);
-            if (remoteDevice)
             {
-                remoteDevice.ManageDestination(networkPosition);
+                if (oldNetworkPositions.Count == 0)
+                {
+                    // if we don't have old positions yet, this is the very first update this client reads. let's use this as current AND old position.
+                    networkPosition = readPosition;
+                }
+                // the previously received position becomes the old(er) one and queued. the new one is the m_NetworkPosition
+                oldNetworkPositions.Enqueue(networkPosition);
+                networkPosition = readPosition;
+                // reduce items in queue to defined number of stored positions.
+                while (oldNetworkPositions.Count > extrapolateNumberOfStoredPositions)
+                {
+                    oldNetworkPositions.Dequeue();
+                }
+                extrapolatedNetworkPosition = GetExtrapolatedPositionOffset(networkPosition);
             }
+            else
+                networkPosition = readPosition;
+
+            if (remoteDevice)
+                remoteDevice.ManageDestination(networkPosition);
         }
     }
 }

@@ -19,6 +19,7 @@ public class SnakeSync : Photon.MonoBehaviour
     private bool firstSync = false;
     Queue<Vector3> oldNetworkPositions = new Queue<Vector3>();
     public int extrapolateNumberOfStoredPositions;
+    float networkSpeed;
 
     private float lastSynchronizationTime = 0f;
     private float syncDelay = 0f;
@@ -144,10 +145,15 @@ public class SnakeSync : Photon.MonoBehaviour
 
         float angle = Vector3.Angle(transform.GetChild(0).position, networkPosition);
         Vector3 normal = Vector3.Cross(transform.GetChild(0).position, networkPosition);
-        Quaternion rotation = Quaternion.AngleAxis(delay, normal);
+        Quaternion rotation = Quaternion.AngleAxis(GetExtrapolatedAngle(), normal);
         Debug.Log(angle);
 		Vector3 extrapolatePosition = rotation * position;
         return extrapolatePosition;
+    }
+
+    public float GetExtrapolatedAngle()
+    {
+        return (syncDelay * networkSpeed * 360) / (2 * Mathf.PI * networkPosition.magnitude);
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -162,7 +168,7 @@ public class SnakeSync : Photon.MonoBehaviour
         {
             Vector3 readPosition = (Vector3)stream.ReceiveNext();
             networkRotation = (Quaternion)stream.ReceiveNext();
-			float snakeSpeed = (float)stream.ReceiveNext();
+			networkSpeed = (float)stream.ReceiveNext();
             if (!firstSync)
             {
                 transform.GetChild(0).position = networkPosition;

@@ -81,6 +81,8 @@ public class SnakeSync : Photon.MonoBehaviour
                     transform.GetChild(0).rotation = Quaternion.Lerp(transform.GetChild(0).rotation, networkRotation, rotationInterpolationOffset);
                 else
                     transform.GetChild(0).rotation = Quaternion.Slerp(transform.GetChild(0).rotation, networkRotation, rotationInterpolationOffset);
+
+				FlatenRotation();
             }
             if (firstSegmentDistance != prev1)
             {
@@ -95,6 +97,12 @@ public class SnakeSync : Photon.MonoBehaviour
             trail.myUpdate();
         }
     }
+
+	private void FlatenRotation() {
+		Vector3 norm = Vector3.Cross(transform.GetChild(0).position, normal.localPosition);
+		Vector3 lookAt = transform.GetChild(0).position + norm;
+        transform.GetChild(0).LookAt(lookAt);
+	}
 
     [PunRPC]
     public void CreateSegment()

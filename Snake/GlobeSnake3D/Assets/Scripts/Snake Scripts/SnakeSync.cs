@@ -135,6 +135,9 @@ public class SnakeSync : Photon.MonoBehaviour
         //syncDelay += (float)PhotonNetwork.GetPing() / 1000f;
         lastSynchronizationTime = Time.time;
 
+        float extrapolateAngle = Vector3.Angle(networkPosition, GetOldestStoredNetworkPosition());
+        extrapolateAngle = extrapolateAngle * (1 / syncDelay);
+
         float angle = Vector3.Angle(transform.GetChild(0).position, networkPosition);
         Vector3 normal = Vector3.Cross(transform.GetChild(0).position, networkPosition);
         Quaternion rotation = Quaternion.AngleAxis(delay, normal);

@@ -99,9 +99,10 @@ public class SnakeSync : Photon.MonoBehaviour
     }
 
 	private void FlatenRotation() {
-		Vector3 norm = Vector3.Cross(normal.localPosition, networkPosition);
-		Vector3 lookAt = networkPosition + norm;
-		Vector3 up = Vector3.Cross(lookAt - networkPosition, normal.localPosition) + networkPosition;
+		Vector3 extraposition = transform.GetChild(0).position;
+		Vector3 norm = Vector3.Cross(normal.localPosition, extraposition);
+		Vector3 lookAt = extraposition + norm;
+		Vector3 up = Vector3.Cross(lookAt - extraposition, normal.localPosition) + extraposition;
         transform.GetChild(0).LookAt(lookAt, up);
 	}
 

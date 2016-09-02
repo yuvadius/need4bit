@@ -13,7 +13,8 @@ public class RotateForward : MonoBehaviour {
 
     bool moveSpeedLock = true;
     float speed;
-    float currentSpeed;
+    public float currentSpeed;
+	public float finalSpeed;
 	float maxHeight, bonusSpeed;
 
 	// Use this for initialization
@@ -53,10 +54,11 @@ public class RotateForward : MonoBehaviour {
 
     float currentAngle;
 	// Update is called once per frame
-	public void myUpdate () {
+	public void myUpdate () {		
         float height = pivot.position.magnitude;
         float bonus = calcBonus(height);
-        float angle = (currentSpeed+bonus) * Time.deltaTime * 360.0f / (2.0f * Mathf.PI * height);
+		finalSpeed = currentSpeed + bonus;
+		float angle = (currentSpeed+bonus) * Time.deltaTime * 360.0f / (2.0f * Mathf.PI * height);
         transform.Rotate(lever.localPosition, angle);
         currentAngle = currentSpeed * Time.deltaTime;
 	}

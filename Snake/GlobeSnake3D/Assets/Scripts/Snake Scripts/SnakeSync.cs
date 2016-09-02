@@ -9,6 +9,8 @@ public class SnakeSync : Photon.MonoBehaviour
     public float segmentDistance = 0.19f; float prev2;
     public RemoteFowardRotate remoteDevice;
 
+	public RotateForward finalSpeeder;
+
     public float positionInterpolationOffset;
     public float rotationInterpolationOffset;
     public bool lerpRotation;
@@ -33,7 +35,9 @@ public class SnakeSync : Photon.MonoBehaviour
 		{
 			trail = GetComponentInChildren<Trail>();
 			trail.isMine = false;
-		}
+		} else {
+			finalSpeeder = FindObjectOfType<RotateForward>();
+        }
 	}
 
     void Start()
@@ -142,7 +146,7 @@ public class SnakeSync : Photon.MonoBehaviour
         Vector3 normal = Vector3.Cross(transform.GetChild(0).position, networkPosition);
         Quaternion rotation = Quaternion.AngleAxis(delay, normal);
         Debug.Log(angle);
-        Vector3 extrapolatePosition = rotation * position;
+		Vector3 extrapolatePosition = rotation * position;
         return extrapolatePosition;
     }
 
@@ -152,11 +156,13 @@ public class SnakeSync : Photon.MonoBehaviour
         {
             stream.SendNext(LocalSnake.instance.transform.GetChild(0).position);
             stream.SendNext(LocalSnake.instance.transform.GetChild(0).rotation);
+			stream.SendNext(finalSpeeder.finalSpeed);
         }
         else
         {
             Vector3 readPosition = (Vector3)stream.ReceiveNext();
             networkRotation = (Quaternion)stream.ReceiveNext();
+			float snakeSpeed = (float)stream.ReceiveNext();
             if (!firstSync)
             {
                 transform.GetChild(0).position = networkPosition;

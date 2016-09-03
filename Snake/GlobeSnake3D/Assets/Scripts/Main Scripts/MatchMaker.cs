@@ -51,32 +51,22 @@ public class MatchMaker : PunBehaviour
     {
         if (!isSnake && PhotonNetwork.connectionStateDetailed == ClientState.Joined)
         {
-            if (skin == null)
-            {
-                int skinNumber = GetSkin();
-                skin = Enum.GetName(typeof(skins), skinNumber);
-                ExitGames.Client.Photon.Hashtable style = new ExitGames.Client.Photon.Hashtable();
-                style.Add("Skin", skinNumber);
-                PhotonNetwork.player.SetCustomProperties(style);
-            }
-            Debug.Log("Your skin is: " + skin);
-            snake = PhotonNetwork.Instantiate("Remote Snake " + skin, new Vector3(), Quaternion.identity, 0);
-            Destroy(snake.transform.GetChild(0).GetChild(0).gameObject);
-            Destroy(snake.transform.GetChild(0).GetComponent<Trail>());
-            snake.name = "Snake Syncer";
+            //if (skin == null)
+            //{
+            //    int skinNumber = GetSkin();
+            //    skin = Enum.GetName(typeof(skins), skinNumber);
+            //    ExitGames.Client.Photon.Hashtable style = new ExitGames.Client.Photon.Hashtable();
+            //    style.Add("Skin", skinNumber);
+            //    PhotonNetwork.player.SetCustomProperties(style);
+            //}
+            snake = PhotonNetwork.Instantiate("Remote Snake", new Vector3(), Quaternion.identity, 0);
+           // Destroy(snake.transform.GetChild(0).GetChild(0).gameObject);
+            //Destroy(snake.transform.GetChild(0).GetComponent<Trail>());
+            //snake.name = "Snake Syncer";
             instance.mySync = snake.GetComponent<SnakeSync>();
             isSnake = true;
         }
     }
-
-    private static int GetSkin()
-    {
-        return 3;
-        int[] colors = new int[Enum.GetValues(typeof(skins)).Length];
-        foreach (var player in PhotonNetwork.otherPlayers)
-            colors[(int)player.customProperties["Skin"]]++;
-        return colors.ToList().IndexOf(colors.Min());
-    } 
 
     public static void DestroyPlayer()
     {
@@ -87,31 +77,26 @@ public class MatchMaker : PunBehaviour
         }
     }
 
-    public override void OnCreatedRoom()
-    {
-        // PhotonNetwork.InstantiateSceneObject("Globe", new Vector3(), Quaternion.identity, 0, null);
-    }
-
     void OnPhotonRandomJoinFailed()
     {
         PhotonNetwork.CreateRoom(null);
     }
 
-    public override void OnPhotonPlayerConnected(PhotonPlayer other)
-    {
-        Debug.Log("OnPhotonPlayerConnected() " + other.name); // not seen if you're the player connecting
-        if (SnakeController.instance.trail.segmentList.Count != 0 && isSnake)
-        {
-            Vector3[] positions = new Vector3[SnakeController.instance.trail.segmentList.Count];
-            Quaternion[] rotations = new Quaternion[SnakeController.instance.trail.segmentList.Count];
-            int counter = 0;
-            foreach (SegmentScript segment in SnakeController.instance.trail.segmentList)
-            {
-                positions[counter] = segment.transform.position;
-                rotations[counter] = segment.transform.rotation;
-                counter++;
-            }
-            mySync.CreateSegment(other, positions, rotations);
-        }
-    }
+    //public override void OnPhotonPlayerConnected(PhotonPlayer other)
+    //{
+    //    Debug.Log("OnPhotonPlayerConnected() " + other.name); // not seen if you're the player connecting
+    //    if (SnakeController.instance.trail.segmentList.Count != 0 && isSnake)
+    //    {
+    //        Vector3[] positions = new Vector3[SnakeController.instance.trail.segmentList.Count];
+    //        Quaternion[] rotations = new Quaternion[SnakeController.instance.trail.segmentList.Count];
+    //        int counter = 0;
+    //        foreach (SegmentScript segment in SnakeController.instance.trail.segmentList)
+    //        {
+    //            positions[counter] = segment.transform.position;
+    //            rotations[counter] = segment.transform.rotation;
+    //            counter++;
+    //        }
+    //        mySync.CreateSegment(other, positions, rotations);
+    //    }
+    //}
 }

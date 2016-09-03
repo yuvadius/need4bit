@@ -17,7 +17,7 @@ using UnityEngine.UI;
 /// </summary>
 public class MainController : MonoBehaviour {
 	public static MainController instance;
-
+	public GameObject pathPointGizmo;
     public CanvasGroup gameCanvasGroup, endCanvasGroup;
     public Text applesAteText, applesRecordText;
     public Text gameOverHeader;

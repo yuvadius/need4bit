@@ -112,7 +112,7 @@ public class Trail : Photon.MonoBehaviour
             create_segment();
             if (MatchMaker.instance.mySync != null)
             {
-                MatchMaker.instance.mySync.CreateSegment();
+               // MatchMaker.instance.mySync.CreateSegment();
             }
 			create--;
         }

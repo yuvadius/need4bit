@@ -1,0 +1,16 @@
+npm ERR! Windows_NT 6.3.9600
+npm ERR! argv "C:\\5_6\\Editor\\Data\\Tools\\nodejs\\\\node.exe" "C:\\5_6\\Editor\\Data\\Tools\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "unity-editor-home.0.1.32.tgz" "unityeditor-cloud-hub.0.0.13.tgz" "unityeditor-collab-history-0.0.27.tgz" "unityeditor-collab-toolbar.0.0.46.tgz" "--cache=./.npm" "--json"
+npm ERR! node v0.12.7
+npm ERR! npm  v3.3.3
+npm ERR! code E404
+
+npm ERR! 404 package could not be found. : unityeditor-collab-history-0.0.27.tgz
+npm ERR! 404 
+npm ERR! 404 'unityeditor-collab-history-0.0.27.tgz' is not in the npm registry.
+npm ERR! 404 You should bug the author to publish it (or use the name yourself!)
+npm ERR! 404 
+npm ERR! 404 Note that you can also install from a
+npm ERR! 404 tarball, folder, http url, or git url.
+
+npm ERR! Please include the following file with any support request:
+npm ERR!     C:\Git Hub\need4bit\npm-debug.log

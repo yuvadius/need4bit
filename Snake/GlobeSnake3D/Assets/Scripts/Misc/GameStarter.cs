@@ -6,7 +6,9 @@ public class GameStarter : MonoBehaviour {
     public MeshRenderer globeRenderer;
     public WelcomeTextFader welcomeFader;
     public TipTextFader tipFader;
+	public Extrapolator extrapolator;
     public float startTime = 5f;
+
 
     bool hasStarted = false;
     CameraController cameraController;
@@ -36,6 +38,7 @@ public class GameStarter : MonoBehaviour {
         snakeStarter.ManualStart();
         StartCoroutine(setCameraLerpHigh());
         tipFader.StartTipping();
+		extrapolator.Initialize();
     }
 
     IEnumerator rotateGlobe() {

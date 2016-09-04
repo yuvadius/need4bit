@@ -16,6 +16,16 @@ public class RotateForward : MonoBehaviour {
     public float currentSpeed;
 	public float degsPerSec;
 	float maxHeight, bonusSpeed;
+	float currentAngle;
+
+	public void CloneValues(ExtrapForward other) {
+		other.speed = speed;
+		other.currentSpeed = currentSpeed;
+		other.currentAngle = currentAngle;
+		other.degsPerSec = degsPerSec;
+		other.maxHeight = maxHeight;
+		other.bonusSpeed = bonusSpeed;
+	}
 
 	// Use this for initialization
 	public void ManualStart () {
@@ -52,7 +62,6 @@ public class RotateForward : MonoBehaviour {
         moveSpeedLock = false;
     }
 
-    float currentAngle;
 	// Update is called once per frame
 	public void myUpdate () {		
         float height = pivot.position.magnitude;
@@ -66,8 +75,8 @@ public class RotateForward : MonoBehaviour {
     public bool IsStarted() {
         return moveSpeedLock == false;
     }
-	float calcBonus(float height){
 
+	float calcBonus(float height){
 		return (bonusSpeed) * height * 0.02f / maxHeight;
 	}
 

@@ -39,20 +39,20 @@
 30 silly mapToRegistry uri https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
 31 verbose request uri https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
 32 verbose request no auth needed
-33 info attempt registry request try #1 at 3:58:42 PM
-34 verbose request id 912730b7cecfe9c7
+33 info attempt registry request try #1 at 8:49:17 PM
+34 verbose request id dcfc87ae8f759c4c
 35 http request GET https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
 36 verbose request uri https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
 37 verbose request no auth needed
-38 info attempt registry request try #1 at 3:58:42 PM
+38 info attempt registry request try #1 at 8:49:17 PM
 39 http request GET https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
 40 verbose request uri https://registry.npmjs.org/unityeditor-collab-history-0.0.27.tgz
 41 verbose request no auth needed
-42 info attempt registry request try #1 at 3:58:42 PM
+42 info attempt registry request try #1 at 8:49:17 PM
 43 http request GET https://registry.npmjs.org/unityeditor-collab-history-0.0.27.tgz
 44 verbose request uri https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
 45 verbose request no auth needed
-46 info attempt registry request try #1 at 3:58:42 PM
+46 info attempt registry request try #1 at 8:49:17 PM
 47 http request GET https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
 48 http 500 https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
 49 info retry will retry, error on last attempt: Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
@@ -65,27 +65,27 @@
 55 verbose headers   'cache-control': 'max-age=0',
 55 verbose headers   'content-length': '39',
 55 verbose headers   'accept-ranges': 'bytes',
-55 verbose headers   date: 'Fri, 02 Sep 2016 12:58:48 GMT',
+55 verbose headers   date: 'Sun, 04 Sep 2016 17:49:26 GMT',
 55 verbose headers   via: '1.1 varnish',
 55 verbose headers   age: '0',
 55 verbose headers   connection: 'keep-alive',
-55 verbose headers   'x-served-by': 'cache-lcy1120-LCY',
+55 verbose headers   'x-served-by': 'cache-lhr6327-LHR',
 55 verbose headers   'x-cache': 'MISS',
 55 verbose headers   'x-cache-hits': '0',
-55 verbose headers   'x-timer': 'S1472821127.821353,VS0,VE1163' }
+55 verbose headers   'x-timer': 'S1473011365.252443,VS0,VE1180' }
 56 silly get cb [ 404,
 56 silly get   { 'content-type': 'application/json',
 56 silly get     'cache-control': 'max-age=0',
 56 silly get     'content-length': '39',
 56 silly get     'accept-ranges': 'bytes',
-56 silly get     date: 'Fri, 02 Sep 2016 12:58:48 GMT',
+56 silly get     date: 'Sun, 04 Sep 2016 17:49:26 GMT',
 56 silly get     via: '1.1 varnish',
 56 silly get     age: '0',
 56 silly get     connection: 'keep-alive',
-56 silly get     'x-served-by': 'cache-lcy1120-LCY',
+56 silly get     'x-served-by': 'cache-lhr6327-LHR',
 56 silly get     'x-cache': 'MISS',
 56 silly get     'x-cache-hits': '0',
-56 silly get     'x-timer': 'S1472821127.821353,VS0,VE1163' } ]
+56 silly get     'x-timer': 'S1473011365.252443,VS0,VE1180' } ]
 57 silly fetchPackageMetaData Error: package could not be found. : unityeditor-collab-history-0.0.27.tgz
 57 silly fetchPackageMetaData     at makeError (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:263:12)
 57 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:251:14)
@@ -101,49 +101,49 @@
 57 silly fetchPackageMetaData   pkgid: 'unityeditor-collab-history-0.0.27.tgz',
 57 silly fetchPackageMetaData   statusCode: 404,
 57 silly fetchPackageMetaData   code: 'E404' }
-58 info attempt registry request try #2 at 3:58:53 PM
+58 info attempt registry request try #2 at 8:49:28 PM
 59 http request GET https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
-60 info attempt registry request try #2 at 3:58:53 PM
+60 info attempt registry request try #2 at 8:49:28 PM
 61 http request GET https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
-62 info attempt registry request try #2 at 3:58:53 PM
+62 info attempt registry request try #2 at 8:49:29 PM
 63 http request GET https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
-64 http 500 https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
-65 info retry will retry, error on last attempt: Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
-66 http 500 https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
-67 info retry will retry, error on last attempt: Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
-68 http 500 https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
-69 info retry will retry, error on last attempt: Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
-70 info attempt registry request try #3 at 3:59:54 PM
-71 http request GET https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
-72 info attempt registry request try #3 at 3:59:55 PM
-73 http request GET https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
-74 info attempt registry request try #3 at 3:59:55 PM
-75 http request GET https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
-76 http 500 https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
+64 http 500 https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
+65 info retry will retry, error on last attempt: Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
+66 http 500 https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
+67 info retry will retry, error on last attempt: Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
+68 http 500 https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
+69 info retry will retry, error on last attempt: Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
+70 info attempt registry request try #3 at 8:50:29 PM
+71 http request GET https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
+72 info attempt registry request try #3 at 8:50:30 PM
+73 http request GET https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
+74 info attempt registry request try #3 at 8:50:30 PM
+75 http request GET https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
+76 http 500 https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
 77 verbose headers { 'content-type': 'application/json',
 77 verbose headers   'cache-control': 'max-age=0',
 77 verbose headers   'content-length': '71',
 77 verbose headers   'accept-ranges': 'bytes',
-77 verbose headers   date: 'Fri, 02 Sep 2016 13:00:00 GMT',
+77 verbose headers   date: 'Sun, 04 Sep 2016 17:50:37 GMT',
 77 verbose headers   via: '1.1 varnish',
 77 verbose headers   connection: 'keep-alive',
-77 verbose headers   'x-served-by': 'cache-lhr6343-LHR',
+77 verbose headers   'x-served-by': 'cache-lcy1125-LCY',
 77 verbose headers   'x-cache': 'MISS',
 77 verbose headers   'x-cache-hits': '0',
-77 verbose headers   'x-timer': 'S1472821200.344017,VS0,VE322' }
+77 verbose headers   'x-timer': 'S1473011436.915102,VS0,VE1063' }
 78 silly get cb [ 500,
 78 silly get   { 'content-type': 'application/json',
 78 silly get     'cache-control': 'max-age=0',
 78 silly get     'content-length': '71',
 78 silly get     'accept-ranges': 'bytes',
-78 silly get     date: 'Fri, 02 Sep 2016 13:00:00 GMT',
+78 silly get     date: 'Sun, 04 Sep 2016 17:50:37 GMT',
 78 silly get     via: '1.1 varnish',
 78 silly get     connection: 'keep-alive',
-78 silly get     'x-served-by': 'cache-lhr6343-LHR',
+78 silly get     'x-served-by': 'cache-lcy1125-LCY',
 78 silly get     'x-cache': 'MISS',
 78 silly get     'x-cache-hits': '0',
-78 silly get     'x-timer': 'S1472821200.344017,VS0,VE322' } ]
-79 silly fetchPackageMetaData Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
+78 silly get     'x-timer': 'S1473011436.915102,VS0,VE1063' } ]
+79 silly fetchPackageMetaData Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
 79 silly fetchPackageMetaData     at makeError (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:263:12)
 79 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:241:14)
 79 silly fetchPackageMetaData     at Request._callback (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:171:14)
@@ -154,35 +154,35 @@
 79 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\request\request.js:1019:12)
 79 silly fetchPackageMetaData     at IncomingMessage.emit (events.js:129:20)
 79 silly fetchPackageMetaData     at _stream_readable.js:908:16
-79 silly fetchPackageMetaData  error for unityeditor-cloud-hub.0.0.13.tgz { [Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz]
-79 silly fetchPackageMetaData   pkgid: 'unityeditor-cloud-hub.0.0.13.tgz',
+79 silly fetchPackageMetaData  error for unity-editor-home.0.1.32.tgz { [Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.1.32.tgz]
+79 silly fetchPackageMetaData   pkgid: 'unity-editor-home.0.1.32.tgz',
 79 silly fetchPackageMetaData   statusCode: 500,
 79 silly fetchPackageMetaData   code: 'E500' }
-80 http 500 https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
+80 http 500 https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
 81 verbose headers { 'content-type': 'application/json',
 81 verbose headers   'cache-control': 'max-age=0',
 81 verbose headers   'content-length': '71',
 81 verbose headers   'accept-ranges': 'bytes',
-81 verbose headers   date: 'Fri, 02 Sep 2016 13:00:01 GMT',
+81 verbose headers   date: 'Sun, 04 Sep 2016 17:50:38 GMT',
 81 verbose headers   via: '1.1 varnish',
 81 verbose headers   connection: 'keep-alive',
-81 verbose headers   'x-served-by': 'cache-lhr6348-LHR',
+81 verbose headers   'x-served-by': 'cache-lcy1125-LCY',
 81 verbose headers   'x-cache': 'MISS',
 81 verbose headers   'x-cache-hits': '0',
-81 verbose headers   'x-timer': 'S1472821200.488725,VS0,VE881' }
+81 verbose headers   'x-timer': 'S1473011437.959492,VS0,VE391' }
 82 silly get cb [ 500,
 82 silly get   { 'content-type': 'application/json',
 82 silly get     'cache-control': 'max-age=0',
 82 silly get     'content-length': '71',
 82 silly get     'accept-ranges': 'bytes',
-82 silly get     date: 'Fri, 02 Sep 2016 13:00:01 GMT',
+82 silly get     date: 'Sun, 04 Sep 2016 17:50:38 GMT',
 82 silly get     via: '1.1 varnish',
 82 silly get     connection: 'keep-alive',
-82 silly get     'x-served-by': 'cache-lhr6348-LHR',
+82 silly get     'x-served-by': 'cache-lcy1125-LCY',
 82 silly get     'x-cache': 'MISS',
 82 silly get     'x-cache-hits': '0',
-82 silly get     'x-timer': 'S1472821200.488725,VS0,VE881' } ]
-83 silly fetchPackageMetaData Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.1.32.tgz
+82 silly get     'x-timer': 'S1473011437.959492,VS0,VE391' } ]
+83 silly fetchPackageMetaData Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
 83 silly fetchPackageMetaData     at makeError (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:263:12)
 83 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:241:14)
 83 silly fetchPackageMetaData     at Request._callback (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:171:14)
@@ -193,35 +193,35 @@
 83 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\request\request.js:1019:12)
 83 silly fetchPackageMetaData     at IncomingMessage.emit (events.js:129:20)
 83 silly fetchPackageMetaData     at _stream_readable.js:908:16
-83 silly fetchPackageMetaData  error for unity-editor-home.0.1.32.tgz { [Error: Registry returned 500 for GET on https://registry.npmjs.org/unity-editor-home.0.1.32.tgz]
-83 silly fetchPackageMetaData   pkgid: 'unity-editor-home.0.1.32.tgz',
+83 silly fetchPackageMetaData  error for unityeditor-collab-toolbar.0.0.46.tgz { [Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz]
+83 silly fetchPackageMetaData   pkgid: 'unityeditor-collab-toolbar.0.0.46.tgz',
 83 silly fetchPackageMetaData   statusCode: 500,
 83 silly fetchPackageMetaData   code: 'E500' }
-84 http 500 https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
+84 http 500 https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
 85 verbose headers { 'content-type': 'application/json',
 85 verbose headers   'cache-control': 'max-age=0',
 85 verbose headers   'content-length': '71',
 85 verbose headers   'accept-ranges': 'bytes',
-85 verbose headers   date: 'Fri, 02 Sep 2016 13:00:01 GMT',
+85 verbose headers   date: 'Sun, 04 Sep 2016 17:50:38 GMT',
 85 verbose headers   via: '1.1 varnish',
 85 verbose headers   connection: 'keep-alive',
-85 verbose headers   'x-served-by': 'cache-lhr6343-LHR',
+85 verbose headers   'x-served-by': 'cache-lcy1127-LCY',
 85 verbose headers   'x-cache': 'MISS',
 85 verbose headers   'x-cache-hits': '0',
-85 verbose headers   'x-timer': 'S1472821200.396229,VS0,VE1082' }
+85 verbose headers   'x-timer': 'S1473011437.618133,VS0,VE1141' }
 86 silly get cb [ 500,
 86 silly get   { 'content-type': 'application/json',
 86 silly get     'cache-control': 'max-age=0',
 86 silly get     'content-length': '71',
 86 silly get     'accept-ranges': 'bytes',
-86 silly get     date: 'Fri, 02 Sep 2016 13:00:01 GMT',
+86 silly get     date: 'Sun, 04 Sep 2016 17:50:38 GMT',
 86 silly get     via: '1.1 varnish',
 86 silly get     connection: 'keep-alive',
-86 silly get     'x-served-by': 'cache-lhr6343-LHR',
+86 silly get     'x-served-by': 'cache-lcy1127-LCY',
 86 silly get     'x-cache': 'MISS',
 86 silly get     'x-cache-hits': '0',
-86 silly get     'x-timer': 'S1472821200.396229,VS0,VE1082' } ]
-87 silly fetchPackageMetaData Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz
+86 silly get     'x-timer': 'S1473011437.618133,VS0,VE1141' } ]
+87 silly fetchPackageMetaData Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz
 87 silly fetchPackageMetaData     at makeError (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:263:12)
 87 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:241:14)
 87 silly fetchPackageMetaData     at Request._callback (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:171:14)
@@ -232,8 +232,8 @@
 87 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (C:\5_6\Editor\Data\Tools\nodejs\node_modules\npm\node_modules\request\request.js:1019:12)
 87 silly fetchPackageMetaData     at IncomingMessage.emit (events.js:129:20)
 87 silly fetchPackageMetaData     at _stream_readable.js:908:16
-87 silly fetchPackageMetaData  error for unityeditor-collab-toolbar.0.0.46.tgz { [Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-collab-toolbar.0.0.46.tgz]
-87 silly fetchPackageMetaData   pkgid: 'unityeditor-collab-toolbar.0.0.46.tgz',
+87 silly fetchPackageMetaData  error for unityeditor-cloud-hub.0.0.13.tgz { [Error: Registry returned 500 for GET on https://registry.npmjs.org/unityeditor-cloud-hub.0.0.13.tgz]
+87 silly fetchPackageMetaData   pkgid: 'unityeditor-cloud-hub.0.0.13.tgz',
 87 silly fetchPackageMetaData   statusCode: 500,
 87 silly fetchPackageMetaData   code: 'E500' }
 88 silly rollbackFailedOptional Starting

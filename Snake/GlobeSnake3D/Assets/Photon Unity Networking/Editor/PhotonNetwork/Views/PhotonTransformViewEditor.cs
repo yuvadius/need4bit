@@ -295,8 +295,6 @@ public class PhotonTransformViewEditor : Editor
             case PhotonTransformViewPositionModel.InterpolateOptions.Lerp:
                 EditorGUI.PropertyField(propertyRect, serializedObject.FindProperty("m_PositionModel.InterpolateLerpSpeed"), new GUIContent("Lerp Speed"));
                 propertyRect.y += EDITOR_LINE_HEIGHT;
-                EditorGUI.PropertyField(propertyRect, serializedObject.FindProperty("m_PositionModel.Slerp"), new GUIContent("Slerp"));
-                propertyRect.y += EDITOR_LINE_HEIGHT;
                 break;
 
             /*case PhotonTransformViewPositionModel.InterpolateOptions.MoveTowardsComplex:

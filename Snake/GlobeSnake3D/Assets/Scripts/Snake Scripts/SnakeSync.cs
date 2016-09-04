@@ -7,27 +7,18 @@ public class SnakeSync : Photon.MonoBehaviour
     Trail trail;
     public float firstSegmentDistance = 0.28f; float prev1;
     public float segmentDistance = 0.19f; float prev2;
-    public RemoteFowardRotate remoteDevice;
 
-	public RotateForward finalSpeeder;
-	public Transform normal;
-
-    public float positionInterpolationOffset;
+    public Transform snake;
+    public Transform remotePivot;
+    Quaternion networkRotation;
     public float rotationInterpolationOffset;
-    public bool lerpRotation;
     public bool useExtrapolation;
-    public float delay;
-    private bool firstSync = false;
-    Queue<Vector3> oldNetworkPositions = new Queue<Vector3>();
-    public int extrapolateNumberOfStoredPositions;
-    float networkSpeed;
+    GameObject rotationDevice;
+    public Transform remoteRotationDevice;
 
     private float lastSynchronizationTime = 0f;
     private float syncDelay = 0f;
     private float syncTime = 0f;
-    private Vector3 networkPosition = Vector3.zero;
-    private Vector3 extrapolatedNetworkPosition = Vector3.zero;
-    private Quaternion networkRotation = Quaternion.identity;
 
     void Awake()
     {
@@ -37,14 +28,17 @@ public class SnakeSync : Photon.MonoBehaviour
 		{
 			trail = GetComponentInChildren<Trail>();
 			trail.isMine = false;
-		} else {
-			finalSpeeder = FindObjectOfType<RotateForward>();
-        }
+		}
 	}
 
     void Start()
     {
-        if (!photonView.isMine)
+        if (photonView.isMine)
+        {
+            //gameObject.AddComponent<PhotonLagSimulationGui>();
+            rotationDevice = GameObject.FindGameObjectWithTag("RotationDevice");
+        }
+        else
         {
             if (trail.hasFirst == false)
             {
@@ -56,34 +50,18 @@ public class SnakeSync : Photon.MonoBehaviour
 
     void Update()
     {
-        if (photonView.isMine)
+        if (!photonView.isMine)
         {
-            transform.GetChild(0).position = LocalSnake.instance.transform.GetChild(0).position;
-            transform.GetChild(0).rotation = LocalSnake.instance.transform.GetChild(0).rotation;
+            snake.position = remotePivot.position;
+            snake.rotation = remotePivot.rotation;
         }
-        /*else if (!remoteDevice)
-        {
-            syncTime += Time.deltaTime;
-            transform.GetChild(0).position = Vector3.Slerp(transform.GetChild(0).position, networkPosition, 0.1f);
-            transform.GetChild(0).rotation = Quaternion.Slerp(transform.GetChild(0).rotation, networkRotation, syncTime / syncDelay);
-        }*/
     }
 
     void FixedUpdate()
     {
         if (!photonView.isMine)
         {
-            if (!remoteDevice && firstSync)
-            {
-                Vector3 position = (useExtrapolation) ? extrapolatedNetworkPosition : networkPosition;
-                transform.GetChild(0).position = Vector3.Slerp(transform.GetChild(0).position, position, positionInterpolationOffset);
-                if (lerpRotation)
-                    transform.GetChild(0).rotation = Quaternion.Lerp(transform.GetChild(0).rotation, networkRotation, rotationInterpolationOffset);
-                else
-                    transform.GetChild(0).rotation = Quaternion.Slerp(transform.GetChild(0).rotation, networkRotation, rotationInterpolationOffset);
-
-				FlatenRotation();
-            }
+            remoteRotationDevice.rotation = Quaternion.Lerp(remoteRotationDevice.rotation, networkRotation, rotationInterpolationOffset);
             if (firstSegmentDistance != prev1)
             {
                 prev1 = firstSegmentDistance;
@@ -97,14 +75,6 @@ public class SnakeSync : Photon.MonoBehaviour
             trail.myUpdate();
         }
     }
-
-	private void FlatenRotation() {
-		Vector3 extraposition = transform.GetChild(0).position;
-		Vector3 norm = Vector3.Cross(normal.localPosition, extraposition);
-		Vector3 lookAt = extraposition + norm;
-		Vector3 up = Vector3.Cross(lookAt - extraposition, normal.localPosition) + extraposition;
-        transform.GetChild(0).LookAt(lookAt, up);
-	}
 
     [PunRPC]
     public void CreateSegment()
@@ -129,89 +99,43 @@ public class SnakeSync : Photon.MonoBehaviour
             photonView.RPC("CreateSegment", other, positions, rotations);
     }
 
-    Vector3 GetOldestStoredNetworkPosition()
-    {
-        Vector3 oldPosition = networkPosition;
-        if (oldNetworkPositions.Count > 0)
-        {
-            oldPosition = oldNetworkPositions.Peek();
-        }
-        return oldPosition;
-    }
-
     /// <summary>
-    /// Calculates an estimated position based on the last synchronized position,
-    /// the time when the last position was received and the movement speed of the object
+    /// Calculates an estimated rotation based on the last synchronized rotation,
+    /// the time when the last rotation was received and the movement speed of the object
     /// </summary>
-    /// <param name="position">The received position from photon</param>
-    /// <returns>Estimated position of the remote object</returns>
-    public Vector3 GetExtrapolatedPositionOffset(Vector3 position)
+    /// <param name="rotation">The received rotation from photon</param>
+    /// <returns>Estimated rotation of the remote object</returns>
+    public Quaternion GetExtrapolatedRotationOffset(Quaternion rotation)
     {
         syncDelay = Time.time - lastSynchronizationTime;
         //syncDelay += (float)PhotonNetwork.GetPing() / 1000f;
         lastSynchronizationTime = Time.time;
+        return Quaternion.identity;
 
-        float extrapolateAngle = Vector3.Angle(networkPosition, GetOldestStoredNetworkPosition());
-        extrapolateAngle = extrapolateAngle * (1 / syncDelay);
-
-        float angle = Vector3.Angle(transform.GetChild(0).position, networkPosition);
-        //Vector3 normal = Vector3.Cross(transform.GetChild(0).position, networkPosition);
-	
-		Quaternion rotation = Quaternion.AngleAxis(GetExtrapolatedAngle(), normal.localPosition);
-        Debug.Log(angle);
-		Vector3 extrapolatePosition = rotation * position;
-        return extrapolatePosition;
+        /*Quaternion rot = q2 * Quaternion.Inverse(q1);
+        double dt = (t3 - t1) / (t2 - t1);
+        float ang = 0.0f;
+        Vector3 axis = Vector3.zero;
+        rot.ToAngleAxis(out ang, out axis);
+        if (ang > 180)
+            ang -= 360;
+        ang = ang * (float)dt % 360;
+        q3 = Quaternion.AngleAxis(ang, axis) * q1;*/
     }
-
-    public float GetExtrapolatedAngle()
-    {
-		float val = ((float)PhotonNetwork.GetPing() / 1000f) * networkSpeed * delay;
-		print("Val: " + val + " Lagg: " + syncDelay + " speed: " + networkSpeed);
-		return val;
-	}
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
-            stream.SendNext(LocalSnake.instance.transform.GetChild(0).position);
-            stream.SendNext(LocalSnake.instance.transform.GetChild(0).rotation);
-			stream.SendNext(finalSpeeder.degsPerSec);
+            stream.SendNext(rotationDevice.transform.rotation);
         }
         else
         {
-            Vector3 readPosition = (Vector3)stream.ReceiveNext();
             networkRotation = (Quaternion)stream.ReceiveNext();
-			networkSpeed = (float)stream.ReceiveNext();
-            if (!firstSync)
-            {
-                transform.GetChild(0).position = networkPosition;
-                transform.GetChild(0).rotation = networkRotation;
-                firstSync = true;
-            }
-
             if (useExtrapolation)
             {
-                if (oldNetworkPositions.Count == 0)
-                {
-                    // if we don't have old positions yet, this is the very first update this client reads. let's use this as current AND old position.
-                    networkPosition = readPosition;
-                }
-                // the previously received position becomes the old(er) one and queued. the new one is the m_NetworkPosition
-                oldNetworkPositions.Enqueue(networkPosition);
-                networkPosition = readPosition;
-                // reduce items in queue to defined number of stored positions.
-                while (oldNetworkPositions.Count > extrapolateNumberOfStoredPositions)
-                {
-                    oldNetworkPositions.Dequeue();
-                }
-                extrapolatedNetworkPosition = GetExtrapolatedPositionOffset(networkPosition);
+                networkRotation = GetExtrapolatedRotationOffset(networkRotation);
             }
-            else
-                networkPosition = readPosition;
-
-            if (remoteDevice)
-                remoteDevice.ManageDestination(networkPosition);
         }
     }
 }

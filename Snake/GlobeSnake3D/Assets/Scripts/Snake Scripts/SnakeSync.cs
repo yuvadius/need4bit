@@ -47,14 +47,18 @@ public class SnakeSync : Photon.MonoBehaviour {
 	public Transform following;
 	public GameObject pathPointGizmo;
 	public Extrapolator extrapolator;
+	public GameObject rotationDeviceEmulator;
 	public bool isMine;
+
+	RotationDeviceEmulator emulator;
 
 	void Awake() {
 		isMine = photonView.isMine;
-		if( isMine == true) {
+		if(isMine == true) {
 			following = GameObject.FindGameObjectWithTag("GameController").GetComponent<SnakeController>().trail.transform;
 		} else {
 			pathPointGizmo = GameObject.FindGameObjectWithTag("GameController").GetComponent<MainController>().pathPointGizmo;
+			emulator = (Instantiate(rotationDeviceEmulator, transform) as GameObject).GetComponent< RotationDeviceEmulator>();
 		}
 
 		extrapolator = FindObjectOfType<Extrapolator>();
@@ -65,9 +69,11 @@ public class SnakeSync : Photon.MonoBehaviour {
 			stream.SendNext(new CustomPayload(following.position, extrapolator.followingCenter.rotation, extrapolator.followingForwardRotator.degsPerSec));
 		} else {
 			CustomPayload payload = (CustomPayload)stream.ReceiveNext();
-			GameObject newPoint = Instantiate(pathPointGizmo, payload.pos, Quaternion.identity) as GameObject;
-			newPoint.SetActive(true);
-			extrapolator.ExtrapolateFrom(payload);
+			//GameObject newPoint = Instantiate(pathPointGizmo, payload.pos, Quaternion.identity) as GameObject;
+			//newPoint.SetActive(true);
+			Vector3 extrapPoint, emulationPoint;
+			Quaternion quat = extrapolator.ExtrapolateFrom(emulator.emulationOffset, payload, out extrapPoint, out emulationPoint);
+			emulator.SetNextRot(quat, extrapPoint, emulationPoint);
 		}
 	}
 

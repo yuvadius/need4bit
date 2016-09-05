@@ -15,17 +15,22 @@ public class Extrapolator : MonoBehaviour {
 	public ExtrapForward forwardRotator;
 	public ExtrapSide sideRotator;
 
-	public GameObject extrapGizmo;
+	
+
+	public float height;
 
 	public void Initialize() {
 		pivot.localPosition = pivot.localPosition.normalized * followingPivot.position.magnitude;
+		height = pivot.position.magnitude;
 	}
 
-	public void ExtrapolateFrom(CustomPayload payload) {
+	public Quaternion ExtrapolateFrom(float emulatorOffset, CustomPayload payload, out Vector3 extrapPoint, out Vector3 emulationPoint) {
 		transform.rotation = payload.quat;
 		forwardRotator.degsPerSec = payload.degsPerSecond;
 
 		double deltaTime = PhotonNetwork.time - payload.time;
+
+		Vector3 currentPos = pivot.position;
 
 		int frames = Mathf.RoundToInt(((float)deltaTime / Time.fixedDeltaTime));
 
@@ -33,25 +38,19 @@ public class Extrapolator : MonoBehaviour {
 			forwardRotator.myUpdate();
 		}
 
-		GameObject newGizmo = Instantiate(extrapGizmo, pivot.position, Quaternion.identity) as GameObject;
-		newGizmo.SetActive(true);
-	}
+		extrapPoint = pivot.position;
 
-	public Vector3 GetExtrapolatedPosition(int frames) {
+		float distancePerFrame = (currentPos - pivot.position).magnitude / frames;
 
-		transform.rotation = followingCenter.rotation;
+		int emulationLagFrames = Mathf.RoundToInt(emulatorOffset / distancePerFrame);
 
-        followingForwardRotator.CloneValues(forwardRotator);
-		followingSideRotatore.CloneValues(sideRotator);
-
-		for(int i = 0; i < frames; ++i) {
+		for(int i = 0; i < emulationLagFrames; ++i) {
 			forwardRotator.myUpdate();
-			//sideRotator.myUpdate();
 		}
 
-		GameObject newGizmo = Instantiate(extrapGizmo, pivot.position, Quaternion.identity) as GameObject;
-		newGizmo.SetActive(true);
-		return pivot.position;
+		emulationPoint = pivot.position;
+
+		return transform.rotation;
 	}
 
 }

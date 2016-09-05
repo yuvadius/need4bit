@@ -18,7 +18,8 @@ using ExitGames.Client.Photon;
 /// </summary>
 public class MainController : MonoBehaviour {
 	public static MainController instance;
-	public GameObject pathPointGizmo, extrapPointGizmo;
+	public GameObject pathPointGizmo, extrapPointGizmo, emulationPointGizmo, finalPointGizmo;
+	public Transform gizmoHolder;
     public CanvasGroup gameCanvasGroup, endCanvasGroup;
     public Text applesAteText, applesRecordText;
     public Text gameOverHeader;

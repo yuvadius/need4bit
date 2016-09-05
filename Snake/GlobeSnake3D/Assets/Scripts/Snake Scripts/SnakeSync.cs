@@ -73,7 +73,7 @@ public class SnakeSync : Photon.MonoBehaviour {
 			//newPoint.SetActive(true);
 			Vector3 extrapPoint, emulationPoint;
 			Quaternion quat = extrapolator.ExtrapolateFrom(emulator.emulationOffset, payload, out extrapPoint, out emulationPoint);
-			emulator.SetNextRot(quat, extrapPoint, emulationPoint);
+			emulator.Emulate(quat, payload.pos, extrapPoint, emulationPoint);
 		}
 	}
 

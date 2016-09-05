@@ -77,8 +77,7 @@ public class SnakeSync : Photon.MonoBehaviour {
 			stream.SendNext(new CustomPayload(following.position, extrapolator.followingCenter.rotation, extrapolator.followingForwardRotator.degsPerSec));
 		} else {
 			CustomPayload payload = (CustomPayload)stream.ReceiveNext();
-			//GameObject newPoint = Instantiate(pathPointGizmo, payload.pos, Quaternion.identity) as GameObject;
-			//newPoint.SetActive(true);
+
 			Vector3 extrapPoint, emulationPoint;
 			Quaternion quat = extrapolator.ExtrapolateFrom(emulator.emulationOffset, payload, out extrapPoint, out emulationPoint);
 			emulator.Emulate(quat, payload.pos, extrapPoint, emulationPoint);

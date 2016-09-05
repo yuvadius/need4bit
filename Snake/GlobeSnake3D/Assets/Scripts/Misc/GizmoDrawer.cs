@@ -7,6 +7,7 @@ public class GizmoDrawer : MonoBehaviour {
 	public float dieTime;
 
 	IEnumerator Start() {
+		transform.LookAt(Vector3.zero);
 		yield return new WaitForSeconds(dieTime);
 		Destroy(gameObject);
 	}

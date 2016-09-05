@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using ExitGames.Client.Photon;
 
 /// <summary>
 /// 
@@ -35,8 +36,8 @@ public class MainController : MonoBehaviour {
 			instance = this;
 		}
         Cursor.visible = false;
-
-	}
+		PhotonPeer.RegisterType(typeof(CustomPayload), CustomPayload.code, CustomPayload.Serialize, CustomPayload.Deserialize);
+    }
 
     void Start() {
         gameCanvasGroup.alpha = 1;

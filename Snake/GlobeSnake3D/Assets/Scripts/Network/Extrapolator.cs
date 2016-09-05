@@ -19,21 +19,28 @@ public class Extrapolator : MonoBehaviour {
 
 	public void Initialize() {
 		pivot.localPosition = pivot.localPosition.normalized * followingPivot.position.magnitude;
-		StartCoroutine(extrapolateCo());
 	}
 
-	IEnumerator extrapolateCo() {
-		while(true) {
-			GetExtrapolatedPosition(frames);
-			yield return null;
+	public void ExtrapolateFrom(CustomPayload payload) {
+		transform.rotation = payload.quat;
+		forwardRotator.degsPerSec = payload.degsPerSecond;
+
+		double deltaTime = PhotonNetwork.time - payload.time;
+
+		int frames = Mathf.RoundToInt(((float)deltaTime / Time.fixedDeltaTime));
+
+		for(int i=0; i< frames; ++i) {
+			forwardRotator.myUpdate();
 		}
+
+		GameObject newGizmo = Instantiate(extrapGizmo, pivot.position, Quaternion.identity) as GameObject;
+		newGizmo.SetActive(true);
 	}
 
 	public Vector3 GetExtrapolatedPosition(int frames) {
 
 		transform.rotation = followingCenter.rotation;
 
-		forwardRotator.SetHeight(pivot.position.magnitude);
         followingForwardRotator.CloneValues(forwardRotator);
 		followingSideRotatore.CloneValues(sideRotator);
 

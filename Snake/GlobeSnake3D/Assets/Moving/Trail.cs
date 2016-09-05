@@ -34,7 +34,6 @@ public class Trail : Photon.MonoBehaviour
 
     public LinkedList<TrailPoint> trailPointList = new LinkedList<TrailPoint>();
 
-	public bool isMine = true;
 	public bool hasFirst = false;
     float trailSize;
     int num = 0;
@@ -45,12 +44,11 @@ public class Trail : Photon.MonoBehaviour
 	int numOfAir;
 	int numOfGround;
 
-	public float getRatio(){ return (float)numOfGround / (float)(numOfGround + numOfAir); }
     void Start()
     {
 		flyingDevice = Flying.instance;
 
-		if ((isMine == true && hasFirst == false) || isMine == false)
+		if (hasFirst == false)
 		{
 			SetFirst();
         }
@@ -77,10 +75,6 @@ public class Trail : Photon.MonoBehaviour
 	
     public void myUpdate()
     {
-		if( isMine == false && hasFirst == false)
-		{
-			return;
-		}
         float delta = 0;
         delta = (transform.position - trailPointList.First.Value.pos).magnitude;
         Vector3 newPos = transform.position;
@@ -102,7 +96,6 @@ public class Trail : Photon.MonoBehaviour
         LinkedListNode<SegmentScript> runner = segmentList.Last; //doesn't matter from which side we start, because we move each at same rate.
         while (runner != null)
         {
-
             runner.Value.move(delta);
 			runner = runner.Previous;
         }
@@ -112,7 +105,7 @@ public class Trail : Photon.MonoBehaviour
             create_segment();
             if (MatchMaker.instance.mySync != null)
             {
-               // MatchMaker.instance.mySync.CreateSegment();
+               MatchMaker.instance.mySync.CreateSegment();
             }
 			create--;
         }
@@ -129,19 +122,6 @@ public class Trail : Photon.MonoBehaviour
         newSegment.set_first(trailPointList.First, tailLength);
         tailLength += trailSize;
     }
-
-    /*public void create_segment(Vector3 position, Quaternion rotation)
-    {
-        SegmentScript newSegment = (Instantiate(segment) as GameObject).GetComponent<SegmentScript>();
-        newSegment.transform.position = position;
-        newSegment.transform.rotation = rotation;
-
-        newSegment.transform.SetParent(transform.parent);
-        newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
-        segmentList.AddFirst(newSegment);
-        newSegment.set_first(trailPointList.First, tailLength);
-        tailLength += trailSize;
-    }*/
 
     public void set_first_segment_distance(float _firstSegmentDistance)
     {

@@ -51,18 +51,7 @@ public class MatchMaker : PunBehaviour
     {
         if (!isSnake && PhotonNetwork.connectionStateDetailed == ClientState.Joined)
         {
-            //if (skin == null)
-            //{
-            //    int skinNumber = GetSkin();
-            //    skin = Enum.GetName(typeof(skins), skinNumber);
-            //    ExitGames.Client.Photon.Hashtable style = new ExitGames.Client.Photon.Hashtable();
-            //    style.Add("Skin", skinNumber);
-            //    PhotonNetwork.player.SetCustomProperties(style);
-            //}
             snake = PhotonNetwork.Instantiate("Remote Snake", new Vector3(), Quaternion.identity, 0);
-           // Destroy(snake.transform.GetChild(0).GetChild(0).gameObject);
-            //Destroy(snake.transform.GetChild(0).GetComponent<Trail>());
-            //snake.name = "Snake Syncer";
             instance.mySync = snake.GetComponent<SnakeSync>();
             isSnake = true;
         }

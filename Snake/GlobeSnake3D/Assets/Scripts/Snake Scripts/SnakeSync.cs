@@ -42,7 +42,15 @@ public class CustomPayload {
 }
 
 public class SnakeSync : Photon.MonoBehaviour {
-	//[PunRPC] 
+
+	[PunRPC] 
+	public void CreateSegment() {
+		if(!isMine) {
+			emulator.trail.AddSegment();
+		} else {
+			photonView.RPC("CreateSegment", PhotonTargets.Others);
+		}
+	}
 
 	public Transform following;
 	public GameObject pathPointGizmo;

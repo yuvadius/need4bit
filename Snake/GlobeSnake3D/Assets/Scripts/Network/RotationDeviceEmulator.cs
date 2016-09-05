@@ -20,6 +20,7 @@ public class RotationDeviceEmulator : MonoBehaviour {
 
 	public GameObject extrapGizmo, pathGizmo, emulationGizmo, finalGizmo;
 	public Transform gizmoHolder;
+	public EmulationTrail trail;
 
 	public bool drawGizmos = false;
 
@@ -49,6 +50,8 @@ public class RotationDeviceEmulator : MonoBehaviour {
 
 			if(drawGizmos)
 				CreateNewGizmoSet();
+
+			trail.myUpdate();
         }
 
 	}

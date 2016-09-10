@@ -8,13 +8,17 @@ public class SnakeSync : Photon.MonoBehaviour
     public float firstSegmentDistance = 0.28f; float prev1;
     public float segmentDistance = 0.19f; float prev2;
 
+    public float delay;
     public Transform snake;
     public Transform remotePivot;
     Quaternion networkRotation;
+    Quaternion extrapolateRotation;
     public float rotationInterpolationOffset;
     public bool useExtrapolation;
     GameObject rotationDevice;
     public Transform remoteRotationDevice;
+    private RotateForward finalSpeeder;
+    public Transform normal;
 
     private float lastSynchronizationTime = 0f;
     private float syncDelay = 0f;
@@ -24,21 +28,22 @@ public class SnakeSync : Photon.MonoBehaviour
     {
         DontDestroyOnLoad(transform.gameObject);
 
-		if (!photonView.isMine)
+		if (photonView.isMine)
 		{
-			trail = GetComponentInChildren<Trail>();
-			trail.isMine = false;
+            //gameObject.AddComponent<PhotonLagSimulationGui>();
+            rotationDevice = GameObject.FindGameObjectWithTag("RotationDevice");
+            finalSpeeder = FindObjectOfType<RotateForward>();
 		}
+        else
+        {
+            trail = GetComponentInChildren<Trail>();
+            trail.isMine = false;
+        }
 	}
 
     void Start()
     {
-        if (photonView.isMine)
-        {
-            //gameObject.AddComponent<PhotonLagSimulationGui>();
-            rotationDevice = GameObject.FindGameObjectWithTag("RotationDevice");
-        }
-        else
+        if (!photonView.isMine)
         {
             if (trail.hasFirst == false)
             {
@@ -61,7 +66,8 @@ public class SnakeSync : Photon.MonoBehaviour
     {
         if (!photonView.isMine)
         {
-            remoteRotationDevice.rotation = Quaternion.Lerp(remoteRotationDevice.rotation, networkRotation, rotationInterpolationOffset);
+            Quaternion rotation = useExtrapolation ? extrapolateRotation : networkRotation;
+            remoteRotationDevice.rotation = Quaternion.Lerp(remoteRotationDevice.rotation, rotation, rotationInterpolationOffset);
             if (firstSegmentDistance != prev1)
             {
                 prev1 = firstSegmentDistance;
@@ -105,22 +111,19 @@ public class SnakeSync : Photon.MonoBehaviour
     /// </summary>
     /// <param name="rotation">The received rotation from photon</param>
     /// <returns>Estimated rotation of the remote object</returns>
-    public Quaternion GetExtrapolatedRotationOffset(Quaternion rotation)
+    public Quaternion GetExtrapolatedRotationOffset(Quaternion q1, Quaternion q2, float speed)
+    {
+        //Quaternion rotation = Quaternion.AngleAxis(GetExtrapolatedAngle(speed), normal.localPosition);
+        //return q1 * rotation;
+        return q2;
+
+    public float GetExtrapolatedAngle(float speed)
     {
         syncDelay = Time.time - lastSynchronizationTime;
         //syncDelay += (float)PhotonNetwork.GetPing() / 1000f;
         lastSynchronizationTime = Time.time;
-        return Quaternion.identity;
-
-        /*Quaternion rot = q2 * Quaternion.Inverse(q1);
-        double dt = (t3 - t1) / (t2 - t1);
-        float ang = 0.0f;
-        Vector3 axis = Vector3.zero;
-        rot.ToAngleAxis(out ang, out axis);
-        if (ang > 180)
-            ang -= 360;
-        ang = ang * (float)dt % 360;
-        q3 = Quaternion.AngleAxis(ang, axis) * q1;*/
+        Debug.Log("Speed: " + speed + ", Ping: " + (float)PhotonNetwork.GetPing());
+        return speed * ((float)PhotonNetwork.GetPing() / 1000f) * delay;
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -128,14 +131,15 @@ public class SnakeSync : Photon.MonoBehaviour
         if (stream.isWriting)
         {
             stream.SendNext(rotationDevice.transform.rotation);
+            stream.SendNext(finalSpeeder.degsPerSec);
         }
         else
         {
-            networkRotation = (Quaternion)stream.ReceiveNext();
+            Quaternion rotation = (Quaternion)stream.ReceiveNext();
+            float speed = (float)stream.ReceiveNext();
             if (useExtrapolation)
-            {
-                networkRotation = GetExtrapolatedRotationOffset(networkRotation);
-            }
+                extrapolateRotation = GetExtrapolatedRotationOffset(networkRotation, rotation, speed);
+            networkRotation = rotation;
         }
     }
 }

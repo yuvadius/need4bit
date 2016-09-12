@@ -116,6 +116,7 @@ public class SnakeSync : Photon.MonoBehaviour
         //Quaternion rotation = Quaternion.AngleAxis(GetExtrapolatedAngle(speed), normal.localPosition);
         //return q1 * rotation;
         return q2;
+    }
 
     public float GetExtrapolatedAngle(float speed)
     {
@@ -126,17 +127,40 @@ public class SnakeSync : Photon.MonoBehaviour
         return speed * ((float)PhotonNetwork.GetPing() / 1000f) * delay;
     }
 
+    /*public Quaternion ExtrapolateFrom(float emulatorOffset, Quaternion rot, float degsPerSec, double time, out Vector3 extrapPoint, out Vector3 emulationPoint)
+    {
+        transform.rotation = rot;
+        forwardRotator.degsPerSec = degsPerSec;
+
+        double deltaTime = PhotonNetwork.time - time;
+        Vector3 currentPos = snake.position;
+        float frames = (float)deltaTime / Time.fixedDeltaTime;
+
+        forwardRotator.myUpdate(frames);
+        extrapPoint = pivot.position;
+
+        float distancePerFrame = (currentPos - pivot.position).magnitude / frames;
+        float emulationLagFrames = emulatorOffset / distancePerFrame;
+
+        forwardRotator.myUpdate(emulationLagFrames);
+        emulationPoint = pivot.position;
+
+        return transform.rotation;
+    }*/
+
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
             stream.SendNext(rotationDevice.transform.rotation);
             stream.SendNext(finalSpeeder.degsPerSec);
+            stream.SendNext(PhotonNetwork.time);
         }
         else
         {
             Quaternion rotation = (Quaternion)stream.ReceiveNext();
             float speed = (float)stream.ReceiveNext();
+            double time = (double)stream.ReceiveNext();
             if (useExtrapolation)
                 extrapolateRotation = GetExtrapolatedRotationOffset(networkRotation, rotation, speed);
             networkRotation = rotation;

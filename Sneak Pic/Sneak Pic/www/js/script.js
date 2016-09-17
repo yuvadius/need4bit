@@ -27,7 +27,7 @@ function GetEvents() {
 
 function GetPictures(selector) {
   items = [];
-  imgCounter = 0;
+  imgCounter = 1;
   $.ajax({
       url: "https://need4bit.com/SneakPic/Events/" + $(selector).attr("name") + "/images/",
       success: function(data){
@@ -44,7 +44,6 @@ function GetPictures(selector) {
               }
               item = {src: "https://need4bit.com"+href, w: 625, h: 417};
               items.push(item);
-              console.log(items);
               img.src = "https://need4bit.com"+href;
             }
         });
@@ -52,9 +51,9 @@ function GetPictures(selector) {
     });
 }
 
-function clickImage() {
-  //gallery.close();
-  openGallery($(this).attr('id'));
+function clickImage(selector) {
+  console.log($(selector).attr('id'));
+  openGallery($(selector).attr('id'));
 }
 
 function openGallery(x) {
@@ -72,7 +71,7 @@ function openGallery(x) {
       
   };
   
-  gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
+  gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items);
   gallery.init();
   gallery.goTo(x);
 }

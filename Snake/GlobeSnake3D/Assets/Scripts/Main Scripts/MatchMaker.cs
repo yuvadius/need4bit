@@ -61,8 +61,8 @@ public class MatchMaker : PunBehaviour
             }
             Debug.Log("Your skin is: " + skin);
             snake = PhotonNetwork.Instantiate("Remote Snake " + skin, new Vector3(), Quaternion.identity, 0);
-            Destroy(snake.transform.GetChild(0).GetChild(0).gameObject);
-            Destroy(snake.transform.GetChild(0).GetComponent<Trail>());
+            foreach (Transform child in snake.transform)
+                GameObject.Destroy(child.gameObject);
             snake.name = "Snake Syncer";
             instance.mySync = snake.GetComponent<SnakeSync>();
             isSnake = true;

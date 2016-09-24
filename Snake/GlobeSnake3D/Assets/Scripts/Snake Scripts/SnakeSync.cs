@@ -5,11 +5,9 @@ using System.Collections.Generic;
 public class SnakeSync : Photon.MonoBehaviour
 {
     Trail trail;
-    public float firstSegmentDistance = 0.28f; float prev1;
-    public float segmentDistance = 0.19f; float prev2;
+    public float firstSegmentDistance; float prev1;
+    public float segmentDistance; float prev2;
 
-    public Transform snake;
-    public Transform remotePivot;
     public bool useExtrapolation;
     public Extrapolater extrapolater;
     public RotationDeviceEmulator emulator;
@@ -42,15 +40,6 @@ public class SnakeSync : Photon.MonoBehaviour
                 trail.SetFirst();
                 trail.hasFirst = true;
             }
-        }
-    }
-
-    void Update()
-    {
-        if (!photonView.isMine)
-        {
-            snake.position = remotePivot.position;
-            snake.rotation = remotePivot.rotation;
         }
     }
 

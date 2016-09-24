@@ -42,11 +42,6 @@ public class MatchMaker : PunBehaviour
         PhotonNetwork.JoinRandomRoom();
     }
 
-    public override void OnJoinedRoom()
-    {
-        CreatePlayer();
-    }
-
     public static void CreatePlayer()
     {
         if (!isSnake && PhotonNetwork.connectionStateDetailed == ClientState.Joined)

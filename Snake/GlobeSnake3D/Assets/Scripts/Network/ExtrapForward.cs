@@ -8,6 +8,14 @@ public class ExtrapForward : MonoBehaviour {
 
 	public float degsPerSec;
 
+
+	public float test;
+
+	[ContextMenu("Test")]
+	void Test() {
+		myUpdate(test);
+	}
+
 	public void myUpdate(float frames) {
 		float angle = degsPerSec * Time.fixedDeltaTime * frames;
 		transform.Rotate(lever.localPosition, angle);

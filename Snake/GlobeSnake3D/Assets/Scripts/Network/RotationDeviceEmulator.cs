@@ -61,15 +61,15 @@ public class RotationDeviceEmulator : MonoBehaviour {
 		newHolder.transform.SetParent(gizmoHolder);
 		newHolder.name = "Gizmo: " + Time.frameCount;
 
-		GameObject newGizmo = Instantiate(extrapGizmo, extrapPoint, Quaternion.identity) as GameObject;
-		newGizmo.SetActive(true);
-		newGizmo.transform.SetParent(newHolder.transform);
-		newGizmo.name = "Extrap Point";
+		//GameObject newGizmo = Instantiate(extrapGizmo, extrapPoint, Quaternion.identity) as GameObject;
+		//newGizmo.SetActive(true);
+		//newGizmo.transform.SetParent(newHolder.transform);
+		//newGizmo.name = "Extrap Point";
 
-		GameObject newGizmo2 = Instantiate(finalGizmo, myPivot.position, Quaternion.identity) as GameObject;
-		newGizmo2.SetActive(true);
-		newGizmo2.transform.SetParent(newHolder.transform);
-		newGizmo2.name = "Final Point";
+		//GameObject newGizmo2 = Instantiate(finalGizmo, myPivot.position, Quaternion.identity) as GameObject;
+		//newGizmo2.SetActive(true);
+		//newGizmo2.transform.SetParent(newHolder.transform);
+		//newGizmo2.name = "Final Point";
 
 		GameObject newGizmo3 = Instantiate(pathGizmo, pathPoint, Quaternion.identity) as GameObject;
 		newGizmo3.SetActive(true);

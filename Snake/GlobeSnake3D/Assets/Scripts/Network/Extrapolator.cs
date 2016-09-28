@@ -6,16 +6,12 @@ public class Extrapolator : MonoBehaviour {
 	public int frames = 40;
 
 	public Transform pivot, sideLever, forwardLever;
-
 	public Transform followingPivot;
 	public Transform followingCenter;
-
 	public RotateForward followingForwardRotator;
 	public RotateSide followingSideRotatore;
 	public ExtrapForward forwardRotator;
 	public ExtrapSide sideRotator;
-
-	
 
 	public float height;
 
@@ -25,7 +21,6 @@ public class Extrapolator : MonoBehaviour {
 	}
 
 	public Quaternion ExtrapolateFrom(float emulatorOffset, CustomPayload payload, out Vector3 extrapPoint, out Vector3 emulationPoint) {
-
 		transform.rotation = payload.quat;
 		forwardRotator.degsPerSec = payload.degsPerSecond;
 

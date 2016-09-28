@@ -74,12 +74,21 @@ public class SnakeSync : Photon.MonoBehaviour {
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
 		if(stream.isWriting) {
-			stream.SendNext(new CustomPayload(following.position, extrapolator.followingCenter.rotation, extrapolator.followingForwardRotator.degsPerSec));
+			stream.SendNext(new CustomPayload(
+				following.position, 
+				extrapolator.followingCenter.rotation, 
+				extrapolator.followingForwardRotator.degsPerSec
+			));
 		} else {
 			CustomPayload payload = (CustomPayload)stream.ReceiveNext();
 
 			Vector3 extrapPoint, emulationPoint;
-			Quaternion quat = extrapolator.ExtrapolateFrom(emulator.emulationOffset, payload, out extrapPoint, out emulationPoint);
+			Quaternion quat = extrapolator.ExtrapolateFrom(
+				emulator.emulationOffset, 
+				payload, 
+				out extrapPoint,
+				out emulationPoint
+			);
 			emulator.Emulate(quat, payload.pos, extrapPoint, emulationPoint);
 		}
 	}

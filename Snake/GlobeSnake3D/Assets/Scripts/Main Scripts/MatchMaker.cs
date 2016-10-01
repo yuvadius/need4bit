@@ -50,14 +50,19 @@ public class MatchMaker : PunBehaviour
             {
                 int skinNumber = GetSkin();
                 skin = Enum.GetName(typeof(skins), skinNumber);
+
+				//What is this thing??
                 ExitGames.Client.Photon.Hashtable style = new ExitGames.Client.Photon.Hashtable();
                 style.Add("Skin", skinNumber);
                 PhotonNetwork.player.SetCustomProperties(style);
             }
             Debug.Log("Your skin is: " + skin);
             snake = PhotonNetwork.Instantiate("Remote Snake " + skin, new Vector3(), Quaternion.identity, 0);
-            foreach (Transform child in snake.transform)
+
+			//Why are you destroying what you just instantiated? dont do that.
+			foreach (Transform child in snake.transform)
                 GameObject.Destroy(child.gameObject);
+
             snake.name = "Snake Syncer";
             instance.mySync = snake.GetComponent<SnakeSync>();
             isSnake = true;

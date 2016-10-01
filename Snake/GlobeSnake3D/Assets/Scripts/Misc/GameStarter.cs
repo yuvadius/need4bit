@@ -29,13 +29,15 @@ public class GameStarter : MonoBehaviour {
 	}
 
     void startGame() {
-        hasStarted = true;
-        MatchMaker.CreatePlayer();
-        FindObjectOfType<ScriptOrderController>().StartGame();
-        welcomeFader.StopFading();
-        snakeStarter.ManualStart();
-        StartCoroutine(setCameraLerpHigh());
-        tipFader.StartTipping();
+        if (MatchMaker.CreatePlayer())
+        {
+            hasStarted = true;
+            FindObjectOfType<ScriptOrderController>().StartGame();
+            welcomeFader.StopFading();
+            snakeStarter.ManualStart();
+            StartCoroutine(setCameraLerpHigh());
+            tipFader.StartTipping();
+        }
     }
 
     IEnumerator rotateGlobe() {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class SnakeSync : Photon.MonoBehaviour
 {
-    Trail trail;
+    public Trail trail;
     public float firstSegmentDistance; float prev1;
     public float segmentDistance; float prev2;
 
@@ -71,17 +71,44 @@ public class SnakeSync : Photon.MonoBehaviour
     }
 
     [PunRPC]
-    public void CreateSegment(Vector3[] positions, Quaternion[] rotations)
+    public void CreateSegment(Vector3[] trailPos, Quaternion[] trailRot, Vector3[] segPos, Quaternion[] segRot)
     {
-		if (!photonView.isMine)
-			for (int i = 0; i < positions.Length; i++)
-				trail.addSegment();
+        if (!photonView.isMine)
+        {
+            for (int i = 0; i < trailPos.Length; i++)
+            {
+                TrailPoint point = new TrailPoint(trailPos[i], trailRot[i], i, trailPos[i].magnitude, SegmentState.GROUND);
+                trail.trailPointList.AddFirst(point);
+            }
+            for (int i = 0; i < segPos.Length; i++)
+                trail.create_segment(segPos[i], segRot[i]);
+        }
     }
 
-    public void CreateSegment(PhotonPlayer other, Vector3[] positions, Quaternion[] rotations)
+    public void syncTrail(PhotonPlayer other)
     {
         if (photonView.isMine)
-            photonView.RPC("CreateSegment", other, positions, rotations);
+        {
+            Vector3[] segPos = new Vector3[SnakeController.instance.trail.segmentList.Count];
+            Quaternion[] segRot = new Quaternion[SnakeController.instance.trail.segmentList.Count];
+            int counter = 0;
+            foreach (SegmentScript segment in SnakeController.instance.trail.segmentList)
+            {
+                segPos[counter] = segment.transform.position;
+                segRot[counter] = segment.transform.rotation;
+                counter++;
+            }
+            Vector3[] trailPos = new Vector3[SnakeController.instance.trail.trailPointList.Count];
+            Quaternion[] trailRot = new Quaternion[SnakeController.instance.trail.trailPointList.Count];
+            counter = 0;
+            foreach (TrailPoint trailPoint in SnakeController.instance.trail.trailPointList)
+            {
+                trailPos[counter] = trailPoint.pos;
+                trailRot[counter] = trailPoint.rot;
+                counter++;
+            }
+            photonView.RPC("CreateSegment", other, trailPos, trailRot, segPos, segRot);
+        }
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

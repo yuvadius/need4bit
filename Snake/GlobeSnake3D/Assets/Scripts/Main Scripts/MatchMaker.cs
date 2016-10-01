@@ -39,10 +39,10 @@ public class MatchMaker : PunBehaviour
 
     public override void OnJoinedLobby()
     {
-        PhotonNetwork.JoinRandomRoom();
+        PhotonNetwork.JoinOrCreateRoom("Europe", null, null);
     }
 
-    public static void CreatePlayer()
+    public static bool CreatePlayer()
     {
         if (!isSnake && PhotonNetwork.connectionStateDetailed == ClientState.Joined)
         {
@@ -61,7 +61,9 @@ public class MatchMaker : PunBehaviour
             snake.name = "Snake Syncer";
             instance.mySync = snake.GetComponent<SnakeSync>();
             isSnake = true;
+            return true;
         }
+        return false;
     }
 
     private static int GetSkin()
@@ -87,26 +89,12 @@ public class MatchMaker : PunBehaviour
         // PhotonNetwork.InstantiateSceneObject("Globe", new Vector3(), Quaternion.identity, 0, null);
     }
 
-    void OnPhotonRandomJoinFailed()
-    {
-        PhotonNetwork.CreateRoom(null);
-    }
-
     public override void OnPhotonPlayerConnected(PhotonPlayer other)
     {
         Debug.Log("OnPhotonPlayerConnected() " + other.name); // not seen if you're the player connecting
         if (SnakeController.instance.trail.segmentList.Count != 0 && isSnake)
         {
-            Vector3[] positions = new Vector3[SnakeController.instance.trail.segmentList.Count];
-            Quaternion[] rotations = new Quaternion[SnakeController.instance.trail.segmentList.Count];
-            int counter = 0;
-            foreach (SegmentScript segment in SnakeController.instance.trail.segmentList)
-            {
-                positions[counter] = segment.transform.position;
-                rotations[counter] = segment.transform.rotation;
-                counter++;
-            }
-            mySync.CreateSegment(other, positions, rotations);
+            mySync.syncTrail(other);
         }
     }
 }

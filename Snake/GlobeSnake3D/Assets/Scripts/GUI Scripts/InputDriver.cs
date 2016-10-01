@@ -66,7 +66,7 @@ public class InputDriver : MonoBehaviour {
             verticalMove = inputVerticalMove;
         }
 #endif
-
+        //Debug.Log("horizontalMove: " + horizontalMove + ", verticalMove: " + verticalMove);
 
     }
 

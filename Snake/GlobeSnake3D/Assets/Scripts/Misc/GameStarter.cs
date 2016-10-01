@@ -13,12 +13,22 @@ public class GameStarter : MonoBehaviour {
     RotateForward snakeStarter;
     LerpToCameraPoint cameraLerper;
 
-    void Start() {
-        cameraController = FindObjectOfType<CameraController>();
+	Material globeMat;
+
+	void Start() {
+		//This is so that git will not constantly want to commit the material of the globe
+#if UNITY_EDITOR
+		globeMat = globeRenderer.material;
+#else
+		globeMat = globeRenderer.sharedMaterial;
+#endif
+
+
+		cameraController = FindObjectOfType<CameraController>();
         snakeStarter = FindObjectOfType<RotateForward>();
         cameraLerper = FindObjectOfType<LerpToCameraPoint>();
         StartCoroutine(rotateGlobe());
-    }
+	}
 
 	void Update () {
         if (hasStarted == false) {
@@ -40,8 +50,8 @@ public class GameStarter : MonoBehaviour {
 
     IEnumerator rotateGlobe() {
 
-        while (hasStarted == false) {
-            globeRenderer.sharedMaterial.SetFloat("_ManualTime", Time.time);
+		while(hasStarted == false) {
+			globeMat.SetFloat("_ManualTime", Time.time);
             yield return null;
         }
 
@@ -51,9 +61,8 @@ public class GameStarter : MonoBehaviour {
 
         while (timePassed < startTime) {
             float ratio = timePassed / startTime;
-
             currentTime += (1-ratio) * Time.deltaTime;
-            globeRenderer.sharedMaterial.SetFloat("_ManualTime", currentTime);
+			globeMat.SetFloat("_ManualTime", currentTime);
             timePassed += Time.deltaTime;
             yield return null;
         }
@@ -66,7 +75,7 @@ public class GameStarter : MonoBehaviour {
         while (timePassed < startTime) {
             float ratio = timePassed / startTime;
             cameraController.lerpSpeed = Mathf.Lerp(0, 2f, ratio);
-            globeRenderer.sharedMaterial.SetFloat("_ManualTime", 1 - ratio);
+			globeMat.SetFloat("_ManualTime", 1 - ratio);
             timePassed += Time.deltaTime;
             yield return null;
         }

@@ -13,6 +13,7 @@ public class SnakeSync : Photon.MonoBehaviour
     public RotationDeviceEmulator emulator;
     GameObject rotationDevice;
     RotateForward finalSpeeder;
+    GameObject globe;
 
     void Awake()
     {
@@ -26,22 +27,16 @@ public class SnakeSync : Photon.MonoBehaviour
 		}
         else
         {
+            globe = GameObject.Find("Game Controllers");
             trail = GetComponentInChildren<Trail>();
             trail.isMine = false;
-        }
-	}
-
-    void Start()
-    {
-        if (!photonView.isMine)
-        {
             if (trail.hasFirst == false)
             {
                 trail.SetFirst();
                 trail.hasFirst = true;
             }
         }
-    }
+	}
 
     void FixedUpdate()
     {
@@ -71,15 +66,18 @@ public class SnakeSync : Photon.MonoBehaviour
     }
 
     [PunRPC]
-    public void CreateTrail(Vector3[] trailsPos, Quaternion[] trailsRot, int segmentLength)
+    public void CreateTrail(Quaternion[] trailsRot, int segmentLength)
     {
         if (!photonView.isMine)
         {
+            float radius = globe.GetComponent<GlobeController>().globeRadius;
             for (int i = 0; i < segmentLength; i++)
                 trail.addSegment();
-            for (int i = trailsPos.Length - 1; i >= 0; i--)
+            for (int i = trailsRot.Length - 1; i >= 0; i--)
             {
-                transform.GetChild(0).position = trailsPos[i];
+                Vector3 position = trailsRot[i] * Vector3.up;
+                position = Vector3.ClampMagnitude(position, radius + SnakeController.instance.aboveGlobe);
+                transform.GetChild(0).position = position;
                 transform.GetChild(0).rotation = trailsRot[i];
                 trail.myUpdate();
             }
@@ -90,16 +88,14 @@ public class SnakeSync : Photon.MonoBehaviour
     {
         if (photonView.isMine)
         {
-            Vector3[] trailsPos = new Vector3[SnakeController.instance.trail.trailPointList.Count];
             Quaternion[] trailsRot = new Quaternion[SnakeController.instance.trail.trailPointList.Count];
             int counter = 0;
             foreach (TrailPoint trailPoint in SnakeController.instance.trail.trailPointList)
             {
-                trailsPos[counter] = trailPoint.pos;
                 trailsRot[counter] = trailPoint.rot;
                 counter++;
             }
-            photonView.RPC("CreateTrail", other, trailsPos, trailsRot, SnakeController.instance.trail.segmentList.Count);
+            photonView.RPC("CreateTrail", other, trailsRot, SnakeController.instance.trail.segmentList.Count);
         }
     }
 

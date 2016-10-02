@@ -35,6 +35,8 @@ public class SnakeController : MonoBehaviour {
     public float maxTiltAngle = 30f; float prev5;
     public float tiltSpeed = 20f; float prev6;
     public float tiltReturnSpeed = 40f; float prev7;
+    [Tooltip("by how much do u want the snake to be above the globe surface")]
+    public float aboveGlobe = 0.121f;
 
     public Trail trail;
     public RotateForward moveDevice;

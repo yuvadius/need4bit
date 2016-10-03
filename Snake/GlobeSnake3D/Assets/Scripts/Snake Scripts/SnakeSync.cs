@@ -10,15 +10,10 @@ public class SnakeSync : Photon.MonoBehaviour
 
     public bool useExtrapolation;
 
-	public bool distanceTest = true;
-
     public Extrapolater extrapolater;
     public RotationDeviceEmulator emulator;
     GameObject rotationDevice;
     RotateForward finalSpeeder;
-	DistanceTest test;
-
-	float mediumOffset = 0;
 
     void Awake()
     {
@@ -34,7 +29,6 @@ public class SnakeSync : Photon.MonoBehaviour
         {
             trail = GetComponentInChildren<Trail>();
             trail.isMine = false;
-			test = FindObjectOfType<DistanceTest>();
         }
 	}
 
@@ -125,13 +119,7 @@ public class SnakeSync : Photon.MonoBehaviour
 			if(useExtrapolation) {
 				Vector3 extrapPoint, emulationPoint;
 				Quaternion extrapolateRotation = extrapolater.ExtrapolateFrom(emulator.emulationOffset, payload, out extrapPoint, out emulationPoint);
-				emulator.Emulate(extrapolateRotation, extrapPoint, emulationPoint);
-			}
-
-			if(distanceTest) {
-				float distance = (emulator.myPivot.position - MainController.instance.snakeTilt.transform.position).magnitude;
-				mediumOffset = (mediumOffset * 99 + distance) / 100;
-				test.label.text = "Off: " + mediumOffset.ToString();
+				emulator.Emulate(extrapolateRotation, extrapPoint, emulationPoint, speed);
 			}
 		}
     }

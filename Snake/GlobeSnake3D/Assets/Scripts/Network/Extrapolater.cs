@@ -14,8 +14,7 @@ public class Extrapolater : MonoBehaviour
 	/// <param name="extrapPoint"></param>
 	/// <param name="emulationPoint"></param>
 	/// <returns></returns>
-    public Quaternion ExtrapolateFrom(float emulatorOffset, CustomPayload payload, out Vector3 extrapPoint, out Vector3 emulationPoint)
-    {
+    public Quaternion ExtrapolateFrom(float emulatorOffset, CustomPayload payload, out Vector3 extrapPoint, out Vector3 emulationPoint){
         transform.rotation = payload.quat;
         forwardRotator.degsPerSec = payload.degsPerSecond;
 
@@ -34,4 +33,11 @@ public class Extrapolater : MonoBehaviour
 
         return transform.rotation;
     }
+
+	public Quaternion RotateForward(float degsPerSec, float frames) {
+		forwardRotator.degsPerSec = degsPerSec;
+		forwardRotator.myUpdate(frames);
+		return transform.rotation;
+	}
+
 }

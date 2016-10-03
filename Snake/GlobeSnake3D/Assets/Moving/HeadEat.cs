@@ -10,30 +10,45 @@ using System.Collections;
 /// </summary>
 public class HeadEat : MonoBehaviour {
 
+	public bool isRemote;
+
+	public Collider myCollider;
+	public GameObject snakeHead;
+	public GameObject testerHead;
+
 	BiteScript bite;
 	Trail trail;
     LevelingSystem levelingSystem;
 
 	void Start(){
-		bite = GetComponent<BiteScript>();
-		trail = transform.parent.gameObject.GetComponent<Trail>();
-        levelingSystem = GameObject.FindObjectOfType<LevelingSystem>();
+		if(isRemote == false) {
+			bite = GetComponent<BiteScript>();
+			trail = transform.parent.gameObject.GetComponent<Trail>();
+			levelingSystem = GameObject.FindObjectOfType<LevelingSystem>();
+		}
+
+		BenchmarkController benchmarker = BenchmarkController.instance;
+		if(benchmarker != null) {
+			benchmarker.SettleSnakeHead(this);
+		}
 	}
 
 	void OnTriggerEnter(Collider other){
-		//if( other.tag == "apple" ){
-		//	bite.bite();
-		//	trail.addSegment();
-  //          levelingSystem.AddApple();
-		//}else if( other.tag == "bannana" ){
-		//	StartCoroutine(chew(1.5f, Random.Range (1, 3)));
-  //          levelingSystem.AddBannana();
-		//}else if( other.tag == "segment" ){
-		//	GetComponent<Collider>().enabled = false;
-		//	MainController.instance.gameOver();
-		//}else{
-		//	Debug.LogError("Hit something that not supposed to be " + other.tag );
-		//}
+		if(isRemote == false) {
+			if(other.tag == "apple") {
+				bite.bite();
+				trail.addSegment();
+				levelingSystem.AddApple();
+			} else if(other.tag == "bannana") {
+				StartCoroutine(chew(1.5f, Random.Range(1, 3)));
+				levelingSystem.AddBannana();
+			} else if(other.tag == "segment") {
+				GetComponent<Collider>().enabled = false;
+				MainController.instance.gameOver();
+			} else {
+				Debug.LogError("Hit something that not supposed to be " + other.tag);
+			}
+		}
 	}
 
 	IEnumerator chew(float seconds, int times){

@@ -13,6 +13,8 @@ public class BenchmarkController : MonoBehaviour {
 	public bool shouldForwardTest;
 	public Material forwardTestGlobeMat;
 	public int testConsistency = 30;
+	public DistanceTest forwardTestLabel;
+	public TimeLabel timeLabel;
 
 	[Tooltip("Should we print the time and inspect that time is not offset between to clients?")]
 	public bool shouldTimePrint;
@@ -20,8 +22,7 @@ public class BenchmarkController : MonoBehaviour {
 	Transform myPivot, remotePivot;
 	float medium = 0;
 
-	DistanceTest forwardTestLabel;
-	TimeLabel timeLabel;
+
 
 	void Awake() {
 		instance = this;
@@ -33,14 +34,13 @@ public class BenchmarkController : MonoBehaviour {
 				planet.globeRenderer.material = forwardTestGlobeMat;
             }
 		}
-		timeLabel = FindObjectOfType<TimeLabel>();
+
 		if(timeLabel != null) {
 			timeLabel.gameObject.SetActive(shouldTimePrint);
 		}
 	}
 
 	void Start() {
-		forwardTestLabel = FindObjectOfType<DistanceTest>();
 		if(shouldForwardTest) {
 			myPivot = MainController.instance.snakeTilt.transform;
 		}

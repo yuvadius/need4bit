@@ -18,6 +18,7 @@ public class RotationDeviceEmulator : MonoBehaviour {
 	Vector3 emulationPoint;
 
 	bool newExtrap = false;
+	float savedTime = 0;
 
 	void Awake() {
 		//What is this?
@@ -29,6 +30,9 @@ public class RotationDeviceEmulator : MonoBehaviour {
 		if(set == true) {
 			if(newExtrap == false) {
 				nextRot = extrapo.RotateForward(degsPerSec, 1f);
+			} else {
+				float framesPassed = (Time.time - savedTime) / Time.fixedDeltaTime;
+				nextRot = extrapo.RotateForward(degsPerSec, framesPassed);
 			}
 
 			UpdateBy(Time.fixedDeltaTime);
@@ -53,6 +57,7 @@ public class RotationDeviceEmulator : MonoBehaviour {
 
 	public void Emulate(Quaternion emulationRotation, Vector3 extrapPoint, Vector3 emulationPoint, float degsPerSec) {
 		this.degsPerSec = degsPerSec;
+		savedTime = Time.time;
 
 		if(set == false) {
 			myPivot.gameObject.SetActive(true);

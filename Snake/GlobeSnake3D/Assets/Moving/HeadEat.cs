@@ -33,23 +33,52 @@ public class HeadEat : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter(Collider other){
-		if(isRemote == false) {
-			if(other.tag == "apple") {
-				bite.bite();
-				trail.addSegment();
-				levelingSystem.AddApple();
-			} else if(other.tag == "bannana") {
-				StartCoroutine(chew(1.5f, Random.Range(1, 3)));
-				levelingSystem.AddBannana();
-			} else if(other.tag == "segment") {
-				GetComponent<Collider>().enabled = false;
-				MainController.instance.gameOver();
-			} else {
-				Debug.LogError("Hit something that not supposed to be " + other.tag);
-			}
-		}
-	}
+    float DistanceFromPeak(Vector3 contact, GameObject gameObject)
+    {
+        CapsuleCollider collider = gameObject.GetComponent<CapsuleCollider>();
+        Vector3 peak = gameObject.transform.rotation * Vector3.forward;
+        peak = gameObject.transform.TransformPoint(collider.center) + (Vector3.ClampMagnitude(peak, collider.height / 2) * gameObject.transform.parent.localScale.z);
+        return Vector3.Distance(contact, peak);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (isRemote == false)
+        {
+            if (other.tag == "apple")
+            {
+                bite.bite();
+                trail.addSegment();
+                levelingSystem.AddApple();
+            }
+            else if (other.tag == "bannana")
+            {
+                StartCoroutine(chew(1.5f, Random.Range(1, 3)));
+                levelingSystem.AddBannana();
+            }
+            else if (other.tag == "segment")
+            {
+                GetComponent<Collider>().enabled = false;
+                MainController.instance.gameOver();
+            }
+            else if (other.tag == "head")
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, transform.forward, out hit))
+                {
+                    if (DistanceFromPeak(hit.point, gameObject) < DistanceFromPeak(hit.point, other.gameObject))
+                    {
+                        GetComponent<Collider>().enabled = false;
+                        MainController.instance.gameOver();
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError("Hit something that not supposed to be " + other.tag);
+            }
+        }
+    }
 
 	IEnumerator chew(float seconds, int times){
 		bite.bite();

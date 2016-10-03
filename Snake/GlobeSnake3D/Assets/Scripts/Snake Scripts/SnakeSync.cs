@@ -5,14 +5,20 @@ using System.Collections.Generic;
 public class SnakeSync : Photon.MonoBehaviour
 {
     public Trail trail;
-    public float firstSegmentDistance; float prev1;
-    public float segmentDistance; float prev2;
+    public float firstSegmentDistance;
+    public float segmentDistance;
 
     public bool useExtrapolation;
+
+	public bool distanceTest = true;
+
     public Extrapolater extrapolater;
     public RotationDeviceEmulator emulator;
     GameObject rotationDevice;
     RotateForward finalSpeeder;
+	DistanceTest test;
+
+	float mediumOffset = 0;
 
     void Awake()
     {
@@ -28,6 +34,7 @@ public class SnakeSync : Photon.MonoBehaviour
         {
             trail = GetComponentInChildren<Trail>();
             trail.isMine = false;
+			test = FindObjectOfType<DistanceTest>();
         }
 	}
 
@@ -40,23 +47,16 @@ public class SnakeSync : Photon.MonoBehaviour
                 trail.SetFirst();
                 trail.hasFirst = true;
             }
-        }
+
+			trail.set_first_segment_distance(firstSegmentDistance);
+			trail.set_segment_distance(segmentDistance);
+		}
     }
 
     void FixedUpdate()
     {
         if (!photonView.isMine)
         {
-            if (firstSegmentDistance != prev1)
-            {
-                prev1 = firstSegmentDistance;
-                trail.set_first_segment_distance(firstSegmentDistance);
-            }
-            if (segmentDistance != prev2)
-            {
-                prev2 = segmentDistance;
-                trail.set_segment_distance(segmentDistance);
-            }
             trail.myUpdate();
         }
     }
@@ -113,24 +113,26 @@ public class SnakeSync : Photon.MonoBehaviour
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.isWriting)
-        {
-            stream.SendNext(rotationDevice.transform.rotation);
-            stream.SendNext(finalSpeeder.degsPerSec);
-            stream.SendNext(PhotonNetwork.time);
-        }
-        else
-        {
-            Quaternion rotation = (Quaternion)stream.ReceiveNext();
-            float speed = (float)stream.ReceiveNext();
-            double time = (double)stream.ReceiveNext();
-            CustomPayload payload = new CustomPayload(rotation, speed, time);
-            if (useExtrapolation)
-            {
-                Vector3 extrapPoint, emulationPoint;
-                Quaternion extrapolateRotation = extrapolater.ExtrapolateFrom(emulator.emulationOffset, payload, out extrapPoint, out emulationPoint);
-                emulator.Emulate(extrapolateRotation, extrapPoint, emulationPoint);
-            }
-        }
+		if(stream.isWriting) {
+			stream.SendNext(rotationDevice.transform.rotation);
+			stream.SendNext(finalSpeeder.degsPerSec);
+			stream.SendNext(PhotonNetwork.ServerTimestamp);
+		} else {
+			Quaternion rotation = (Quaternion)stream.ReceiveNext();
+			float speed = (float)stream.ReceiveNext();
+			int time = (int)stream.ReceiveNext();
+			CustomPayload payload = new CustomPayload(rotation, speed, time);
+			if(useExtrapolation) {
+				Vector3 extrapPoint, emulationPoint;
+				Quaternion extrapolateRotation = extrapolater.ExtrapolateFrom(emulator.emulationOffset, payload, out extrapPoint, out emulationPoint);
+				emulator.Emulate(extrapolateRotation, extrapPoint, emulationPoint);
+			}
+
+			if(distanceTest) {
+				float distance = (emulator.myPivot.position - MainController.instance.snakeTilt.transform.position).magnitude;
+				mediumOffset = (mediumOffset * 99 + distance) / 100;
+				test.label.text = "Off: " + mediumOffset.ToString();
+			}
+		}
     }
 }

@@ -27,7 +27,7 @@ public class GameStarter : MonoBehaviour {
 		cameraController = FindObjectOfType<CameraController>();
         snakeStarter = FindObjectOfType<RotateForward>();
         cameraLerper = FindObjectOfType<LerpToCameraPoint>();
-        StartCoroutine(rotateGlobe());
+        //StartCoroutine(rotateGlobe());
 	}
 
 	void Update () {
@@ -77,7 +77,7 @@ public class GameStarter : MonoBehaviour {
         while (timePassed < startTime) {
             float ratio = timePassed / startTime;
             cameraController.lerpSpeed = Mathf.Lerp(0, 2f, ratio);
-			globeMat.SetFloat("_ManualTime", 1 - ratio);
+			//globeMat.SetFloat("_ManualTime", 1 - ratio);
             timePassed += Time.deltaTime;
             yield return null;
         }

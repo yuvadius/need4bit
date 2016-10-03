@@ -26,10 +26,16 @@ public class RotationDeviceEmulator : MonoBehaviour
     {
         if (set == true)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, nextRot, lerpCoefficient * Time.fixedDeltaTime);
+            transform.rotation = Quaternion.Lerp(
+				transform.rotation, 
+				nextRot, 
+				lerpCoefficient * Time.fixedDeltaTime
+			);
+
             snake.LookAt(myPivot.position, myPivot.up);
             snake.position = myPivot.position;
-            currentDelta = (myPivot.position - emulationPoint).magnitude;
+			currentDelta = Quaternion.Angle(transform.rotation, nextRot);
+            //currentDelta = (myPivot.position - emulationPoint).magnitude;
             emulationOffset = (emulationOffset * avarageConsistancy + currentDelta) / (avarageConsistancy + 1);
             extrapolationOffset = (extrapolationOffset * avarageConsistancy + (myPivot.position - extrapPoint).magnitude) / (avarageConsistancy + 1);
         }

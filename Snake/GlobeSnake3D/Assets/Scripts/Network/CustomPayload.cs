@@ -8,16 +8,9 @@ public class CustomPayload
     public static byte code = 0x33;
     public QuaternionSerializer quat;
     public float degsPerSecond;
-    public double time;
+    public int time;
 
-    public CustomPayload(Quaternion quat, float degsPerSecond)
-    {
-        this.quat = quat;
-        this.degsPerSecond = degsPerSecond;
-        time = PhotonNetwork.time;
-    }
-
-    public CustomPayload(Quaternion quat, float degsPerSecond, double time)
+    public CustomPayload(Quaternion quat, float degsPerSecond, int time)
     {
         this.quat = quat;
         this.degsPerSecond = degsPerSecond;

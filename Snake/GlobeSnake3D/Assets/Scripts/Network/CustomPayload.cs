@@ -8,13 +8,16 @@ public class CustomPayload
     public static byte code = 0x33;
     public QuaternionSerializer quat;
     public float degsPerSecond;
-    public int time;
+    public double time;
+	public float horizontalAim, horizontalMove;
 
-    public CustomPayload(Quaternion quat, float degsPerSecond, int time)
+    public CustomPayload(Quaternion quat, float degsPerSecond, double time, float horizontalAim, float horizontalMove)
     {
         this.quat = quat;
         this.degsPerSecond = degsPerSecond;
         this.time = time;
+		this.horizontalAim = horizontalAim;
+        this.horizontalMove = horizontalMove;
     }
 
     public static object Deserialize(byte[] arrBytes)

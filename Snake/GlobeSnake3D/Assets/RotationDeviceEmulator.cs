@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class RotationDeviceEmulator : MonoBehaviour {
+
 	public Transform snake;
 	public Transform myPivot;
 	public Extrapolater extrapo;
@@ -48,9 +49,10 @@ public class RotationDeviceEmulator : MonoBehaviour {
 			lerpCoefficient * time
 		);
 
-		snake.LookAt(myPivot.position, myPivot.up);
+		//snake.LookAt(myPivot.position, myPivot.up); //for anti gliding
 		snake.position = myPivot.position;
-		currentDelta = Quaternion.Angle(transform.rotation, nextRot);
+		snake.rotation = myPivot.rotation;
+		currentDelta = Vector3.Angle(snake.position, extrapo.pivot.position);
 		emulationOffset = (emulationOffset * avarageConsistancy + currentDelta) / (avarageConsistancy + 1);
 		extrapolationOffset = (extrapolationOffset * avarageConsistancy + (myPivot.position - extrapPoint).magnitude) / (avarageConsistancy + 1);
 	}

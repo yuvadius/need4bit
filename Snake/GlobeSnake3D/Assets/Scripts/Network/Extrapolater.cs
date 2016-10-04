@@ -5,6 +5,7 @@ public class Extrapolater : MonoBehaviour
 {
     public Transform pivot;
     public ExtrapForward forwardRotator;
+	public ExtrapSide sideRotator;
 
 	/// <summary>
 	/// 
@@ -18,21 +19,48 @@ public class Extrapolater : MonoBehaviour
         transform.rotation = payload.quat;
         forwardRotator.degsPerSec = payload.degsPerSecond;
 
-        float deltaTime = (float)(PhotonNetwork.ServerTimestamp - payload.time) / 1000F;
+		if(BenchmarkController.instance.shouldRotateTest) {
+			BenchmarkController.instance.CreateLandmark(transform.rotation, 1);
+		}
+
+		double deltaTime = PhotonNetwork.time - payload.time;
         Vector3 currentPos = pivot.position;
         float frames = (float)deltaTime / Time.fixedDeltaTime;
 
-        forwardRotator.myUpdate(frames);
+		extrap(frames, payload);
+
         extrapPoint = pivot.position;
+
+		if(BenchmarkController.instance.shouldRotateTest) {
+			BenchmarkController.instance.CreateLandmark(transform.rotation, 2);
+		}
 
 		float degreesPerFrame = payload.degsPerSecond * Time.fixedDeltaTime;
         float emulationLagFrames = emulatorOffset / degreesPerFrame;
+		extrap(emulationLagFrames, payload);
 
-        forwardRotator.myUpdate(emulationLagFrames);
-        emulationPoint = pivot.position;
+		emulationPoint = pivot.position;
 
-        return transform.rotation;
+		if(BenchmarkController.instance.shouldRotateTest) {
+			BenchmarkController.instance.CreateLandmark(transform.rotation, 3);
+		}
+		return transform.rotation;
     }
+
+	void extrap(float frames, CustomPayload payload) {
+		int frameNum = (int)frames;
+		float remainder = frames - (float)frameNum;
+
+		for(int i = 0; i < frameNum; ++i) {
+			payload.horizontalMove = InputDriver.instance.HorizontalUpdate(payload.horizontalAim, payload.horizontalMove, 1f);
+			sideRotator.myUpdate(payload.horizontalMove, 1);
+			forwardRotator.myUpdate(1);
+		}
+
+		payload.horizontalMove = InputDriver.instance.HorizontalUpdate(payload.horizontalAim, payload.horizontalMove, remainder);
+		sideRotator.myUpdate(payload.horizontalMove, remainder);
+		forwardRotator.myUpdate(remainder);
+	}
 
 	public Quaternion RotateForward(float degsPerSec, float frames) {
 		forwardRotator.degsPerSec = degsPerSec;

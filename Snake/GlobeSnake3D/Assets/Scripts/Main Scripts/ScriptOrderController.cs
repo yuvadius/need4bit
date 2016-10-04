@@ -19,6 +19,7 @@ public class ScriptOrderController : MonoBehaviour {
     public Flying flyingDevice;
     public CameraHeight cameraHeight;
     public CameraSkew cameraSkew;
+	public InputDriver inputDriver;
 
     bool haveStarted = false;
 
@@ -53,6 +54,7 @@ public class ScriptOrderController : MonoBehaviour {
     void FixedUpdate()
     {
         if (haveStarted == true) {
+			inputDriver.myUpdate();
             cameraController.myUpdate();
             snakeController.myUpdate();
             globeController.myUpdate();

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class AppleCollide : MonoBehaviour {
+public class AppleCollide : Photon.MonoBehaviour {
 
 	Apple me;
 	SphereCollider collider2;
@@ -18,15 +18,34 @@ public class AppleCollide : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
-		if(other.tag == "head") {
+		if(other.tag == "head" && other.gameObject.GetComponent<HeadEat>().isRemote == false) {
 			if(isStarted == false) {
 				OnEnable();
 			}
-			me.destroy(other.transform);
-			GameObject.FindObjectOfType<UIScore>().AddApple();
-			collider2.enabled = false;
-		} else {
+            if (me.isNetworkApple)
+            {
+                if (photonView.isMine)
+                    PhotonNetwork.Destroy(gameObject);
+                else if (!PhotonNetwork.isMasterClient)
+                    photonView.RPC("NetworkDestroyApple", PhotonTargets.MasterClient, photonView.viewID);
+            }
+            else
+            {
+                me.destroy(other.transform);
+                GameObject.FindObjectOfType<UIScore>().AddApple();
+                collider2.enabled = false;
+            }
+        }
+        else if (other.gameObject.GetComponent<HeadEat>().isRemote == false)
+        {
 			Debug.LogError("Not Head touched Apple");
 		}
 	}
+
+    [PunRPC]
+    void NetworkDestroyApple(int pvID)
+    {
+        Debug.Log(pvID);
+        PhotonNetwork.Destroy(PhotonView.Find(pvID));
+    }
 }

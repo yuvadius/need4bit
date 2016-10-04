@@ -8,6 +8,7 @@ public class Apple : MonoBehaviour
 	public SphereCollider spherCollider;
 
 	bool isBeforeSet = true;
+    public bool isNetworkApple;
 	Vector3 randomVector;
 	bool started = false;
 	AppleController controller;
@@ -60,7 +61,7 @@ public class Apple : MonoBehaviour
 
 	void OnEnable()
 	{
-		if (started == false)
+        if (started == false && !isNetworkApple)
 		{
             SetRandomVector();
 			started = true;
@@ -139,7 +140,6 @@ public class Apple : MonoBehaviour
 
 		controller.addAppleToPool(this);
 	}
-
 }
 
 

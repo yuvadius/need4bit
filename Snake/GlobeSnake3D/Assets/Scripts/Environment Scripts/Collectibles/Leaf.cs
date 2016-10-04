@@ -21,6 +21,8 @@ public class Leaf : MonoBehaviour {
 	{
 		startingPos = transform.localPosition;
 		startingRot = transform.localRotation;
+        if (father == null)
+            father = GameObject.Find("Leaves End Point").transform;
 	}
 
     public void DropOff() {

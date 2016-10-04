@@ -37,7 +37,6 @@ public class Extrapolater : MonoBehaviour
 
 		float degreesPerFrame = payload.degsPerSecond * Time.fixedDeltaTime;
         float emulationLagFrames = emulatorOffset / degreesPerFrame;
-		print("Emulation Frames: " + emulationLagFrames);
 		extrap(emulationLagFrames, payload);
 
 		emulationPoint = pivot.position;

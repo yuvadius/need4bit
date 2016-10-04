@@ -49,10 +49,10 @@ public class RotationDeviceEmulator : MonoBehaviour {
 			lerpCoefficient * time
 		);
 
-		snake.LookAt(myPivot.position, myPivot.up);
+		//snake.LookAt(myPivot.position, myPivot.up); //for anti gliding
 		snake.position = myPivot.position;
+		snake.rotation = myPivot.rotation;
 		currentDelta = Vector3.Angle(snake.position, extrapo.pivot.position);
-		Debug.Log("Current Delta: " + currentDelta);
 		emulationOffset = (emulationOffset * avarageConsistancy + currentDelta) / (avarageConsistancy + 1);
 		extrapolationOffset = (extrapolationOffset * avarageConsistancy + (myPivot.position - extrapPoint).magnitude) / (avarageConsistancy + 1);
 	}

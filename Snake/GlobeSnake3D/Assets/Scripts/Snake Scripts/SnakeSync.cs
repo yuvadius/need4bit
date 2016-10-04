@@ -105,12 +105,14 @@ public class SnakeSync : Photon.MonoBehaviour
 		if(stream.isWriting) {
 			stream.SendNext(rotationDevice.transform.rotation);
 			stream.SendNext(finalSpeeder.degsPerSec);
-			stream.SendNext(PhotonNetwork.ServerTimestamp);
+			stream.SendNext(InputDriver.instance.horizontalAim);
+			stream.SendNext(InputDriver.instance.horizontalMove);
 		} else {
 			Quaternion rotation = (Quaternion)stream.ReceiveNext();
 			float speed = (float)stream.ReceiveNext();
-			int time = (int)stream.ReceiveNext();
-			CustomPayload payload = new CustomPayload(rotation, speed, time);
+			float horizontalAim = (float)stream.ReceiveNext();
+			float horizontalMove = (float)stream.ReceiveNext();
+			CustomPayload payload = new CustomPayload(rotation, speed, info.timestamp, horizontalAim, horizontalMove);
 			if(useExtrapolation) {
 				Vector3 extrapPoint, emulationPoint;
 				Quaternion extrapolateRotation = extrapolater.ExtrapolateFrom(emulator.emulationOffset, payload, out extrapPoint, out emulationPoint);

@@ -61,7 +61,16 @@ public class HeadEat : MonoBehaviour {
                 GetComponent<Collider>().enabled = false;
                 MainController.instance.gameOver();
             }
-            else if (other.tag == "head")
+            else if (other.tag != "head")
+            {
+                Debug.LogError("Hit something that not supposed to be " + other.tag);
+            }
+        }
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "head" || isRemote == false)
             {
                 RaycastHit hit;
                 if (Physics.Raycast(transform.position, transform.forward, out hit))
@@ -73,11 +82,6 @@ public class HeadEat : MonoBehaviour {
                     }
                 }
             }
-            else
-            {
-                Debug.LogError("Hit something that not supposed to be " + other.tag);
-            }
-        }
     }
 
 	IEnumerator chew(float seconds, int times){

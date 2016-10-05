@@ -70,18 +70,18 @@ public class HeadEat : MonoBehaviour {
 
     void OnTriggerStay(Collider other)
     {
-        if (other.tag == "head" || isRemote == false)
+        if (other.tag == "head" && isRemote == false)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.forward, out hit))
             {
-                RaycastHit hit;
-                if (Physics.Raycast(transform.position, transform.forward, out hit))
+                if (DistanceFromPeak(hit.point, gameObject) < DistanceFromPeak(hit.point, other.gameObject))
                 {
-                    if (DistanceFromPeak(hit.point, gameObject) < DistanceFromPeak(hit.point, other.gameObject))
-                    {
-                        GetComponent<Collider>().enabled = false;
-                        MainController.instance.gameOver();
-                    }
+                    GetComponent<Collider>().enabled = false;
+                    MainController.instance.gameOver();
                 }
             }
+        }
     }
 
 	IEnumerator chew(float seconds, int times){

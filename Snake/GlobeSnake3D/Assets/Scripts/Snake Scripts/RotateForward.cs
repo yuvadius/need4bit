@@ -16,11 +16,6 @@ public class RotateForward : MonoBehaviour {
     public float currentSpeed;
 	public float degsPerSec;
 	float maxHeight, bonusSpeed;
-	float currentAngle;
-
-	public void CloneValues(ExtrapForward other) {
-		other.degsPerSec = degsPerSec;
-	}
 
 	// Use this for initialization
 	public void ManualStart () {
@@ -57,21 +52,22 @@ public class RotateForward : MonoBehaviour {
         moveSpeedLock = false;
     }
 
+    float currentAngle;
 	// Update is called once per frame
 	public void myUpdate () {		
         float height = pivot.position.magnitude;
         float bonus = calcBonus(height);
 		degsPerSec = (currentSpeed+bonus) * 360.0f / (2.0f * Mathf.PI * height);
-		float angle = degsPerSec * Time.fixedDeltaTime;
+		float angle = degsPerSec * Time.deltaTime;
 		transform.Rotate(lever.localPosition, angle);
-        currentAngle = currentSpeed * Time.fixedDeltaTime;
+        currentAngle = currentSpeed * Time.deltaTime;
 	}
 
     public bool IsStarted() {
         return moveSpeedLock == false;
     }
-
 	float calcBonus(float height){
+
 		return (bonusSpeed) * height * 0.02f / maxHeight;
 	}
 

@@ -4,58 +4,63 @@ using System.Collections.Generic;
 
 public enum SegmentState { AIR, GROUND }
 
-public class TrailPoint
-{
-    public Vector3 pos;
-    public Quaternion rot;
-    public int num;
-    public float height;
+public class TrailPoint {
+	public Vector3 pos;
+	public Quaternion rot;
+	public int num;
+	public float height;
 	public SegmentState state;
 	public int taken;
-	public void take(){ taken++; }
-	public void release(){ taken--; }
-	public bool isTaken(){ return taken > 0; }
-    public TrailPoint(Vector3 _pos, Quaternion _rot, int _num, float _height)
-    {
+	public void take() { taken++; }
+	public void release() { taken--; }
+	public bool isTaken() { return taken > 0; }
+	public TrailPoint(Vector3 _pos, Quaternion _rot, int _num, float _height) {
 		taken = 0;
-        pos = _pos;
-        rot = _rot;
-        num = _num;
-        height = _height;
-    }
+		pos = _pos;
+		rot = _rot;
+		num = _num;
+		height = _height;
+	}
+
+	public TrailPoint(Vector3 _pos, Quaternion _rot, int _num, float _height, SegmentState _state) {
+		taken = 0;
+		pos = _pos;
+		rot = _rot;
+		num = _num;
+		height = _height;
+		state = _state;
+	}
 }
 
-public class Trail : Photon.MonoBehaviour
-{
+public class Trail : Photon.MonoBehaviour {
 
-    public GameObject segment;
+	public GameObject segment;
 
-    public LinkedList<SegmentScript> segmentList = new LinkedList<SegmentScript>();
+	public LinkedList<SegmentScript> segmentList = new LinkedList<SegmentScript>();
 
-    public LinkedList<TrailPoint> trailPointList = new LinkedList<TrailPoint>();
+	public LinkedList<TrailPoint> trailPointList = new LinkedList<TrailPoint>();
 
+	public bool isMine = true;
 	public bool hasFirst = false;
-    float trailSize;
-    int num = 0;
-    float tailLength;
+	float trailSize;
+	int num = 0;
+	float tailLength;
 	Flying flyingDevice;
-    // Use this for initialization
+	// Use this for initialization
 
 	int numOfAir;
 	int numOfGround;
 
-    void Start()
-    {
+	public float getRatio() { return (float)numOfGround / (float)(numOfGround + numOfAir); }
+	void Start() {
 		flyingDevice = Flying.instance;
 
-		if (hasFirst == false)
-		{
+		if((isMine == true && hasFirst == false) || isMine == false) {
 			SetFirst();
-        }
-    }
+		}
+	}
 
-	public void SetFirst()
-	{
+	public void SetFirst() {
 		Vector3 newPos = transform.position;
 		Quaternion newRot = transform.rotation;
 		++num;
@@ -67,25 +72,27 @@ public class Trail : Photon.MonoBehaviour
 		hasFirst = true;
 	}
 
-    int create = 0;
-    
-	public void addSegment(){
+	int create = 0;
+
+	public void addSegment() {
 		create++;
 	}
-	
-    public void myUpdate()
-    {
-        float delta = 0;
-        delta = (transform.position - trailPointList.First.Value.pos).magnitude;
-        Vector3 newPos = transform.position;
-        Quaternion newRot = transform.rotation;
-        ++num;
+
+	public void myUpdate() {
+		if(isMine == false && hasFirst == false) {
+			return;
+		}
+		float delta = 0;
+		delta = (transform.position - trailPointList.First.Value.pos).magnitude;
+		Vector3 newPos = transform.position;
+		Quaternion newRot = transform.rotation;
+		++num;
 
 		TrailPoint point = new TrailPoint(newPos, newRot, num, newPos.magnitude);
-		if( flyingDevice.isInAir() == true ){
+		if(flyingDevice.isInAir() == true) {
 			numOfAir++;
 			point.state = SegmentState.AIR;
-		}else{
+		} else {
 			numOfGround++;
 			point.state = SegmentState.GROUND;
 		}
@@ -93,55 +100,61 @@ public class Trail : Photon.MonoBehaviour
 		trailPointList.AddFirst(point);
 
 
-        LinkedListNode<SegmentScript> runner = segmentList.Last; //doesn't matter from which side we start, because we move each at same rate.
-        while (runner != null)
-        {
-            runner.Value.move(delta);
+		LinkedListNode<SegmentScript> runner = segmentList.Last; //doesn't matter from which side we start, because we move each at same rate.
+		while(runner != null) {
+
+			runner.Value.move(delta);
 			runner = runner.Previous;
-        }
+		}
 
-        if (create > 0)
-        {
-            create_segment();
-            if (MatchMaker.instance.mySync != null)
-            {
-               MatchMaker.instance.mySync.CreateSegment();
-            }
+		if(create > 0) {
+			create_segment();
+			if(MatchMaker.instance.mySync != null) {
+				MatchMaker.instance.mySync.CreateSegment();
+			}
 			create--;
-        }
+		}
 
-        trim_tail();
-    }
+		trim_tail();
+	}
 
-    public void create_segment()
-    {
-        SegmentScript newSegment = Instantiate(segment).GetComponent<SegmentScript>();
-        newSegment.transform.SetParent(transform.parent);
-        newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
-        segmentList.AddFirst(newSegment);
-        newSegment.set_first(trailPointList.First, tailLength);
-        tailLength += trailSize;
-    }
+	public void create_segment() {
+		SegmentScript newSegment = Instantiate(segment).GetComponent<SegmentScript>();
+		newSegment.transform.SetParent(transform.parent);
+		newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
+		segmentList.AddFirst(newSegment);
+		newSegment.set_first(trailPointList.First, tailLength);
+		tailLength += trailSize;
+	}
 
-    public void set_first_segment_distance(float _firstSegmentDistance)
-    {
-        tailLength = _firstSegmentDistance;
-    }
+	public void create_segment(Vector3 position, Quaternion rotation) {
+		SegmentScript newSegment = (Instantiate(segment) as GameObject).GetComponent<SegmentScript>();
+		newSegment.transform.position = position;
+		newSegment.transform.rotation = rotation;
 
-    public void set_segment_distance(float _segmentDistance)
-    {
-        trailSize = _segmentDistance;
-    }
+		newSegment.transform.SetParent(transform.parent);
+		newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
+		segmentList.AddFirst(newSegment);
+		newSegment.set_first(trailPointList.First, tailLength);
+		tailLength += trailSize;
+	}
 
-    void trim_tail()
-    {
-		if( trailPointList.Last.Value.isTaken() == false ){
-			if( trailPointList.Last.Value.state == SegmentState.GROUND ){
+	public void set_first_segment_distance(float _firstSegmentDistance) {
+		tailLength = _firstSegmentDistance;
+	}
+
+	public void set_segment_distance(float _segmentDistance) {
+		trailSize = _segmentDistance;
+	}
+
+	void trim_tail() {
+		if(trailPointList.Last.Value.isTaken() == false) {
+			if(trailPointList.Last.Value.state == SegmentState.GROUND) {
 				numOfGround--;
-			}else{
+			} else {
 				numOfAir--;
 			}
 			trailPointList.RemoveLast();
 		}
-    }
+	}
 }

@@ -1,12 +1,23 @@
 using UnityEngine;
 using System.Collections;
 
+public enum EInputType {
+	SCREEN_CONSTANT,
+	SNAKE_DIRECTION_RELATIVE
+}
+
 public class InputDriver : MonoBehaviour {
+
+	public static InputDriver instance;
 
     public float changeMove = 3f;
 
     public float horizontalMove = 0;
-    public float verticalMove = 0;  
+    public float verticalMove = 0;
+	public float verticalAim = 0;
+	public float horizontalAim = 0;
+
+	public EInputType inputType = EInputType.SCREEN_CONSTANT;
 
     public Camera snakeCamera;
     public Transform snakeHead;
@@ -15,6 +26,10 @@ public class InputDriver : MonoBehaviour {
 
     Vector2 center;
     float maxDis;
+
+	void Awake() {
+		instance = this;
+	}
 
     void Start() {
         center.x = Screen.width / 2;
@@ -25,52 +40,63 @@ public class InputDriver : MonoBehaviour {
 
     void Update() {
 
-        float verticalAim;
-        float horizontalAim;
+		verticalAim = 0;
+		horizontalAim = 0;
 
-        if (isDetecting == true) {
-            //verticalAim = (float)Input.mousePosition.y * 2f / (float)Screen.height - 1f;
-            //horizontalAim = (float)Input.mousePosition.x * 2f / (float)Screen.width - 1f;
+		if (isDetecting == true) {
 
-            Vector2 mousePos = Input.mousePosition;
-            Vector2 snakeVec = getSnakeForwardPlaceOnScreen() - getSnakePlaceOnScreen();
-            Vector2 mouseVec = mousePos - getSnakePlaceOnScreen();
+			if(inputType == EInputType.SCREEN_CONSTANT) {
 
-            float mouseAng = getAngle(mouseVec);
-            float snakeAng = getAngle(snakeVec);
+				verticalAim = (float)Input.mousePosition.y * 2f / (float)Screen.height - 1f;
+				horizontalAim = (float)Input.mousePosition.x * 2f / (float)Screen.width - 1f;
 
-            horizontalAim = getAngDelta(snakeAng, mouseAng);
+			} else if (inputType == EInputType.SNAKE_DIRECTION_RELATIVE) {
 
-            verticalAim = (mousePos - center).magnitude * 2 / maxDis - 1f;
-        } else {
-            verticalAim = horizontalAim = 0;
+				Vector2 mousePos = Input.mousePosition;
+				Vector2 snakeVec = getSnakeForwardPlaceOnScreen() - getSnakePlaceOnScreen();
+				Vector2 mouseVec = mousePos - getSnakePlaceOnScreen();
+
+				float mouseAng = getAngle(mouseVec);
+				float snakeAng = getAngle(snakeVec);
+
+				horizontalAim = getAngDelta(snakeAng, mouseAng);
+				verticalAim = (mousePos - center).magnitude * 2 / maxDis - 1f;
+
+			}
+
         }
-    
-        horizontalMove = horizontalAim > horizontalMove ? 
-            Mathf.Clamp(horizontalMove + Time.deltaTime * changeMove, horizontalMove, horizontalAim) : 
-            Mathf.Clamp(horizontalMove - Time.deltaTime * changeMove, horizontalAim, horizontalMove);
-        
-        verticalMove = verticalAim > verticalMove ? 
-            Mathf.Clamp(verticalMove + Time.deltaTime * changeMove, verticalMove, verticalAim) : 
-            Mathf.Clamp(verticalMove - Time.deltaTime * changeMove, verticalAim, verticalMove);
 
 #if UNITY_EDITOR || UNITY_STANDALONE
 		float inputHorizontalMove = Input.GetAxis("Horizontal");
         float inputVerticalMove = Input.GetAxis("Vertical");
 
         if (inputHorizontalMove != 0) {
-            horizontalMove = inputHorizontalMove;
+			horizontalAim = inputHorizontalMove;
         }
 
         if (inputVerticalMove != 0) {
-            verticalMove = inputVerticalMove;
+			verticalAim = inputVerticalMove;
         }
 #endif
 
-
     }
 
-    float getAngDelta(float ang1, float ang2) {
+	public void myUpdate() {
+		horizontalMove = HorizontalUpdate(horizontalAim, horizontalMove, 1f);
+
+		verticalMove = verticalAim > verticalMove ?
+			Mathf.Clamp(verticalMove + Time.fixedDeltaTime * changeMove, verticalMove, verticalAim) :
+			Mathf.Clamp(verticalMove - Time.fixedDeltaTime * changeMove, verticalAim, verticalMove);
+	}
+
+	public float HorizontalUpdate(float aim, float move, float frames) {
+		move = aim > move ?
+			Mathf.Clamp(move + Time.fixedDeltaTime * changeMove * frames, move, aim) :
+			Mathf.Clamp(move - Time.fixedDeltaTime * changeMove * frames, aim, move);
+		return move;
+	}
+
+	float getAngDelta(float ang1, float ang2) {
 
         float positive = 0;
 

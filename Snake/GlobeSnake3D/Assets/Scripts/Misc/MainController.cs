@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using ExitGames.Client.Photon;
 
 /// <summary>
 /// 
@@ -18,8 +17,7 @@ using ExitGames.Client.Photon;
 /// </summary>
 public class MainController : MonoBehaviour {
 	public static MainController instance;
-	public GameObject pathPointGizmo, extrapPointGizmo, emulationPointGizmo, finalPointGizmo;
-	public Transform gizmoHolder;
+
     public CanvasGroup gameCanvasGroup, endCanvasGroup;
     public Text applesAteText, applesRecordText;
     public Text gameOverHeader;
@@ -37,8 +35,8 @@ public class MainController : MonoBehaviour {
 			instance = this;
 		}
         Cursor.visible = false;
-		PhotonPeer.RegisterType(typeof(CustomPayload), CustomPayload.code, CustomPayload.Serialize, CustomPayload.Deserialize);
-    }
+
+	}
 
     void Start() {
         gameCanvasGroup.alpha = 1;

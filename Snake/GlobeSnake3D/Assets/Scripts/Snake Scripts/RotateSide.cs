@@ -7,9 +7,10 @@ public class RotateSide : MonoBehaviour
     public Transform lever;
     public CameraRotate cameraRotation;
     public TiltSide tiltSide;
-
     float speed;
+
     float prevSpeed;
+
     float turnAngle = 0;
 
     InputDriver inputDriver;
@@ -29,17 +30,12 @@ public class RotateSide : MonoBehaviour
             change_speed();
         }
         float turn = inputDriver.horizontalMove;
-        turnAngle = -speed * Time.fixedDeltaTime * turn;
+        turnAngle = -speed * Time.deltaTime * turn;
         transform.Rotate(lever.localPosition, turnAngle);
         cameraRotation.send_angle(turnAngle);
     }
 
-	public void CloneValues(ExtrapSide other) {
-		other.speed = speed;
-		other.turnAngle = turnAngle;
-	}
-
-	void change_speed()
+    void change_speed()
     {
         prevSpeed = speed;
         cameraRotation.send_speed(speed);

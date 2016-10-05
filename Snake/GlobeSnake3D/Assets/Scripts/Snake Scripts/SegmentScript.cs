@@ -9,6 +9,9 @@ public class SegmentScript : MonoBehaviour
     public LinkedListNode<TrailPoint> before; //before me
     public LinkedListNode<TrailPoint> after; //after me
 
+	static int num = 0;
+	public int myNum = 0;
+
     float distanceFromNext = 0;
     public bool trailing = true;
 
@@ -33,7 +36,9 @@ public class SegmentScript : MonoBehaviour
                 distance = -distanceFromNext;//because trailing means standing in place, dont actually need to move anywhere, just count down is enough
                 after = before.Previous;
                 trailing = false;
-				myCollider.enabled = true;
+				//if( num++ != 0 )
+					myCollider.enabled = true;
+				myNum = num;
             }
             else
             {
@@ -49,7 +54,8 @@ public class SegmentScript : MonoBehaviour
                 Vector3 direction = (after.Value.pos - transform.position).normalized * distance;
 				transform.Translate(direction, Space.World);
 
-				myCollider.enabled = true;
+				if( myNum != 1 )
+					myCollider.enabled = true;
                 return;
             }
             else

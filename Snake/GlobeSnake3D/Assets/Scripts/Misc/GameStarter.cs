@@ -3,24 +3,23 @@ using System.Collections;
 
 public class GameStarter : MonoBehaviour {
 
-    public MeshRenderer globeRenderer;
     public WelcomeTextFader welcomeFader;
     public TipTextFader tipFader;
-	public Extrapolator extrapolator;
+	public PlanetRotator planetRotator;
     public float startTime = 5f;
-
 
     bool hasStarted = false;
     CameraController cameraController;
     RotateForward snakeStarter;
     LerpToCameraPoint cameraLerper;
 
-    void Start() {
-        cameraController = FindObjectOfType<CameraController>();
+
+	void Start() {
+		cameraController = FindObjectOfType<CameraController>();
         snakeStarter = FindObjectOfType<RotateForward>();
         cameraLerper = FindObjectOfType<LerpToCameraPoint>();
         StartCoroutine(rotateGlobe());
-    }
+	}
 
 	void Update () {
         if (hasStarted == false) {
@@ -31,20 +30,21 @@ public class GameStarter : MonoBehaviour {
 	}
 
     void startGame() {
-        hasStarted = true;
-        MatchMaker.CreatePlayer();
-        FindObjectOfType<ScriptOrderController>().StartGame();
-        welcomeFader.StopFading();
-        snakeStarter.ManualStart();
-        StartCoroutine(setCameraLerpHigh());
-        tipFader.StartTipping();
-		extrapolator.Initialize();
+		if (MatchMaker.CreatePlayer())
+        {
+			hasStarted = true;
+			FindObjectOfType<ScriptOrderController>().StartGame();
+            welcomeFader.StopFading();
+            snakeStarter.ManualStart();
+            StartCoroutine(setCameraLerpHigh());
+            tipFader.StartTipping();
+        }
     }
 
     IEnumerator rotateGlobe() {
 
-        while (hasStarted == false) {
-            globeRenderer.sharedMaterial.SetFloat("_ManualTime", Time.time);
+		while(hasStarted == false) {
+			planetRotator.SetTime(Time.time);
             yield return null;
         }
 
@@ -54,9 +54,8 @@ public class GameStarter : MonoBehaviour {
 
         while (timePassed < startTime) {
             float ratio = timePassed / startTime;
-
             currentTime += (1-ratio) * Time.deltaTime;
-            globeRenderer.sharedMaterial.SetFloat("_ManualTime", currentTime);
+			planetRotator.SetTime(currentTime);
             timePassed += Time.deltaTime;
             yield return null;
         }
@@ -69,7 +68,7 @@ public class GameStarter : MonoBehaviour {
         while (timePassed < startTime) {
             float ratio = timePassed / startTime;
             cameraController.lerpSpeed = Mathf.Lerp(0, 2f, ratio);
-            globeRenderer.sharedMaterial.SetFloat("_ManualTime", 1 - ratio);
+			planetRotator.SetTime(1 - ratio);
             timePassed += Time.deltaTime;
             yield return null;
         }

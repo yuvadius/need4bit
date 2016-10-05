@@ -18,15 +18,15 @@ public class AppleCollide : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
-		if( other.tag == "head" ){
-			if( isStarted == false ){
+		if(other.tag == "head") {
+			if(isStarted == false) {
 				OnEnable();
 			}
 			me.destroy(other.transform);
-            GameObject.FindObjectOfType<UIScore>().AddApple();
+			GameObject.FindObjectOfType<UIScore>().AddApple();
 			collider2.enabled = false;
-		}else{
-			Debug.LogError ("Not Head touched Apple");
+		} else {
+			Debug.LogError("Not Head touched Apple");
 		}
 	}
 }

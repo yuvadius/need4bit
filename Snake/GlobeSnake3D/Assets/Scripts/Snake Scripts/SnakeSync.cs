@@ -1,96 +1,123 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using ExitGames.Client.Photon;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 
-[System.Serializable]
-public class CustomPayload {
+public class SnakeSync : Photon.MonoBehaviour
+{
+    public Trail trail;
+    public float firstSegmentDistance;
+    public float segmentDistance;
 
-	public static byte code = 0x33;
+    public bool useExtrapolation;
 
-	public Vector3Serializer pos;
-	public QuaternionSerializer quat;
-	public float degsPerSecond;
-	public double time;
+    public Extrapolater extrapolater;
+    public RotationDeviceEmulator emulator;
+    GameObject rotationDevice;
+    RotateForward finalSpeeder;
+    GameObject globe;
 
-	public CustomPayload(Vector3 pos, Quaternion quat, float degsPerSecond) {
-		this.pos = pos;
-		this.quat = quat;
-		this.degsPerSecond = degsPerSecond;
-		time = PhotonNetwork.time;
+    void Awake()
+    {
+        DontDestroyOnLoad(transform.gameObject);
+
+		if (photonView.isMine)
+		{
+            //gameObject.AddComponent<PhotonLagSimulationGui>();
+            rotationDevice = GameObject.FindGameObjectWithTag("RotationDevice");
+            finalSpeeder = FindObjectOfType<RotateForward>();
+		}
+        else
+        {
+            globe = GameObject.Find("Game Controllers");
+            trail = GetComponentInChildren<Trail>();
+            trail.isMine = false;
+        }
 	}
 
-	public static object Deserialize(byte[] arrBytes) {
-		using(var memStream = new MemoryStream()) {
-			var binForm = new BinaryFormatter();
-			memStream.Write(arrBytes, 0, arrBytes.Length);
-			memStream.Seek(0, SeekOrigin.Begin);
-			var obj = binForm.Deserialize(memStream);
-			return obj;
+    void Start()
+    {
+        if (!photonView.isMine)
+        {
+            if (trail.hasFirst == false)
+            {
+                trail.SetFirst();
+                trail.hasFirst = true;
+            }
+
+			trail.set_first_segment_distance(firstSegmentDistance);
+			trail.set_segment_distance(segmentDistance);
 		}
-	}
-
-	public static byte[] Serialize(object customType) {
-		BinaryFormatter bf = new BinaryFormatter();
-		using(var ms = new MemoryStream()) {
-			bf.Serialize(ms, customType);
-			return ms.ToArray();
-		}
-	}
-}
-
-public class SnakeSync : Photon.MonoBehaviour {
-
-	[PunRPC] 
-	public void CreateSegment() {
-		if(!isMine) {
-			emulator.trail.AddSegment();
-		} else {
-			photonView.RPC("CreateSegment", PhotonTargets.Others);
-		}
-	}
-
-	public Transform following;
-	public GameObject pathPointGizmo;
-	public Extrapolator extrapolator;
-	public GameObject rotationDeviceEmulator;
-	public bool isMine;
-
-	RotationDeviceEmulator emulator;
-
-	void Awake() {
-		isMine = photonView.isMine;
-		if(isMine == true) {
-			following = GameObject.FindGameObjectWithTag("GameController").GetComponent<SnakeController>().trail.transform;
-		} else {
-			pathPointGizmo = GameObject.FindGameObjectWithTag("GameController").GetComponent<MainController>().pathPointGizmo;
-			emulator = (Instantiate(rotationDeviceEmulator, transform) as GameObject).GetComponent< RotationDeviceEmulator>();
-		}
-
-		extrapolator = FindObjectOfType<Extrapolator>();
     }
 
-	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+    void FixedUpdate()
+    {
+        if (!photonView.isMine)
+        {
+            trail.myUpdate();
+        }
+    }
+
+    [PunRPC]
+    public void CreateSegment()
+    {
+        if (photonView.isMine)
+            photonView.RPC("CreateSegment", PhotonTargets.Others);
+        else
+            trail.create_segment();
+    }
+
+    [PunRPC]
+    public void CreateTrail(Quaternion[] trailsRot, int segmentLength)
+    {
+        if (!photonView.isMine)
+        {
+            float radius = globe.GetComponent<GlobeController>().globeRadius;
+            for (int i = 0; i < segmentLength; i++)
+                trail.addSegment();
+            for (int i = trailsRot.Length - 1; i >= 0; i--)
+            {
+                Vector3 position = trailsRot[i] * Vector3.up;
+                position = Vector3.ClampMagnitude(position, radius + SnakeController.instance.aboveGlobe);
+                transform.GetChild(0).position = position;
+                transform.GetChild(0).rotation = trailsRot[i];
+                trail.myUpdate();
+            }
+        }
+    }
+
+    public void syncTrail(PhotonPlayer other)
+    {
+        if (photonView.isMine)
+        {
+            Quaternion[] trailsRot = new Quaternion[SnakeController.instance.trail.trailPointList.Count];
+            int counter = 0;
+            foreach (TrailPoint trailPoint in SnakeController.instance.trail.trailPointList)
+            {
+                trailsRot[counter] = trailPoint.rot;
+                counter++;
+            }
+            photonView.RPC("CreateTrail", other, trailsRot, SnakeController.instance.trail.segmentList.Count);
+        }
+    }
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
 		if(stream.isWriting) {
-			stream.SendNext(new CustomPayload(
-				following.position, 
-				extrapolator.followingCenter.rotation, 
-				extrapolator.followingForwardRotator.degsPerSec
-			));
+			stream.SendNext(rotationDevice.transform.rotation);
+			stream.SendNext(finalSpeeder.degsPerSec);
+			stream.SendNext(InputDriver.instance.horizontalAim);
+			stream.SendNext(InputDriver.instance.horizontalMove);
 		} else {
-			CustomPayload payload = (CustomPayload)stream.ReceiveNext();
-
-			Vector3 extrapPoint, emulationPoint;
-			Quaternion quat = extrapolator.ExtrapolateFrom(
-				emulator.emulationOffset, 
-				payload, 
-				out extrapPoint,
-				out emulationPoint
-			);
-			emulator.Emulate(quat, payload.pos, extrapPoint, emulationPoint);
+			Quaternion rotation = (Quaternion)stream.ReceiveNext();
+			float speed = (float)stream.ReceiveNext();
+			float horizontalAim = (float)stream.ReceiveNext();
+			float horizontalMove = (float)stream.ReceiveNext();
+			CustomPayload payload = new CustomPayload(rotation, speed, info.timestamp, horizontalAim, horizontalMove);
+			if(useExtrapolation) {
+				Vector3 extrapPoint, emulationPoint;
+				Quaternion extrapolateRotation = extrapolater.ExtrapolateFrom(emulator.emulationOffset, payload, out extrapPoint, out emulationPoint);
+				emulator.Emulate(extrapolateRotation, extrapPoint, emulationPoint, speed);
+			}
 		}
-	}
-
+    }
 }

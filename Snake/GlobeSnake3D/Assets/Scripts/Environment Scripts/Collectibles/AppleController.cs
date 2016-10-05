@@ -9,13 +9,26 @@ public class AppleController : MonoBehaviour {
 	public int maxNumOfApples; int prev1;
 	public float ratePerSecond; float prev2;
 	float appleHeight;
-	public GlobeController globe;
+	private GlobeController globe;
+    private static AppleController instance;
 
 	List<Apple> appleList = new List<Apple>();
 	List<Apple> applePool = new List<Apple>();
 
+    void Awake()
+    {
+        if (instance)
+            DestroyImmediate(gameObject);
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            instance = this;
+        }
+    }
+
 	// Use this for initialization
 	void Start () {
+        globe = GameObject.Find("Game Controllers").GetComponent<GlobeController>();
 	}
 
     public void SetCanHaveApples(bool CanHaveApples)
@@ -24,7 +37,8 @@ public class AppleController : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	public void myUpdate () {
+    public void myUpdate()
+    {
         if (CanHaveApples)
         {
             appleHeight = globe.globeRadius;
@@ -37,31 +51,40 @@ public class AppleController : MonoBehaviour {
                 prev2 = ratePerSecond;
             }
 
-            if (appleList.Count < maxNumOfApples)
+            if (appleList.Count < maxNumOfApples && PhotonNetwork.isMasterClient)
             {
                 if (Time.deltaTime * ratePerSecond > Random.Range(0.0f, 1.0f))
                 {
                     //create apple
                     Apple apple = null;
-                    if (applePool.Count > 0)
+                    if (PhotonNetwork.offlineMode)
                     {
-                        apple = applePool[applePool.Count - 1];
-                        applePool.RemoveAt(applePool.Count - 1);
+                        if (applePool.Count > 0)
+                        {
+                            apple = applePool[applePool.Count - 1];
+                            applePool.RemoveAt(applePool.Count - 1);
+                        }
+                        else
+                        {
+                            apple = (GameObject.Instantiate(applePrefab)).GetComponent<Apple>();
+                        }
+                        apple.gameObject.name = "Apple";
+                        apple.gameObject.SetActive(true);
                     }
                     else
                     {
-                        apple = (GameObject.Instantiate(applePrefab)).GetComponent<Apple>();
+                        Vector3 randomVector = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
+                        randomVector = randomVector.normalized * appleHeight;
+                        GameObject appleObject = PhotonNetwork.InstantiateSceneObject("Apple", randomVector, Quaternion.LookRotation(randomVector * 100), 0, null);
+                        apple = appleObject.GetComponent<Apple>();
                     }
                     apple.setController(this);
-                    apple.setHeight(appleHeight);
                     apple.transform.parent = transform;
-                    apple.gameObject.name = "Apple";
                     appleList.Add(apple);
-                    apple.gameObject.SetActive(true);
                 }
             }
         }
-	}
+    }
 
 	public void destroy(Apple apple){
 		appleList.Remove(apple);

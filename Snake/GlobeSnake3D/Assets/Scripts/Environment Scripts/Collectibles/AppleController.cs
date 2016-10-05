@@ -9,13 +9,26 @@ public class AppleController : MonoBehaviour {
 	public int maxNumOfApples; int prev1;
 	public float ratePerSecond; float prev2;
 	float appleHeight;
-	public GlobeController globe;
+	private GlobeController globe;
+    private static AppleController instance;
 
 	List<Apple> appleList = new List<Apple>();
 	List<Apple> applePool = new List<Apple>();
 
+    void Awake()
+    {
+        if (instance)
+            DestroyImmediate(gameObject);
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            instance = this;
+        }
+    }
+
 	// Use this for initialization
 	void Start () {
+        globe = GameObject.Find("Game Controllers").GetComponent<GlobeController>();
 	}
 
     public void SetCanHaveApples(bool CanHaveApples)
@@ -56,7 +69,6 @@ public class AppleController : MonoBehaviour {
                             apple = (GameObject.Instantiate(applePrefab)).GetComponent<Apple>();
                         }
                         apple.gameObject.name = "Apple";
-                        appleList.Add(apple);
                         apple.gameObject.SetActive(true);
                     }
                     else

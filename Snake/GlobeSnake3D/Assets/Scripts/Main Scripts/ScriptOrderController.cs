@@ -51,6 +51,12 @@ public class ScriptOrderController : MonoBehaviour {
 	/// capacity controller needs to know the current state of the entire trail, thus it should be 
 	/// after it.
 	/// </summary>
+
+    void Start()
+    {
+        appleController = GameObject.Find("Apple System").GetComponent<AppleController>();
+    }
+
     void FixedUpdate()
     {
         if (haveStarted == true) {

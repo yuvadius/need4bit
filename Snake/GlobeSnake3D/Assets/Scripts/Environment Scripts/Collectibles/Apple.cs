@@ -11,9 +11,18 @@ public class Apple : MonoBehaviour
     public bool isNetworkApple;
 	Vector3 randomVector;
 	bool started = false;
-	AppleController controller;
+	public AppleController controller;
 
+    void Awake()
+    {
+        controller = GameObject.Find("Apple System").GetComponent<AppleController>();
+        transform.parent = controller.transform;
+    }
 
+    void OnDestroy()
+    {
+        //print("Script was destroyed");
+    }
 
 	public void OnDisable()
 	{

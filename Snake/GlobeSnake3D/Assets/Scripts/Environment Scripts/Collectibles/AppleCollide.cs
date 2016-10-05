@@ -17,17 +17,26 @@ public class AppleCollide : Photon.MonoBehaviour {
 		collider2.enabled = true;
 	}
 
-	void OnTriggerEnter(Collider other){
-		if(other.tag == "head" && other.gameObject.GetComponent<HeadEat>().isRemote == false) {
-			if(isStarted == false) {
-				OnEnable();
-			}
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "head" && other.gameObject.GetComponent<HeadEat>().isRemote == false)
+        {
+            if (isStarted == false)
+            {
+                OnEnable();
+            }
             if (me.isNetworkApple)
             {
                 if (photonView.isMine)
-                    PhotonNetwork.Destroy(gameObject);
+                {
+                    GameObject.FindObjectOfType<UIScore>().AddApple();
+                    NetworkDestroyApple(photonView.viewID);
+                }
                 else if (!PhotonNetwork.isMasterClient)
+                {
+                    GameObject.FindObjectOfType<UIScore>().AddApple();
                     photonView.RPC("NetworkDestroyApple", PhotonTargets.MasterClient, photonView.viewID);
+                }
             }
             else
             {
@@ -38,14 +47,14 @@ public class AppleCollide : Photon.MonoBehaviour {
         }
         else if (other.gameObject.GetComponent<HeadEat>().isRemote == false)
         {
-			Debug.LogError("Not Head touched Apple");
-		}
-	}
+            Debug.LogError("Not Head touched Apple");
+        }
+    }
 
     [PunRPC]
     void NetworkDestroyApple(int pvID)
     {
-        Debug.Log(pvID);
+        me.controller.destroy(me);
         PhotonNetwork.Destroy(PhotonView.Find(pvID));
     }
 }

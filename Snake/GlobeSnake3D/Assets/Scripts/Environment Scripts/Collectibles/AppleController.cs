@@ -11,6 +11,7 @@ public class AppleController : MonoBehaviour {
 	float appleHeight;
 	private GlobeController globe;
     private static AppleController instance;
+    public SphereCollider spherCollider;
 
 	List<Apple> appleList = new List<Apple>();
 	List<Apple> applePool = new List<Apple>();
@@ -73,13 +74,10 @@ public class AppleController : MonoBehaviour {
                     }
                     else
                     {
-                        Vector3 randomVector = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
-                        randomVector = randomVector.normalized * appleHeight;
+                        Vector3 randomVector = Apple.AvoidOverlap(appleHeight, spherCollider.radius) * appleHeight;
                         GameObject appleObject = PhotonNetwork.InstantiateSceneObject("Apple", randomVector, Quaternion.LookRotation(randomVector * 100), 0, null);
                         apple = appleObject.GetComponent<Apple>();
                     }
-                    apple.setController(this);
-                    apple.transform.parent = transform;
                     appleList.Add(apple);
                 }
             }

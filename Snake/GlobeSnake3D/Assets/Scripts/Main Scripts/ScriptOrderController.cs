@@ -88,6 +88,8 @@ public class ScriptOrderController : MonoBehaviour {
 
             lerpToCameraPoint.myUpdate();
         }
+        else if(PhotonNetwork.offlineMode == false && PhotonNetwork.isMasterClient)
+            appleController.myUpdate();//The master should always be spawning apples for everyone
     }
 
     public void StartGame() {

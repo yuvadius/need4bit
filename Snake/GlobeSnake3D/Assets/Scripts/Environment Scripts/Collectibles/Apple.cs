@@ -34,39 +34,42 @@ public class Apple : MonoBehaviour
 		}
     }
 
+    private static Vector3 GetRandomNormalVector()
+    {
+        Vector3 randomVector = new Vector3(
+            Random.Range(-10, 10),
+            Random.Range(-10, 10),
+            Random.Range(-10, 10)
+            );
+        return randomVector.normalized;
+    }
+
     /// <summary>
     /// Set a random vector value to the property "randomVector"
     /// </summary>
     private void SetRandomVector()
     {
         //pick a random normalized vector;
-        randomVector = new Vector3(
-            Random.Range(-10, 10),
-            Random.Range(-10, 10),
-            Random.Range(-10, 10)
-            );
-        randomVector = randomVector.normalized;
+        randomVector = GetRandomNormalVector();
         transform.position = Vector3.zero;
         transform.LookAt(randomVector * 100);
     }
     
-	//TODO: turn recursion into a loop
-    private void AvoidOverlap(float height, int retry = 10)
+    public static Vector3 AvoidOverlap(float height, float appleRadius, int retry = 10)
     {
 		LayerMask mask = LayerMask.GetMask("apples", "head", "segments");
+        Vector3 random = GetRandomNormalVector();
         for (int i = 0; i < retry; ++i)
 		{
-			
-			if( !Physics.CheckSphere(randomVector * height, spherCollider.radius, mask))
+            if (!Physics.CheckSphere(random * height, appleRadius, mask))
 			{
-				return; //found a place where we dont collide with anything
+				return random; //found a place where we dont collide with anything
 			}
-
-			SetRandomVector();
+            random = GetRandomNormalVector();
 		}
-
 		Debug.LogError("something went wrong, we did not find space for our apple to spawn in");
-	}	
+        return random;
+	}
 
 	void OnEnable()
 	{
@@ -105,7 +108,7 @@ public class Apple : MonoBehaviour
 			OnEnable();
 		}
         if (!radiusChanged)
-            AvoidOverlap(height);
+            randomVector = AvoidOverlap(height, spherCollider.radius);
 
         transform.position = randomVector * height;
 	}

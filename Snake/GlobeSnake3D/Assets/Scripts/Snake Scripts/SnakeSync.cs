@@ -76,7 +76,7 @@ public class SnakeSync : Photon.MonoBehaviour
             for (int i = trailsRot.Length - 1; i >= 0; i--)
             {
                 Vector3 position = trailsRot[i] * Vector3.up;
-                position = Vector3.ClampMagnitude(position, GlobeSize.instance.radius + SnakeController.instance.aboveGlobe);
+                position = Vector3.ClampMagnitude(position, GlobeSize.instance.radius);
                 transform.GetChild(0).position = position;
                 transform.GetChild(0).rotation = trailsRot[i];
                 trail.myUpdate();

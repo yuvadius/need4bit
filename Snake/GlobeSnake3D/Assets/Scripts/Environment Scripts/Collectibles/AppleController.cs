@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 public class AppleController : MonoBehaviour {
 
+	public static AppleController instance;
+
 	public GameObject applePrefab;
     private bool CanHaveApples;
 	public int maxNumOfApples; int prev1;
 	public float ratePerSecond; float prev2;
-	float appleHeight;
-	private GlobeController globe;
-    private static AppleController instance;
+
 
 	List<Apple> appleList = new List<Apple>();
 	List<Apple> applePool = new List<Apple>();
@@ -26,11 +26,6 @@ public class AppleController : MonoBehaviour {
         }
     }
 
-	// Use this for initialization
-	void Start () {
-        globe = GameObject.Find("Game Controllers").GetComponent<GlobeController>();
-	}
-
     public void SetCanHaveApples(bool CanHaveApples)
     {
         this.CanHaveApples = CanHaveApples;
@@ -41,7 +36,6 @@ public class AppleController : MonoBehaviour {
     {
         if (CanHaveApples)
         {
-            appleHeight = globe.globeRadius;
             if (prev1 != maxNumOfApples)
             {
                 prev1 = maxNumOfApples;
@@ -74,7 +68,7 @@ public class AppleController : MonoBehaviour {
                     else
                     {
                         Vector3 randomVector = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
-                        randomVector = randomVector.normalized * appleHeight;
+                        randomVector = randomVector.normalized * GlobeSize.instance.radius;
                         GameObject appleObject = PhotonNetwork.InstantiateSceneObject("Apple", randomVector, Quaternion.LookRotation(randomVector * 100), 0, null);
                         apple = appleObject.GetComponent<Apple>();
                     }
@@ -96,13 +90,8 @@ public class AppleController : MonoBehaviour {
 	}
 
 	public void setHeight(float globeHeight){
-		appleHeight = globeHeight;
-		resetAppleHeight();
-	}
-
-	void resetAppleHeight(){
-		foreach(Apple apple in appleList){
-			apple.setHeight(appleHeight, true);
+		foreach(Apple apple in appleList) {
+			apple.setHeight(GlobeSize.instance.radius, true);
 		}
 	}
 }

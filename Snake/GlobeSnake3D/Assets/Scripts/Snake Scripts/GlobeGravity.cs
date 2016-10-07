@@ -3,18 +3,13 @@ using System.Collections;
 
 public class GlobeGravity : MonoBehaviour {
 
+	public static GlobeGravity instance;
 
-    float gravityAcceleration;
+	[Tooltip("The gravity")]
+	public float globeAcceleration;
 
-    public void set_globe_acceleration(float _globeAcceleration)
-    {
-        gravityAcceleration = _globeAcceleration;
-    }
-
-    public float get_gravity_accceleration()
-    {
-        return gravityAcceleration;
-    }
-
+	void Awake() {
+		instance = this;
+	}
 
 }

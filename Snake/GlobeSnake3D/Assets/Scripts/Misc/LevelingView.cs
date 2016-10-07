@@ -8,14 +8,12 @@ public class LevelingView : MonoBehaviour {
     public Text freePoints;
 
     LevelingSystem system;
-    GlobeController globe;
     SnakeController snake;
 
     bool isPointAvailable = false;
 
     void Start() {
         system = FindObjectOfType<LevelingSystem>();
-        globe = FindObjectOfType<GlobeController>();
         snake = FindObjectOfType<SnakeController>();
         checkNExecuteDeactivationCondition();
     }
@@ -41,7 +39,6 @@ public class LevelingView : MonoBehaviour {
     }
 
     public void PressedGlobe() {
-        globe.IncreaseGlobeRadius();
         system.ConsumePoint();
         checkNExecuteDeactivationCondition();
     }

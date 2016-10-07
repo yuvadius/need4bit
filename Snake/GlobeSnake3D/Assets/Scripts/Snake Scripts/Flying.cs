@@ -10,7 +10,6 @@ public class Flying : MonoBehaviour {
     }
 
     public GlobeGravity gravity;
-    public GlobeController globe;
 
     bool inAir;
     public bool isInAir() { return inAir; }
@@ -30,14 +29,14 @@ public class Flying : MonoBehaviour {
     }
 
     public void myUpdate() {
-        if (globe.globeRadius > transform.position.magnitude) {
+        if (GlobeSize.instance.radius > transform.position.magnitude) {
             attach_to_globe();
         }
         inAir = true;
 
 
         float upAcceleration = Input.GetKey(KeyCode.Space) && myHeight < maxFlyingHeight ? flyingAcceleration : 0;
-        flyingSpeed = Mathf.Clamp(flyingSpeed + upAcceleration * Time.deltaTime - gravity.get_gravity_accceleration() * Time.deltaTime, -Mathf.Abs(maxFallingSpeed), maxFlyingSpeed);
+        flyingSpeed = Mathf.Clamp(flyingSpeed + upAcceleration * Time.deltaTime - GlobeGravity.instance.globeAcceleration * Time.deltaTime, -Mathf.Abs(maxFallingSpeed), maxFlyingSpeed);
         flyingDistance = flyingSpeed * Time.deltaTime;
         fly(flyingDistance);
     }
@@ -52,12 +51,12 @@ public class Flying : MonoBehaviour {
     }
 
     void set_height(float height) {
-        transform.position = transform.position.normalized * (height + globe.globeRadius);
+        transform.position = transform.position.normalized * (height + GlobeSize.instance.radius);
     }
 
     void attach_to_globe() {
         inAir = false;
-        transform.position = transform.position.normalized * globe.globeRadius;
+        transform.position = transform.position.normalized * GlobeSize.instance.radius;
         myHeight = 0;
         reset();
     }

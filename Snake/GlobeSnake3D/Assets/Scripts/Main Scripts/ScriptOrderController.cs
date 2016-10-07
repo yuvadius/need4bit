@@ -11,7 +11,6 @@ public class ScriptOrderController : MonoBehaviour {
     public SnakeController snakeController;
     public TiltSide tiltSide;
     public AttachToPivot attachToPivot;
-    public GlobeController globeController;
 	public AppleController appleController;
 	public BannanaController bannanaController;
     public LerpToCameraPoint lerpToCameraPoint;
@@ -63,7 +62,6 @@ public class ScriptOrderController : MonoBehaviour {
 			inputDriver.myUpdate();
             cameraController.myUpdate();
             snakeController.myUpdate();
-            globeController.myUpdate();
             appleController.myUpdate();
             bannanaController.myUpdate();
 

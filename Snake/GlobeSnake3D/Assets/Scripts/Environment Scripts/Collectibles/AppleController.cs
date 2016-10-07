@@ -10,14 +10,8 @@ public class AppleController : MonoBehaviour {
     private bool CanHaveApples;
 	public int maxNumOfApples; int prev1;
 	public float ratePerSecond; float prev2;
-<<<<<<< HEAD
 
-=======
-	float appleHeight;
-	private GlobeController globe;
-    private static AppleController instance;
     public SphereCollider spherCollider;
->>>>>>> refs/remotes/origin/master
 
 	List<Apple> appleList = new List<Apple>();
 	List<Apple> applePool = new List<Apple>();
@@ -74,12 +68,9 @@ public class AppleController : MonoBehaviour {
                     }
                     else
                     {
-<<<<<<< HEAD
-                        Vector3 randomVector = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
-                        randomVector = randomVector.normalized * GlobeSize.instance.radius;
-=======
-                        Vector3 randomVector = Apple.AvoidOverlap(appleHeight, spherCollider.radius) * appleHeight;
->>>>>>> refs/remotes/origin/master
+                       // Vector3 randomVector = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
+                        //randomVector = randomVector.normalized * GlobeSize.instance.radius;
+                        Vector3 randomVector = Apple.AvoidOverlap(GlobeSize.instance.radius, spherCollider.radius) * GlobeSize.instance.radius;
                         GameObject appleObject = PhotonNetwork.InstantiateSceneObject("Apple", randomVector, Quaternion.LookRotation(randomVector * 100), 0, null);
                         apple = appleObject.GetComponent<Apple>();
                     }

@@ -7,6 +7,10 @@ public class Extrapolater : MonoBehaviour
     public ExtrapForward forwardRotator;
 	public ExtrapSide sideRotator;
 
+	void Awake() {
+		pivot.localPosition = GlobeSize.instance.radius * pivot.localPosition.normalized;
+	}
+
 	/// <summary>
 	/// 
 	/// </summary>

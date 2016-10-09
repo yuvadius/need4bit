@@ -23,7 +23,7 @@ public class RotationDeviceEmulator : MonoBehaviour {
 
 	void Awake() {
 		//What is this?
-		//myPivot.position = myPivot.position.normalized * GameObject.FindGameObjectWithTag("GameController").GetComponent<SnakeController>().tiltDevice.transform.position.magnitude;
+		myPivot.position = myPivot.position.normalized * GlobeSize.instance.radius;
 		myPivot.gameObject.SetActive(false);
 	}
 

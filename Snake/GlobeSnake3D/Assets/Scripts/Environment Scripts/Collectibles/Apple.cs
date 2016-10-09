@@ -13,16 +13,33 @@ public class Apple : MonoBehaviour
 	bool started = false;
 	public AppleController controller;
 
+
     void Awake()
     {
         controller = GameObject.Find("Apple System").GetComponent<AppleController>();
         transform.parent = controller.transform;
     }
 
-    void OnDestroy()
-    {
-        //print("Script was destroyed");
-    }
+
+	void OnEnable() {
+		if(started == false && !isNetworkApple) {
+			SetRandomVector();
+			started = true;
+		}
+
+		int leafAmount = Random.Range(0, (int)Mathf.Pow(2, leaves.Length));
+		for(int i = 0; i < leaves.Length; ++i) {
+			leaves[i].gameObject.SetActive((leafAmount & (int)Mathf.Pow(2, i)) != 0);
+		}
+	}
+
+	void Start() {
+		if( started == false) {
+			randomVector = transform.position.normalized;
+			started = true;
+		}
+	}
+
 
 	public void OnDisable()
 	{
@@ -69,21 +86,6 @@ public class Apple : MonoBehaviour
 		}
 		Debug.LogError("something went wrong, we did not find space for our apple to spawn in");
         return random;
-	}
-
-	void OnEnable()
-	{
-        if (started == false && !isNetworkApple)
-		{
-            SetRandomVector();
-			started = true;
-		}
-
-		int leafAmount = Random.Range(0, (int)Mathf.Pow(2, leaves.Length));
-		for (int i = 0; i < leaves.Length; ++i)
-		{
-			leaves[i].gameObject.SetActive((leafAmount & (int)Mathf.Pow(2, i)) != 0);
-		}
 	}
 
 	public void setController(AppleController controller)

@@ -36,27 +36,38 @@ public class MatchMaker : PunBehaviour
     void OnGUI()
     {
         GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString() + "/" + PhotonNetwork.GetPing().ToString());
-        //Show top 3 players in room
+        //Show top [maxScores] players in room(including urself)
         if (PhotonNetwork.connectionStateDetailed == ClientState.Joined)
         {
-            KeyValuePair<string, int>[] scores = new KeyValuePair<string, int>[PhotonNetwork.playerList.Count()];
+            KeyValuePair<KeyValuePair<string, int>, bool>[] scores = new KeyValuePair<KeyValuePair<string, int>, bool>[PhotonNetwork.playerList.Count()];
             int counter = 0;
-            foreach (var player in PhotonNetwork.playerList)
+            foreach (var player in PhotonNetwork.otherPlayers)
             {
-                scores[counter] = new KeyValuePair<string, int>(player.name, player.GetScore());
+                scores[counter] = new KeyValuePair<KeyValuePair<string, int>, bool>(new KeyValuePair<string, int>(player.name, player.GetScore()), false);
                 counter++;
             }
-            var sortedDict = from entry in scores orderby entry.Value descending select entry;//Sorts dict by descending score
+            scores[counter] = new KeyValuePair<KeyValuePair<string, int>, bool>(new KeyValuePair<string, int>(PhotonNetwork.playerName, PhotonNetwork.player.GetScore()), true);
+            var sortedDict = from entry in scores orderby entry.Key.Value descending select entry;//Sorts dict by descending score
             counter = 0;
-            foreach (KeyValuePair<string, int> entry in sortedDict)
+            int index = 0;
+            bool showedLocal = false;
+            foreach (KeyValuePair<KeyValuePair<string, int>, bool> entry in sortedDict)
             {
-                GUI.contentColor = Color.white;
-                counter++;
-                if (PhotonNetwork.playerName == entry.Key)
-                    GUI.contentColor = Color.yellow;
-                GUILayout.Label("#" + counter + "    " + entry.Key + ": " + entry.Value);
-                if (counter == maxScores)
-                    break;
+                index++;
+                if (counter < maxScores)
+                {
+                    if (showedLocal == true || counter != maxScores - 1 || (counter == maxScores - 1 && entry.Value))
+                    {
+                        counter++;
+                        GUI.contentColor = Color.white;
+                        if (entry.Value)
+                        {
+                            showedLocal = true;
+                            GUI.contentColor = Color.yellow;
+                        }
+                        GUILayout.Label("#" + index + "    " + entry.Key.Key + ": " + entry.Key.Value);
+                    }
+                }
             }
         }
     }

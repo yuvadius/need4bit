@@ -50,7 +50,10 @@ public class MatchMaker : PunBehaviour
             counter = 0;
             foreach (KeyValuePair<string, int> entry in sortedDict)
             {
+                GUI.contentColor = Color.white;
                 counter++;
+                if (PhotonNetwork.playerName == entry.Key)
+                    GUI.contentColor = Color.yellow;
                 GUILayout.Label("#" + counter + "    " + entry.Key + ": " + entry.Value);
                 if (counter == maxScores)
                     break;

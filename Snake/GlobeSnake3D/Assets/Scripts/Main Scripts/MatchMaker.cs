@@ -14,6 +14,7 @@ public class MatchMaker : PunBehaviour
     private static bool isSnake = false;
     private static int playerNumber;
     private static string skin = null;
+    private static int maxScores = 3;//max amount of scores in scoreboard
 
     void Awake()
     {
@@ -38,7 +39,6 @@ public class MatchMaker : PunBehaviour
         //Show top 3 players in room
         if (PhotonNetwork.connectionStateDetailed == ClientState.Joined)
         {
-            int maxScores = 3;
             KeyValuePair<string, int>[] scores = new KeyValuePair<string, int>[PhotonNetwork.playerList.Count()];
             int counter = 0;
             foreach (var player in PhotonNetwork.playerList)

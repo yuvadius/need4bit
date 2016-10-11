@@ -35,11 +35,37 @@ public class MatchMaker : PunBehaviour
     void OnGUI()
     {
         GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString() + "/" + PhotonNetwork.GetPing().ToString());
+        //Show top 3 players in room
+        if (PhotonNetwork.connectionStateDetailed == ClientState.Joined)
+        {
+            int maxScores = 3;
+            KeyValuePair<string, int>[] scores = new KeyValuePair<string, int>[PhotonNetwork.playerList.Count()];
+            int counter = 0;
+            foreach (var player in PhotonNetwork.playerList)
+            {
+                scores[counter] = new KeyValuePair<string, int>(player.name, player.GetScore());
+                counter++;
+            }
+            var sortedDict = from entry in scores orderby entry.Value descending select entry;//Sorts dict by descending score
+            counter = 0;
+            foreach (KeyValuePair<string, int> entry in sortedDict)
+            {
+                counter++;
+                GUILayout.Label("#" + counter + "    " + entry.Key + ": " + entry.Value);
+                if (counter == maxScores)
+                    break;
+            }
+        }
     }
 
     public override void OnJoinedLobby()
     {
         PhotonNetwork.JoinOrCreateRoom("Europe", null, null);
+    }
+
+    public override void OnJoinedRoom()
+    {
+        PhotonNetwork.playerName = "Player" + PhotonNetwork.playerList.Count();
     }
 
     public static bool CreatePlayer()
@@ -48,13 +74,12 @@ public class MatchMaker : PunBehaviour
         {
             if (skin == null)
             {
+                ExitGames.Client.Photon.Hashtable properties = new ExitGames.Client.Photon.Hashtable();
                 int skinNumber = GetSkin();
                 skin = Enum.GetName(typeof(skins), skinNumber);
-
-				//What is this thing??
-                ExitGames.Client.Photon.Hashtable style = new ExitGames.Client.Photon.Hashtable();
-                style.Add("Skin", skinNumber);
-                PhotonNetwork.player.SetCustomProperties(style);
+                properties.Add("Skin", skinNumber);
+                PhotonNetwork.player.SetCustomProperties(properties);
+                PhotonNetwork.player.SetScore(0);
             }
             Debug.Log("Your skin is: " + skin);
             snake = PhotonNetwork.Instantiate("Remote Snake " + skin, new Vector3(), Quaternion.identity, 0);
@@ -86,6 +111,7 @@ public class MatchMaker : PunBehaviour
         {
             PhotonNetwork.Destroy(snake);
             isSnake = false;
+            PhotonNetwork.player.SetScore(0);
         }
     }
 

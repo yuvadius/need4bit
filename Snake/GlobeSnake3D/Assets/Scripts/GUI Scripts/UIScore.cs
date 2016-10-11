@@ -17,6 +17,8 @@ public class UIScore : MonoBehaviour {
 
     public void AddApple() {
         appleCountLbl.text = (++appleCount).ToString();
+        if (PhotonNetwork.offlineMode == false)
+            PhotonNetwork.player.AddScore(1);
     }
 
     public void AddBannana() {

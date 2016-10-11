@@ -5,10 +5,6 @@ public class SnakeController : MonoBehaviour {
 
 	public static SnakeController instance;
 
-
-    public float firstSegmentDistance = 0.28f; float prev1;
-    public float segmentDistance = 0.19f; float prev2;
-
     [Tooltip("How much speed there should be")]
     public float constSpeed = 1f;
     [Tooltip("How much speed there actually is right now")]
@@ -52,8 +48,6 @@ public class SnakeController : MonoBehaviour {
 
     void Start()
     {
-        prev1 = firstSegmentDistance;
-        prev2 = segmentDistance;
         prev3 = moveSpeed;
         prev4 = turnSpeed;
         prev5 = maxTiltAngle;
@@ -64,8 +58,6 @@ public class SnakeController : MonoBehaviour {
         prev10 = maxFlyingHeight;
         prev11 = maxFallingSpeed;
 
-        trail.set_first_segment_distance(firstSegmentDistance);
-        trail.set_segment_distance(segmentDistance);
         moveDevice.set_move_speed(moveSpeed);
 		moveDevice.setMaxHeightAndBonusSpeed(maxFlyingHeight, 10);
         turnDevice.set_turn_speed(turnSpeed);
@@ -80,18 +72,6 @@ public class SnakeController : MonoBehaviour {
 
     public void myUpdate()
     {
-        if (firstSegmentDistance != prev1)
-        {
-            prev1 = firstSegmentDistance;
-            trail.set_first_segment_distance(firstSegmentDistance);
-        }
-
-        if (segmentDistance != prev2)
-        {
-            prev2 = segmentDistance;
-            trail.set_segment_distance(segmentDistance);
-        }
-
         if (moveSpeed != prev3)
         {
             prev3 = moveSpeed;

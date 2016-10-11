@@ -22,7 +22,6 @@ public class SnakeSync : Photon.MonoBehaviour
 
 		if (photonView.isMine)
 		{
-            //gameObject.AddComponent<PhotonLagSimulationGui>();
             rotationDevice = GameObject.FindGameObjectWithTag("RotationDevice");
             finalSpeeder = FindObjectOfType<RotateForward>();
 		}
@@ -30,24 +29,8 @@ public class SnakeSync : Photon.MonoBehaviour
         {
             globe = GameObject.Find("Game Controllers");
             trail = GetComponentInChildren<Trail>();
-            trail.isMine = false;
-        }
-	}
-
-    void Start()
-    {
-        if (!photonView.isMine)
-        {
-            if (trail.hasFirst == false)
-            {
-                trail.SetFirst();
-                trail.hasFirst = true;
-            }
-
-			trail.set_first_segment_distance(firstSegmentDistance);
-			trail.set_segment_distance(segmentDistance);
 		}
-    }
+	}
 
     void FixedUpdate()
     {

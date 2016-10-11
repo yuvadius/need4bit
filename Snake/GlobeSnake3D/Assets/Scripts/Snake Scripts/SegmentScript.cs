@@ -18,7 +18,6 @@ public class SegmentScript : MonoBehaviour
     public void set_first(LinkedListNode<TrailPoint> _before, float distance)
     {
         before = _before;
-		before.Value.take ();
         after = null;
         transform.position = before.Value.pos;
         transform.rotation = before.Value.rot;
@@ -68,11 +67,9 @@ public class SegmentScript : MonoBehaviour
 
     void go_next()
     {
-		before.Value.release();
         before = after;
         after = after.Previous;
 
-		before.Value.take ();
 		transform.position = before.Value.pos;
 		transform.rotation = before.Value.rot;
     }

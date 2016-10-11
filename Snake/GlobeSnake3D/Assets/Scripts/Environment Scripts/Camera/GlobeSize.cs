@@ -19,6 +19,13 @@ public class GlobeSize : MonoBehaviour {
 		}
 	}
 
+	private float _circumference;
+	public float circumference {
+		get {
+			return _circumference;
+        }
+	}
+
 	void Awake() {
 		instance = this;
 		transform.localScale = Vector3.one;
@@ -32,6 +39,7 @@ public class GlobeSize : MonoBehaviour {
     public void SetRadius(float radius){
         this.radius = radius;
         scale();
+		_circumference = 2 * Mathf.PI * radius;
     }
 
     void scale() {

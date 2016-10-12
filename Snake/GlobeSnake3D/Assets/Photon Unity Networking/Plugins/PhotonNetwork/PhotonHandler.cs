@@ -17,6 +17,9 @@ using Debug = UnityEngine.Debug;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using SupportClassPun = ExitGames.Client.Photon.SupportClass;
 
+#if UNITY_5_5_OR_NEWER
+using UnityEngine.Profiling;
+#endif
 
 /// <summary>
 /// Internal Monobehaviour that allows Photon to run an Update loop.

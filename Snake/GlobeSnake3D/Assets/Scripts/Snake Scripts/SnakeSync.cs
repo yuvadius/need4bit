@@ -55,7 +55,7 @@ public class SnakeSync : Photon.MonoBehaviour
         if (!photonView.isMine)
         {
             for (int i = 0; i < segmentLength; i++)
-                trail.addSegment();
+                trail.AddSegment();
             for (int i = trailsRot.Length - 1; i >= 0; i--)
             {
                 Vector3 position = trailsRot[i] * Vector3.up;
@@ -78,7 +78,7 @@ public class SnakeSync : Photon.MonoBehaviour
                 trailsRot[counter] = trailPoint.rot;
                 counter++;
             }
-            photonView.RPC("CreateTrail", other, trailsRot, SnakeController.instance.trail.segmentList.Count);
+            photonView.RPC("CreateTrail", other, trailsRot, SnakeController.instance.trail.segments.Count);
         }
     }
 

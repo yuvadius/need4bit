@@ -27,7 +27,7 @@ public class Trail : Photon.MonoBehaviour {
 
 	public GameObject segment;
 
-	public LinkedList<SegmentScript> segmentList = new LinkedList<SegmentScript>();
+	public List<SegmentScript> segments = new List<SegmentScript>();
 
 	public LinkedList<TrailPoint> trailPointList = new LinkedList<TrailPoint>();
 	
@@ -40,60 +40,68 @@ public class Trail : Photon.MonoBehaviour {
 
 	public void myUpdate() {
 
+		//first we want to add a new trail point this frame to the snake trail,
+		//we should always have at least one before doing anythign else.
 		addTrailPoint();
 
-		LinkedListNode<SegmentScript> segmentRunner = segmentList.Last;
-		LinkedListNode<TrailPoint> trailRunner = trailPointList.First;
-		float trailWay = 0; //this is how much circular distance was already covered
+		//we need to make sure we can now run on the trail points and set all the segments
+		//properly this frame.
+		initTrailRunner();
 
-		float gapDistanceMultiplier = 2 * Mathf.PI * GlobeSize.instance.radius / 360f;
+		//going to go over all the segments and use the trail runner to find them a place to be
+		for(int i=0; i<segments.Count; ++i) 
+			setSegmentIntoPlace(segments[i]);
 
-		while(segmentRunner != null) {
+		//if we have any segments that need to be created, lets do so
+		if( create > 0)
+			addSegment();
 
-			float gap = gapSize; //this is how much we need to move away from the point
-
-			TrailPoint current = trailRunner.Value;
-			TrailPoint next = trailRunner.Next.Value;
-
-			float distance = current.DistanceCircular(next) - trailWay; //this is how much distance is left on this trail segment
-
-			if( gap <= distance) {
-
-			}
-
-
-			//segmentRunner.Value.move(delta);
-			segmentRunner = segmentRunner.Previous;
-		}
-
-		if(create > 0) {
-			create_segment();
-			if(MatchMaker.instance.mySync != null) {
-				MatchMaker.instance.mySync.CreateSegment();
-			}
-			create--;
-		}
-
+		//erase any unused and not needed trail points
 		trim_tail();
 	}
 
-	void addTrailPoint() {
-		Vector3 newPos = transform.position;
-		Quaternion newRot = transform.rotation;
+	public void AddSegment() {
+		create++;
+	}
 
+
+
+	#region Trail Runner
+
+	void addTrailPoint() {
+		Vector3 newPos = transform.position.normalized;
+		Quaternion newRot = transform.rotation;
 		TrailPoint point = new TrailPoint(newPos, newRot);
 		trailPointList.AddFirst(point);
 	}
 
-	public void addSegment() {
-		create++;
+	LinkedListNode<TrailPoint> trailRunner;
+
+	void initTrailRunner() {
+		trailRunner = trailPointList.Last;
+    }
+
+	#endregion
+
+	void setSegmentIntoPlace(SegmentScript segment) {
+
+		//move trail runner by gap amount
+
+	}
+
+	void addSegment() {
+		create_segment();
+		if(MatchMaker.instance.mySync != null) {
+			MatchMaker.instance.mySync.CreateSegment();
+		}
+		create--;
 	}
 
 	public void create_segment() {
 		SegmentScript newSegment = Instantiate(segment).GetComponent<SegmentScript>();
 		newSegment.transform.SetParent(transform.parent);
 		newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
-		segmentList.AddFirst(newSegment);
+		segments.Add(newSegment);
 		newSegment.set_first(trailPointList.First, tailLength);
 		tailLength += gapSize;
 	}

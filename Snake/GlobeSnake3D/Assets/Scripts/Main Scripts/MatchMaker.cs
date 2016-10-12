@@ -137,7 +137,7 @@ public class MatchMaker : PunBehaviour
     public override void OnPhotonPlayerConnected(PhotonPlayer other)
     {
         Debug.Log("OnPhotonPlayerConnected() " + other.name); // not seen if you're the player connecting
-        if (SnakeController.instance.trail.segmentList.Count != 0 && isSnake)
+        if (SnakeController.instance.trail.segments.Count != 0 && isSnake)
         {
             mySync.syncTrail(other);
         }

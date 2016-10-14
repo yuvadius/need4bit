@@ -138,7 +138,6 @@ public class MatchMaker : PunBehaviour
 
     public override void OnCreatedRoom()
     {
-        // PhotonNetwork.InstantiateSceneObject("Globe", new Vector3(), Quaternion.identity, 0, null);
     }
 
     public override void OnPhotonPlayerConnected(PhotonPlayer other)

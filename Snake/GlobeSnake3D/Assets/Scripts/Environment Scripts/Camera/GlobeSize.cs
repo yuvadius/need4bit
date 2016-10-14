@@ -7,17 +7,36 @@ public class GlobeSize : MonoBehaviour {
 	public MeshRenderer globeMesh;
 
     float starterRadius = 1f; //this must the size of the globe in the scene metrics. by radius.
-	[HideInInspector]
-	public float radius;
+    private float _radius = 1;
+    [HideInInspector]
+    public float radius
+    {
+        get
+        {
+            return _radius;   
+        }
+        set
+        {
+            if (PhotonNetwork.offlineMode || PhotonNetwork.isMasterClient)
+            {
+                _radius = value;
+                scale();
+            }
+        }
+    }
 
-	public float surface {
-		get {
-			return 4 * Mathf.PI * radius * radius;
-		}
-		set {
-			SetRadius(Mathf.Sqrt(value / (4 * Mathf.PI)));
-		}
-	}
+    public float surface
+    {
+        get
+        {
+            return 4 * Mathf.PI * radius * radius;
+        }
+        set
+        {
+            if (PhotonNetwork.offlineMode || PhotonNetwork.isMasterClient)
+                SetRadius(Mathf.Sqrt(value / (4 * Mathf.PI)));
+        }
+    }
 
 	void Awake() {
 		instance = this;
@@ -31,7 +50,6 @@ public class GlobeSize : MonoBehaviour {
 
     public void SetRadius(float radius){
         this.radius = radius;
-        scale();
     }
 
     void scale() {
@@ -43,4 +61,14 @@ public class GlobeSize : MonoBehaviour {
 		AppleController.instance.setHeight(radius);
 	}
 
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+            stream.SendNext(radius);
+        else
+        {
+            _radius = (float)stream.ReceiveNext();
+            scale();
+        }
+    }
 }

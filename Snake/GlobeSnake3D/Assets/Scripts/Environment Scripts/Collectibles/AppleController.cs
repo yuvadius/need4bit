@@ -13,7 +13,7 @@ public class AppleController : MonoBehaviour {
 
     public SphereCollider spherCollider;
 
-	List<Apple> appleList = new List<Apple>();
+	public List<Apple> appleList = new List<Apple>();
 	List<Apple> applePool = new List<Apple>();
 
     void Awake()
@@ -74,7 +74,6 @@ public class AppleController : MonoBehaviour {
                         GameObject appleObject = PhotonNetwork.InstantiateSceneObject("Apple", randomVector, Quaternion.LookRotation(randomVector * 100), 0, null);
                         apple = appleObject.GetComponent<Apple>();
                     }
-                    appleList.Add(apple);
                 }
             }
         }

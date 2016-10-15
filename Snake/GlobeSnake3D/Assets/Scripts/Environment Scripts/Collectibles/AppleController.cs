@@ -52,28 +52,9 @@ public class AppleController : MonoBehaviour {
                 {
                     //create apple
                     Apple apple = null;
-                    if (PhotonNetwork.offlineMode)
-                    {
-                        if (applePool.Count > 0)
-                        {
-                            apple = applePool[applePool.Count - 1];
-                            applePool.RemoveAt(applePool.Count - 1);
-                        }
-                        else
-                        {
-                            apple = (GameObject.Instantiate(applePrefab)).GetComponent<Apple>();
-                        }
-                        apple.gameObject.name = "Apple";
-                        apple.gameObject.SetActive(true);
-                    }
-                    else
-                    {
-                       // Vector3 randomVector = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
-                        //randomVector = randomVector.normalized * GlobeSize.instance.radius;
-                        Vector3 randomVector = Apple.AvoidOverlap(GlobeSize.instance.radius, spherCollider.radius) * GlobeSize.instance.radius;
-                        GameObject appleObject = PhotonNetwork.InstantiateSceneObject("Apple", randomVector, Quaternion.LookRotation(randomVector * 100), 0, null);
-                        apple = appleObject.GetComponent<Apple>();
-                    }
+                    Vector3 randomVector = Apple.AvoidOverlap(GlobeSize.instance.radius, spherCollider.radius) * GlobeSize.instance.radius;
+                    GameObject appleObject = PhotonNetwork.InstantiateSceneObject("Apple", randomVector, Quaternion.LookRotation(randomVector * 100), 0, null);
+                    apple = appleObject.GetComponent<Apple>();
                 }
             }
         }

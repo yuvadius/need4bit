@@ -19,6 +19,7 @@ public class MatchMaker : PunBehaviour
 
     void Awake()
     {
+        //SetOfflineMode();
         if(instance)
             DestroyImmediate(gameObject);
         else
@@ -26,6 +27,16 @@ public class MatchMaker : PunBehaviour
             DontDestroyOnLoad(gameObject);
             instance = this;
         }
+    }
+
+    /// <summary>
+    /// Puts your game on Offline/SinglePlayer mode
+    /// </summary>
+    void SetOfflineMode()
+    {
+        PhotonNetwork.offlineMode = true;
+        if(PhotonNetwork.room == null)
+            PhotonNetwork.CreateRoom("Offline Mode");
     }
 
     void Start()
@@ -36,9 +47,12 @@ public class MatchMaker : PunBehaviour
 
     void OnGUI()
     {
-        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString() + "/" + PhotonNetwork.GetPing().ToString());
+        if (PhotonNetwork.offlineMode)
+            GUILayout.Label("Offline Mode");
+        else
+            GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString() + "/" + PhotonNetwork.GetPing().ToString());
         //Show top [maxScores] players in room(including urself)
-        if (PhotonNetwork.connectionStateDetailed == ClientState.Joined)
+        if (PhotonNetwork.connectionStateDetailed == ClientState.Joined && !PhotonNetwork.offlineMode)
         {
             KeyValuePair<KeyValuePair<string, int>, bool>[] scores = new KeyValuePair<KeyValuePair<string, int>, bool>[PhotonNetwork.playerList.Count()];
             int counter = 0;
@@ -114,7 +128,10 @@ public class MatchMaker : PunBehaviour
             isSnake = true;
             return true;
         }
-        return false;
+        else if (PhotonNetwork.offlineMode)
+            return true;
+        else
+            return false;
     }
 
     private static int GetSkin()

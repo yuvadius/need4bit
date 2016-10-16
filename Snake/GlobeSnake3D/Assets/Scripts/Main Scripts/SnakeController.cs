@@ -32,6 +32,7 @@ public class SnakeController : MonoBehaviour {
     public float tiltSpeed = 20f; float prev6;
     public float tiltReturnSpeed = 40f; float prev7;
 
+    public SkinnedMeshRenderer skin;
     public Trail trail;
     public RotateForward moveDevice;
     public RotateSide turnDevice;

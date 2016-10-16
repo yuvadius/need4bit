@@ -4,20 +4,22 @@ using System.Linq;
 using System.Collections.Generic;
 using Photon;
 
-enum skins { Red, Green, Blue, Yellow };
+enum skins { Red, RedGreen, Blue, Yellow };
 
 public class MatchMaker : PunBehaviour
 {
+    [HideInInspector]
     public SnakeSync mySync;
     public static MatchMaker instance;
     private static GameObject snake;
     private static bool isSnake = false;
     private static int playerNumber;
     private static string skin = null;
-    private static int maxScores = 3;//max amount of scores in scoreboard
+    public int maxScores;//max amount of scores in scoreboard
 
     void Awake()
     {
+        //SetOfflineMode();
         if(instance)
             DestroyImmediate(gameObject);
         else
@@ -25,6 +27,16 @@ public class MatchMaker : PunBehaviour
             DontDestroyOnLoad(gameObject);
             instance = this;
         }
+    }
+
+    /// <summary>
+    /// Puts your game on Offline/SinglePlayer mode
+    /// </summary>
+    void SetOfflineMode()
+    {
+        PhotonNetwork.offlineMode = true;
+        if(PhotonNetwork.room == null)
+            PhotonNetwork.CreateRoom("Offline Mode");
     }
 
     void Start()
@@ -35,9 +47,12 @@ public class MatchMaker : PunBehaviour
 
     void OnGUI()
     {
-        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString() + "/" + PhotonNetwork.GetPing().ToString());
+        if (PhotonNetwork.offlineMode)
+            GUILayout.Label("Offline Mode");
+        else
+            GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString() + "/" + PhotonNetwork.GetPing().ToString());
         //Show top [maxScores] players in room(including urself)
-        if (PhotonNetwork.connectionStateDetailed == ClientState.Joined)
+        if (PhotonNetwork.connectionStateDetailed == ClientState.Joined && !PhotonNetwork.offlineMode)
         {
             KeyValuePair<KeyValuePair<string, int>, bool>[] scores = new KeyValuePair<KeyValuePair<string, int>, bool>[PhotonNetwork.playerList.Count()];
             int counter = 0;
@@ -75,11 +90,19 @@ public class MatchMaker : PunBehaviour
     public override void OnJoinedLobby()
     {
         PhotonNetwork.JoinOrCreateRoom("Europe", null, null);
+        SetPlayerProperties("Skin", -1);//Only here u can create new properties, strange i know
     }
 
     public override void OnJoinedRoom()
     {
         PhotonNetwork.playerName = "Player" + PhotonNetwork.playerList.Count();
+    }
+
+    public static void SetPlayerProperties(string key, int value)
+    {
+        ExitGames.Client.Photon.Hashtable style = new ExitGames.Client.Photon.Hashtable();
+        style.Add(key, value);
+        PhotonNetwork.player.SetCustomProperties(style);
     }
 
     public static bool CreatePlayer()
@@ -88,34 +111,35 @@ public class MatchMaker : PunBehaviour
         {
             if (skin == null)
             {
-                ExitGames.Client.Photon.Hashtable properties = new ExitGames.Client.Photon.Hashtable();
                 int skinNumber = GetSkin();
                 skin = Enum.GetName(typeof(skins), skinNumber);
-                properties.Add("Skin", skinNumber);
-                PhotonNetwork.player.SetCustomProperties(properties);
+                SetPlayerProperties("Skin", skinNumber);
                 PhotonNetwork.player.SetScore(0);
             }
             Debug.Log("Your skin is: " + skin);
             snake = PhotonNetwork.Instantiate("Remote Snake " + skin, new Vector3(), Quaternion.identity, 0);
-
-			//Why are you destroying what you just instantiated? dont do that.
-			foreach (Transform child in snake.transform)
-                GameObject.Destroy(child.gameObject);
-
-            snake.name = "Snake Syncer";
             instance.mySync = snake.GetComponent<SnakeSync>();
+            SnakeController.instance.skin.material = instance.mySync.GetComponentInChildren<SkinnedMeshRenderer>().material;
+            SnakeController.instance.trail.segment = instance.mySync.GetComponentInChildren<Trail>().segment;
+            //Why are you destroying what you just instantiated? dont do that.
+            foreach (Transform child in snake.transform)
+                GameObject.Destroy(child.gameObject);
+            snake.name = "Snake Syncer";
             isSnake = true;
             return true;
         }
-        return false;
+        else if (PhotonNetwork.offlineMode)
+            return true;
+        else
+            return false;
     }
 
     private static int GetSkin()
     {
-        return 1;
         int[] colors = new int[Enum.GetValues(typeof(skins)).Length];
         foreach (var player in PhotonNetwork.otherPlayers)
-            colors[(int)player.customProperties["Skin"]]++;
+            if ((int)player.customProperties["Skin"] != -1)//Makes sure if the player has a skin yet
+                colors[(int)player.customProperties["Skin"]]++;
         return colors.ToList().IndexOf(colors.Min());
     } 
 
@@ -131,7 +155,7 @@ public class MatchMaker : PunBehaviour
 
     public override void OnCreatedRoom()
     {
-        // PhotonNetwork.InstantiateSceneObject("Globe", new Vector3(), Quaternion.identity, 0, null);
+        //PhotonNetwork.InstantiateSceneObject("Globe", new Vector3(), Quaternion.identity, 0, null);
     }
 
     public override void OnPhotonPlayerConnected(PhotonPlayer other)

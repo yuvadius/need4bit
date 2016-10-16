@@ -54,7 +54,6 @@ public class AppleCollide : Photon.MonoBehaviour {
     [PunRPC]
     void NetworkDestroyApple(int pvID)
     {
-        me.controller.destroy(me);
         PhotonNetwork.Destroy(PhotonView.Find(pvID));
     }
 }

@@ -18,8 +18,14 @@ public class Apple : MonoBehaviour
     {
         controller = GameObject.Find("Apple System").GetComponent<AppleController>();
         transform.parent = controller.transform;
+        controller.appleList.Add(this);
     }
 
+    void OnDestroy()
+    {
+        controller.destroy(this);
+        //We can also add a destroy animation here
+    }
 
 	void OnEnable() {
 		if(started == false && !isNetworkApple) {

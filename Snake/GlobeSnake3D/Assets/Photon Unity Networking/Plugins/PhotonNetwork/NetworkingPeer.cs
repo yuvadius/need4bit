@@ -130,23 +130,31 @@ public enum DisconnectCause
 {
     /// <summary>Server actively disconnected this client.
     /// Possible cause: The server's user limit was hit and client was forced to disconnect (on connect).</summary>
-    DisconnectByServerUserLimit,
+    DisconnectByServerUserLimit = StatusCode.DisconnectByServerUserLimit,
+
     /// <summary>Connection could not be established.
     /// Possible cause: Local server not running.</summary>
-    ExceptionOnConnect,
+    ExceptionOnConnect = StatusCode.ExceptionOnConnect,
+
     /// <summary>Timeout disconnect by server (which decided an ACK was missing for too long).</summary>
-    DisconnectByServerTimeout,
+    DisconnectByServerTimeout = StatusCode.DisconnectByServer,
+
     /// <summary>Server actively disconnected this client.
     /// Possible cause: Server's send buffer full (too much data for client).</summary>
-    DisconnectByServerLogic,
+    DisconnectByServerLogic = StatusCode.DisconnectByServerLogic,
+
     /// <summary>Some exception caused the connection to close.</summary>
-    Exception,
-    /// <summary>The Photon Cloud rejected the sent AppId. Check your Dashboard and make sure the AppId you use is complete and correct.</summary>
-    InvalidAuthentication,
-    /// <summary>Authorization on the Photon Cloud failed because the concurrent users (CCU) limit of the app's subscription is reached.</summary>
-    MaxCcuReached,
-    /// <summary>Authorization on the Photon Cloud failed because the app's subscription does not allow to use a particular region's server.</summary>
-    InvalidRegion,
+    Exception = StatusCode.Exception,
+
+    /// <summary>(32767) The Photon Cloud rejected the sent AppId. Check your Dashboard and make sure the AppId you use is complete and correct.</summary>
+    InvalidAuthentication = ErrorCode.InvalidAuthentication,
+
+    /// <summary>(32757) Authorization on the Photon Cloud failed because the concurrent users (CCU) limit of the app's subscription is reached.</summary>
+    MaxCcuReached = ErrorCode.MaxCcuReached,
+
+    /// <summary>(32756) Authorization on the Photon Cloud failed because the app's subscription does not allow to use a particular region's server.</summary>
+    InvalidRegion = ErrorCode.InvalidRegion,
+
     /// <summary>The security settings for client or server don't allow a connection (see remarks).</summary>
     /// <remarks>
     /// A common cause for this is that browser clients read a "crossdomain" file from the server.
@@ -155,14 +163,17 @@ public enum DisconnectCause
     /// If it fails, read:
     /// http://doc.exitgames.com/photon-server/PolicyApp
     /// </remarks>
-    SecurityExceptionOnConnect,
+    SecurityExceptionOnConnect = StatusCode.SecurityExceptionOnConnect,
+
     /// <summary>Timeout disconnect by client (which decided an ACK was missing for too long).</summary>
-    DisconnectByClientTimeout,
+    DisconnectByClientTimeout = StatusCode.TimeoutDisconnect,
+
     /// <summary>Exception in the receive-loop.
     /// Possible cause: Socket failure.</summary>
-    InternalReceiveException,
-    /// <summary>The Authentication ticket expired. Handle this by connecting again (which includes an authenticate to get a fresh ticket).</summary>
-    AuthenticationTicketExpired,
+    InternalReceiveException = StatusCode.ExceptionOnReceive,
+
+    /// <summary>(32753) The Authentication ticket expired. Handle this by connecting again (which includes an authenticate to get a fresh ticket).</summary>
+    AuthenticationTicketExpired = 32753,
 }
 
 /// <summary>Available server (types) for internally used field: server.</summary>
@@ -652,7 +663,6 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                     Debug.LogWarning("Using PhotonServerSettings.Protocol when leaving the NameServer (AuthMode is AuthOnceWss): " + PhotonNetwork.PhotonServerSettings.Protocol);
                 }
                 protocolOverride = PhotonNetwork.PhotonServerSettings.Protocol;
-                this.SocketImplementation = null;
             }
             else
             {
@@ -661,21 +671,30 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                     Debug.LogWarning("Using WebSocket to connect NameServer (AuthMode is AuthOnceWss).");
                 }
                 protocolOverride = ConnectionProtocol.WebSocketSecure;
-                #if UNITY_XBOXONE
-                this.SocketImplementation = typeof(SocketWebTcp);
-                #endif
             }
         }
+
+        // to support WebGL export in Unity, we find and assign the SocketWebTcp class (if it's in the project).
+        // alternatively class SocketWebTcp might be in the Photon3Unity3D.dll
+        Type socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcp, Assembly-CSharp", false);
+        if (socketTcp == null)
+        {
+            socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcp, Assembly-CSharp-firstpass", false);
+        }
+        if (socketTcp != null)
+        {
+            this.SocketImplementationConfig[ConnectionProtocol.WebSocket] = socketTcp;
+            this.SocketImplementationConfig[ConnectionProtocol.WebSocketSecure] = socketTcp;
+        }
+
 
         #if UNITY_WEBGL
         if (this.TransportProtocol != ConnectionProtocol.WebSocket && this.TransportProtocol != ConnectionProtocol.WebSocketSecure)
         {
 			Debug.Log("WebGL only supports WebSocket protocol. Overriding PhotonServerSettings.");
 	        protocolOverride = ConnectionProtocol.WebSocketSecure;
-            this.SocketImplementation = typeof(SocketWebTcp);
 		}
         #endif
-
 
 
         #if !UNITY_EDITOR && (UNITY_WINRT)
@@ -695,21 +714,19 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
             protocolOverride = ConnectionProtocol.Udp;
 
             #if !UNITY_EDITOR && (UNITY_PS3 || UNITY_ANDROID)
-            Debug.Log("Using class SocketUdpNativeDynamic");
-            this.SocketImplementation = typeof(SocketUdpNativeDynamic);
+            this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeDynamic);
             PhotonHandler.PingImplementation = typeof(PingNativeDynamic);
             #elif !UNITY_EDITOR && UNITY_IPHONE
-            Debug.Log("Using class SocketUdpNativeStatic");
-            this.SocketImplementation = typeof(SocketUdpNativeStatic);
+            this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeStatic);
             PhotonHandler.PingImplementation = typeof(PingNativeStatic);
             #elif !UNITY_EDITOR && UNITY_WINRT
             // this automatically uses a separate assembly-file with Win8-style Socket usage (not possible in Editor)
             #else
-            this.SocketImplementation = typeof(SocketUdp);
+            this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdp);
             PhotonHandler.PingImplementation = typeof(PingMonoEditor);
             #endif
 
-            if (this.SocketImplementation == null)
+            if (this.SocketImplementationConfig[ConnectionProtocol.Udp] == null)
             {
                 Debug.Log("No socket implementation set for 'NoSocket' assembly. Please check your settings.");
             }
@@ -734,11 +751,6 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         }
 
         this.TransportProtocol = protocolOverride;
-
-        if (this.EncryptionMode == EncryptionMode.DatagramEncryption && this.TransportProtocol != ConnectionProtocol.Udp)
-        {
-            Debug.LogError("EncryptionMode is DatagramEncryption but TransportProtocol is not UDP! Fix your PhotonServerSettings.");
-        }
     }
 
     /// <summary>
@@ -2094,6 +2106,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                     this.AuthValues.Token = null;  // invalidate any custom auth secrets
                 }
 
+				/* JF: we need this when reconnecting and joining.
                 if (this.ServerAddress.Equals(this.GameServerAddress))
                 {
                     this.GameServerAddress = null;
@@ -2102,6 +2115,8 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 {
                     this.ServerAddress = null;
                 }
+                */
+
                 this.Disconnect();
                 break;
 

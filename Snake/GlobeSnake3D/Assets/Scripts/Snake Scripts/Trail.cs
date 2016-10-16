@@ -27,7 +27,7 @@ public class TrailPoint {
 public class Trail : Photon.MonoBehaviour {
 
 	public TrailRunner trailer;
-
+	public bool isMine;
 	public GameObject segment;
 	public List<SegmentScript> segments = new List<SegmentScript>();
 	public LinkedList<TrailPoint> trailPointList = new LinkedList<TrailPoint>();
@@ -37,6 +37,8 @@ public class Trail : Photon.MonoBehaviour {
 	int create = 0;
 
 	int trailNum = 0;
+
+
 
 #if UNITY_EDITOR
 	[Header("Editor Only")]
@@ -153,7 +155,8 @@ public class Trail : Photon.MonoBehaviour {
 	#endregion
 
 	void addSegment() {
-		create_segment().myCollider.enabled = false; //should be turned off for me
+		SegmentScript segment = create_segment();
+		segment.myCollider.enabled = !isMine;
 		create--;
 	}
 

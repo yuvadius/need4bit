@@ -25,9 +25,14 @@ public class RotationDeviceEmulator : MonoBehaviour {
 		//What is this?
 		myPivot.position = myPivot.position.normalized * GlobeSize.instance.radius;
 		myPivot.gameObject.SetActive(false);
-	}
+		GlobeSize.instance.radiusChangedAction += radiusChangedAction;
+    }
 
-	void FixedUpdate() {
+	void OnDestroy() {
+		GlobeSize.instance.radiusChangedAction -= radiusChangedAction;
+    }
+
+	public void myUpdate() {
 		if(set == true) {
 			if(newExtrap == false) {
 				nextRot = extrapo.RotateForward(degsPerSec, 1f);
@@ -71,5 +76,9 @@ public class RotationDeviceEmulator : MonoBehaviour {
 			this.emulationPoint = emulationPoint;
 			newExtrap = true;
 		}
+	}
+
+	void radiusChangedAction(float radius) {
+		myPivot.position = myPivot.position.normalized * radius;
 	}
 }

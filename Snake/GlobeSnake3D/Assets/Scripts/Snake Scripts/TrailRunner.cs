@@ -13,7 +13,7 @@ public class TrailRunner : MonoBehaviour {
 
 		transform.Rotate(normal, degrees, Space.World);
 
-		pivot.LookAt(Vector3.zero, p1);
+		pivot.LookAt(Vector3.zero, p1 + (p1 - p2));
 
 	}
 }

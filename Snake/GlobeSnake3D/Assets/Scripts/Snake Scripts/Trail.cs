@@ -11,11 +11,9 @@ public class TrailPoint {
 			return _pos * GlobeSize.instance.radius;
 		}
 	}
-	public Quaternion rot;
 
-	public TrailPoint(Vector3 _pos, Quaternion _rot, int trailNum) {
+	public TrailPoint(Vector3 _pos, int trailNum) {
 		this._pos = _pos.normalized;
-		rot = _rot;
 		this.trailNum = trailNum;
     }
 
@@ -32,7 +30,6 @@ public class Trail : Photon.MonoBehaviour {
 
 	public GameObject segment;
 	public List<SegmentScript> segments = new List<SegmentScript>();
-	public List<SegmentScript> newSegments = new List<SegmentScript>();
 	public LinkedList<TrailPoint> trailPointList = new LinkedList<TrailPoint>();
 	
 	public float gapSize;
@@ -57,6 +54,10 @@ public class Trail : Photon.MonoBehaviour {
 			return;
 		}
 
+		//if we have any segments that need to be created, lets do so
+		if(create > 0)
+			addSegment();
+
 		//we need to make sure we can now run on the trail points and set all the segments
 		//properly this frame.
 		initTrailRunner();
@@ -64,13 +65,6 @@ public class Trail : Photon.MonoBehaviour {
 		//going to go over all the segments and use the trail runner to find them a place to be
 		for(int i=0; i<segments.Count; ++i) 
 			setSegmentIntoPlace(segments[i]);
-
-		//if we have any segments that need to be created, lets do so
-		if( create > 0)
-			addSegment();
-
-		//If any segments reached the end of tail. Attach them to the segment list.
-		attachSegments();
 
 		//erase any unused and not needed trail points
 		trim_tail();
@@ -80,19 +74,32 @@ public class Trail : Photon.MonoBehaviour {
 #endif
 	}
 
-	public void AddSegment() {
+	public void AddSegment(bool addLocally) {
 		create++;
+
+		if(addLocally) {
+			MatchMaker.instance.mySync.CreateSegment();
+		}
 	}
 
 	#region Trail Runner
 
 	void addTrailPoint() {
 		Vector3 newPos = transform.position.normalized;
-		Quaternion newRot = transform.rotation;
-		TrailPoint point = new TrailPoint(newPos, newRot, trailNum++);
-		trailPointList.AddFirst(point);
-		
+		TrailPoint point = new TrailPoint(newPos, trailNum++);
+		trailPointList.AddFirst(point);		
     }
+
+	public void AddSyncedTrailPoints(Vector3[] positions) {
+		trailPointList.Clear(); //reset
+        for(int i=0; i<positions.Length; ++i) {
+			TrailPoint newPoint = new TrailPoint(
+				positions[i],
+				trailNum++
+			);
+            trailPointList.AddLast(newPoint);
+		}
+	}
 
 	LinkedListNode<TrailPoint> trailRunner;
 	float degsAway; //remembers how many degrees between two points set.
@@ -113,7 +120,7 @@ public class Trail : Photon.MonoBehaviour {
 
 		//set its position and rotation to the segment
 		segment.transform.position = trailer.pivot.position;
-		segment.transform.rotation = trailRunner.Value.rot;
+		segment.transform.rotation = trailer.pivot.rotation;
 	}
 
 	void moveTrailRunner() {
@@ -147,41 +154,22 @@ public class Trail : Photon.MonoBehaviour {
 
 	void addSegment() {
 		create_segment().myCollider.enabled = false; //should be turned off for me
-		if(MatchMaker.instance.mySync != null) {
-			MatchMaker.instance.mySync.CreateSegment();
-		}
 		create--;
 	}
 
-	void attachSegments() {
-		List<SegmentScript> doomed = new List<SegmentScript>();
-		for(int i=0; i<newSegments.Count; ++i) {
-			if( newSegments[i].trailNum <= trailRunner.Value.trailNum) {
-				doomed.Add(newSegments[i]);
-				segments.Add(newSegments[i]);
-			}
-		}
-
-		for(int i=0; i<doomed.Count; ++i) {
-			newSegments.Remove(doomed[i]);
-		}
-	}
 
 	public SegmentScript create_segment() {
 		SegmentScript newSegment = Instantiate(segment).GetComponent<SegmentScript>();
 		newSegment.transform.SetParent(transform.parent);
 		newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
-		newSegments.Add(newSegment);
+		segments.Add(newSegment);
 		return newSegment;
 	}
 
 	void trim_tail() {
 		int limit;
-		if( newSegments.Count != 0) {
-			limit = newSegments[0].trailNum < trailRunner.Next.Value.trailNum ? newSegments[0].trailNum : trailRunner.Next.Value.trailNum;
-		}else {
-			limit = trailRunner.Next.Value.trailNum;
-        }
+
+		limit = trailRunner.Next.Value.trailNum;
 
 		while(trailPointList.Last.Value.trailNum < limit - 2) {//taking a 2 trail offset just in case
 			trailPointList.RemoveLast();

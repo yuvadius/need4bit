@@ -48,7 +48,7 @@ public class HeadEat : MonoBehaviour {
             if (other.tag == "apple")
             {
                 bite.bite();
-                trail.AddSegment();
+                trail.AddSegment(true);
                 levelingSystem.AddApple();
             }
             else if (other.tag == "bannana")
@@ -102,6 +102,6 @@ public class HeadEat : MonoBehaviour {
 			yield return null;
 		}
 
-		trail.AddSegment();
+		trail.AddSegment(true);
 	}
 }

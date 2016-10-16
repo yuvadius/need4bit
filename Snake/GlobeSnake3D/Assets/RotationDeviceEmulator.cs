@@ -27,7 +27,7 @@ public class RotationDeviceEmulator : MonoBehaviour {
 		myPivot.gameObject.SetActive(false);
 	}
 
-	void FixedUpdate() {
+	public void myUpdate() {
 		if(set == true) {
 			if(newExtrap == false) {
 				nextRot = extrapo.RotateForward(degsPerSec, 1f);

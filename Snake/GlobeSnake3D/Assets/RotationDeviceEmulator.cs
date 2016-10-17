@@ -32,7 +32,7 @@ public class RotationDeviceEmulator : MonoBehaviour {
 		GlobeSize.instance.radiusChangedAction -= radiusChangedAction;
     }
 
-	public void myUpdate() {
+	public bool myUpdate() {
 		if(set == true) {
 			if(newExtrap == false) {
 				nextRot = extrapo.RotateForward(degsPerSec, 1f);
@@ -43,8 +43,9 @@ public class RotationDeviceEmulator : MonoBehaviour {
 
 			UpdateBy(Time.fixedDeltaTime);
 
-			newExtrap = false;
+			newExtrap = false;			
 		}
+		return set;
 	}
 
 	void UpdateBy(float time) {

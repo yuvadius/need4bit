@@ -36,8 +36,8 @@ public class SnakeSync : Photon.MonoBehaviour
     {
         if (!photonView.isMine)
         {
-			emulator.myUpdate();
-            trail.myUpdate();
+			if(emulator.myUpdate())
+				trail.myUpdate();
         }
     }
 

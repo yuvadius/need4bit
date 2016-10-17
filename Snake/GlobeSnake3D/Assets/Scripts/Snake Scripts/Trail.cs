@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class TrailPoint {
 	public int trailNum;
-
+	public GameObject trailGizmo;
 	private Vector3 _pos;
 	public Vector3 pos {
 		get {
@@ -16,29 +16,23 @@ public class TrailPoint {
 		this._pos = _pos.normalized;
 		this.trailNum = trailNum;
     }
-
-	public float DistanceCircular(TrailPoint other) {
-		float angle = Vector3.Angle(_pos, other.pos);
-		float circumpherence = GlobeSize.instance.circumference;
-		return circumpherence * angle / 360f;
-	}
 }
 
 public class Trail : Photon.MonoBehaviour {
 
 	public TrailRunner trailer;
 	public bool isMine;
+	public bool shouldShowTrail;
+	public GameObject trailGizmo;
 	public GameObject segment;
 	public List<SegmentScript> segments = new List<SegmentScript>();
 	public LinkedList<TrailPoint> trailPointList = new LinkedList<TrailPoint>();
 	
 	public float gapSize;
-
+	private bool isSet;
 	int create = 0;
 
 	int trailNum = 0;
-
-
 
 #if UNITY_EDITOR
 	[Header("Editor Only")]
@@ -46,7 +40,9 @@ public class Trail : Photon.MonoBehaviour {
 #endif
 
 	public void myUpdate() {
-
+		if( !isMine && !isSet) 
+			return;
+		
 		//first we want to add a new trail point this frame to the snake trail,
 		//we should always have at least one before doing anythign else.
 		addTrailPoint();
@@ -89,7 +85,14 @@ public class Trail : Photon.MonoBehaviour {
 	void addTrailPoint() {
 		Vector3 newPos = transform.position.normalized;
 		TrailPoint point = new TrailPoint(newPos, trailNum++);
-		trailPointList.AddFirst(point);		
+		trailPointList.AddFirst(point);
+		if( shouldShowTrail) {
+			GameObject newTrailGizmo = Instantiate(trailGizmo) as GameObject;
+			newTrailGizmo.transform.SetParent(null);
+			newTrailGizmo.name = trailNum.ToString();
+			newTrailGizmo.transform.position = newPos;
+			newTrailGizmo.transform.LookAt(Vector3.zero);
+		}		
     }
 
 	public void AddSyncedTrailPoints(Vector3[] positions) {
@@ -99,8 +102,17 @@ public class Trail : Photon.MonoBehaviour {
 				positions[i],
 				trailNum++
 			);
-            trailPointList.AddLast(newPoint);
+			if(shouldShowTrail) {
+				GameObject newTrailGizmo = Instantiate(trailGizmo) as GameObject;
+				newTrailGizmo.transform.SetParent(null);
+				newTrailGizmo.name = trailNum.ToString();
+				newTrailGizmo.transform.position = positions[i];
+				newTrailGizmo.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.blue;
+				newTrailGizmo.transform.LookAt(Vector3.zero);
+			}
+			trailPointList.AddLast(newPoint);
 		}
+		isSet = true;
 	}
 
 	LinkedListNode<TrailPoint> trailRunner;

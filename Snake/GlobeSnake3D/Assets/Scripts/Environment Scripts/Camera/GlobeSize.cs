@@ -41,9 +41,15 @@ public class GlobeSize : MonoBehaviour {
 	}
 
 	void Awake() {
-		instance = this;
-		transform.localScale = Vector3.one;
-		starterRadius = globeMesh.bounds.extents.y;
+		if(instance) {
+			DestroyImmediate(gameObject);
+			return;
+		} else {
+			instance = this;
+			transform.localScale = Vector3.one;
+			starterRadius = globeMesh.bounds.extents.y;
+			DontDestroyOnLoad(gameObject);
+		}
 	}
 
 	void Start() {

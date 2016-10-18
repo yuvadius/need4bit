@@ -53,7 +53,6 @@ public class SnakeSync : Photon.MonoBehaviour
 
 	[PunRPC]
 	public void RPCAddSegment() {
-        Debug.Log("ds");
 		if(!photonView.isMine)
 			trail.AddSegment(false);
 		else

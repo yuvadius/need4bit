@@ -89,7 +89,7 @@ public class MatchMaker : PunBehaviour
 
     public override void OnJoinedLobby()
     {
-        PhotonNetwork.JoinOrCreateRoom("Europe", null, null);
+        PhotonNetwork.JoinOrCreateRoom("America", null, null);
         SetPlayerProperties("Skin", -1);//Only here u can create new properties, strange i know
     }
 
@@ -161,7 +161,7 @@ public class MatchMaker : PunBehaviour
     public override void OnPhotonPlayerConnected(PhotonPlayer other)
     {
         Debug.Log("OnPhotonPlayerConnected() " + other.name); // not seen if you're the player connecting
-        if (SnakeController.instance.trail.segments.Count != 0 && isSnake)
+        if (isSnake)
         {
             mySync.syncTrail(other);
         }

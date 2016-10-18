@@ -75,8 +75,10 @@ public class Trail : Photon.MonoBehaviour {
 	public void AddSegment(bool addLocally) {
 		create++;
 
-		if(addLocally) {
+		if(addLocally) {			
 			MatchMaker.instance.mySync.CreateSegment();
+		} else {
+			isSet = true; //TODO: remove the necessety for isSet by having all initialize remote snake come through one waypoint
 		}
 	}
 

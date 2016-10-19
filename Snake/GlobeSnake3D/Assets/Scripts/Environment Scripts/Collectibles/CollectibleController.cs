@@ -2,29 +2,21 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class AppleController : MonoBehaviour {
+public class CollectibleController : MonoBehaviour {
 
-	public static AppleController instance;
-
-	public GameObject applePrefab;
+    public static CollectibleController instance;
+	public GameObject prefab;
     private bool CanHaveApples;
 	public int maxNumOfApples; int prev1;
 	public float ratePerSecond; float prev2;
-
     public SphereCollider spherCollider;
-
 	public List<Apple> appleList = new List<Apple>();
 	List<Apple> applePool = new List<Apple>();
 
     void Awake()
     {
-        if (instance)
-            DestroyImmediate(gameObject);
-        else
-        {
-            DontDestroyOnLoad(gameObject);
+        if (instance == null)
             instance = this;
-        }
     }
 
     public void SetCanHaveApples(bool CanHaveApples)

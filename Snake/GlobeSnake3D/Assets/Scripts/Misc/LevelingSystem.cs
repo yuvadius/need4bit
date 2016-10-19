@@ -27,11 +27,11 @@ public class LevelingSystem : MonoBehaviour {
     public int availablePoints = 0;
 
     LevelingView view;
-    AppleController appleSystem;
+    CollectibleController appleSystem;
 
     void Start() {
         view = FindObjectOfType<LevelingView>();
-        appleSystem = FindObjectOfType<AppleController>();
+        appleSystem = FindObjectOfType<CollectibleController>();
         appleSystem.SetCanHaveApples(CanHaveApples);
     }
 

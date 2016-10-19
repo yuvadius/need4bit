@@ -66,7 +66,7 @@ public class GlobeSize : MonoBehaviour {
 #if UNITY_EDITOR
 		if(Application.isPlaying)
 #endif
-			AppleController.instance.setHeight(radius);
+            CollectibleController.instance.setHeight(radius);
 	}
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {

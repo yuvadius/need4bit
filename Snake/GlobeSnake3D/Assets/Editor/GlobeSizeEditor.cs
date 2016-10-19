@@ -14,7 +14,7 @@ public class GlobeSizeEditor : Editor {
 		EditorGUILayout.LabelField("Radius: " + globe.radius);		
 		float radiusVal = EditorGUILayout.Slider(globe.radius, 0.5f, 10f);
 		if(radiusVal != globe.radius)
-			globe.SetRadius(radiusVal);
+			globe.radius = radiusVal;
 
 		EditorGUILayout.Space();
 

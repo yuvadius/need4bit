@@ -9,15 +9,15 @@ public class GlobeSize : MonoBehaviour {
 	public System.Action<float> radiusChangedAction;
 
 	float starterRadius = 1f; //this must the size of the globe in the scene metrics. by radius.
-	private float _radius = 1;
-	[HideInInspector]
+	[SerializeField]
+	private float m_radiusMM = 1;
 	public float radius {
 		get {
-			return _radius;
+			return m_radiusMM;
 		}
 		set {
-			if(PhotonNetwork.offlineMode || PhotonNetwork.isMasterClient) {
-				_radius = value;
+			if(!Application.isPlaying || PhotonNetwork.isMasterClient) {
+				m_radiusMM = value;
 				innerRadiusChanged();
             }
 		}
@@ -28,8 +28,7 @@ public class GlobeSize : MonoBehaviour {
 			return 4 * Mathf.PI * radius * radius;
 		}
 		set {
-			if(PhotonNetwork.offlineMode || PhotonNetwork.isMasterClient)
-				SetRadius(Mathf.Sqrt(value / (4 * Mathf.PI)));
+			radius = (Mathf.Sqrt(value / (4 * Mathf.PI)));
 		}
 	}
 
@@ -53,11 +52,9 @@ public class GlobeSize : MonoBehaviour {
 	}
 
 	void Start() {
-		SetRadius(radius);
-	}
-
-	public void SetRadius(float radius) {
-		this.radius = radius;
+		float newScale = radius / starterRadius;
+		transform.localScale = new Vector3(newScale, newScale, newScale);
+		_circumference = 2 * Mathf.PI * radius;
 	}
 
 	void scale() {
@@ -73,7 +70,7 @@ public class GlobeSize : MonoBehaviour {
 		if(stream.isWriting)
 			stream.SendNext(radius);
 		else {
-			_radius = (float)stream.ReceiveNext();
+			m_radiusMM = (float)stream.ReceiveNext();
 			innerRadiusChanged();
         }
 	}

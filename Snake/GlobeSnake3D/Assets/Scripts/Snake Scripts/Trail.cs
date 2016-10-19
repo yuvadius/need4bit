@@ -23,6 +23,7 @@ public class Trail : Photon.MonoBehaviour {
 	public TrailRunner trailer;
 	public bool isMine;
 	public bool shouldShowTrail;
+    public bool selfCollide;//Can the snake collide with itself
 	public GameObject trailGizmo;
 	public GameObject segment;
 	public List<SegmentScript> segments = new List<SegmentScript>();
@@ -170,7 +171,6 @@ public class Trail : Photon.MonoBehaviour {
 
 	void addSegment() {
 		SegmentScript segment = create_segment();
-		segment.myCollider.enabled = !isMine;
 		create--;
 	}
 
@@ -178,8 +178,10 @@ public class Trail : Photon.MonoBehaviour {
 	public SegmentScript create_segment() {
 		SegmentScript newSegment = Instantiate(segment).GetComponent<SegmentScript>();
 		newSegment.transform.SetParent(transform.parent);
-		newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
-		segments.Add(newSegment);
+        segments.Add(newSegment);
+        newSegment.name = "Segment " + segments.Count;//Start segment count from 1
+        if ((segments.Count > 2 && selfCollide) || !isMine)
+            newSegment.myCollider.enabled = true;
 		return newSegment;
 	}
 

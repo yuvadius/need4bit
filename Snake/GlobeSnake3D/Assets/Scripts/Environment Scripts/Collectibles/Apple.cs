@@ -11,12 +11,12 @@ public class Apple : MonoBehaviour
     public bool isNetworkApple;
 	Vector3 randomVector;
 	bool started = false;
-	public AppleController controller;
+    public CollectibleController controller;
 
 
     void Awake()
     {
-        controller = GameObject.Find("Apple System").GetComponent<AppleController>();
+        controller = GameObject.Find("Apple System").GetComponent<CollectibleController>();
         transform.parent = controller.transform;
         controller.appleList.Add(this);
     }
@@ -94,7 +94,7 @@ public class Apple : MonoBehaviour
         return random;
 	}
 
-	public void setController(AppleController controller)
+    public void setController(CollectibleController controller)
 	{
 		this.controller = controller;
 	}

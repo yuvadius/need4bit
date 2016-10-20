@@ -47,10 +47,14 @@ public class MatchMaker : PunBehaviour
 
     void OnGUI()
     {
+        //Make text responsive to screen size
+        GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(Screen.width / 480.0f, Screen.height / 320.0f, 1));
         if (PhotonNetwork.offlineMode)
             GUILayout.Label("Offline Mode");
+        else if (PhotonNetwork.connectionStateDetailed == ClientState.Joined)
+            GUILayout.Label("Connected/" + PhotonNetwork.GetPing().ToString());
         else
-            GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString() + "/" + PhotonNetwork.GetPing().ToString());
+            GUILayout.Label("Connecting");
         //Show top [maxScores] players in room(including urself)
         if (PhotonNetwork.connectionStateDetailed == ClientState.Joined && !PhotonNetwork.offlineMode)
         {
@@ -85,6 +89,12 @@ public class MatchMaker : PunBehaviour
                 }
             }
         }
+    }
+
+    public override void OnDisconnectedFromPhoton()
+    {
+        MainController.instance.gameOver();
+        PhotonNetwork.ConnectUsingSettings("0.1");
     }
 
     public override void OnJoinedLobby()

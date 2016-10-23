@@ -43,10 +43,14 @@ public class CollectibleController : MonoBehaviour {
                 if (Time.deltaTime * ratePerSecond > Random.Range(0.0f, 1.0f))
                 {
                     //create apple
-                    Apple apple = null;
                     Vector3 randomVector = Apple.AvoidOverlap(GlobeSize.instance.radius, spherCollider.radius) * GlobeSize.instance.radius;
-                    GameObject appleObject = PhotonNetwork.InstantiateSceneObject("Apple", randomVector, Quaternion.LookRotation(randomVector * 100), 0, null);
-                    apple = appleObject.GetComponent<Apple>();
+                    PhotonNetwork.InstantiateSceneObject(
+						"Apple", 
+						randomVector, 
+						Quaternion.LookRotation(randomVector * 100),
+						0, 
+						null
+					);
                 }
             }
         }

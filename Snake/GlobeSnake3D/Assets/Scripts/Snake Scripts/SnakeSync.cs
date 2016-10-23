@@ -14,7 +14,6 @@ public class SnakeSync : Photon.MonoBehaviour
     public RotationDeviceEmulator emulator;
     GameObject rotationDevice;
     RotateForward finalSpeeder;
-    GameObject globe;
 
     void Awake()
     {
@@ -27,7 +26,6 @@ public class SnakeSync : Photon.MonoBehaviour
 		}
         else
         {
-            globe = GameObject.Find("Game Controllers");
             trail = GetComponentInChildren<Trail>();
 		}
 	}

@@ -16,7 +16,6 @@ public class RotationDeviceEmulator : MonoBehaviour {
 	float degsPerSec;
 	Quaternion nextRot;
 	Vector3 extrapPoint;
-	Vector3 emulationPoint;
 
 	bool newExtrap = false;
 	float savedTime = 0;
@@ -74,7 +73,6 @@ public class RotationDeviceEmulator : MonoBehaviour {
 		} else {
 			nextRot = emulationRotation;
 			this.extrapPoint = extrapPoint;
-			this.emulationPoint = emulationPoint;
 			newExtrap = true;
 		}
 	}

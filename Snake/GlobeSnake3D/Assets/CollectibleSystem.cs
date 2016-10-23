@@ -6,6 +6,8 @@ public class CollectibleSystem : MonoBehaviour {
 
     void Awake()
     {
+
+
         if (instance)
             DestroyImmediate(gameObject);
         else

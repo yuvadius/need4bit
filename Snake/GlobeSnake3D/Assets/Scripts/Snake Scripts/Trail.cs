@@ -120,13 +120,11 @@ public class Trail : Photon.MonoBehaviour {
 
 	LinkedListNode<TrailPoint> trailRunner;
 	float degsAway; //remembers how many degrees between two points set.
-	float degToDis; //multiply degrees by this to get the distance
 	float degGap; //what is the gap by degrees
 
 	void initTrailRunner() {
 		trailRunner = trailPointList.First;
 		degsAway = 0;
-		degToDis = 2f * Mathf.PI * GlobeSize.instance.radius / 360f;
 		degGap = (gapSize * 360f) / (2f * GlobeSize.instance.radius * Mathf.PI);
     }
 
@@ -170,7 +168,7 @@ public class Trail : Photon.MonoBehaviour {
 	#endregion
 
 	void addSegment() {
-		SegmentScript segment = create_segment();
+		create_segment();
 		create--;
 	}
 

@@ -60,10 +60,6 @@ public class GlobeSize : MonoBehaviour {
 	void scale() {
 		float newScale = radius / starterRadius;
 		transform.localScale = new Vector3(newScale, newScale, newScale);
-#if UNITY_EDITOR
-		if(Application.isPlaying)
-#endif
-            CollectibleController.instance.setHeight(radius);
 	}
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {

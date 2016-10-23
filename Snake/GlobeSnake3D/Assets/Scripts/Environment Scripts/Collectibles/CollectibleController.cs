@@ -5,11 +5,10 @@ using System.Collections.Generic;
 public class CollectibleController : MonoBehaviour {
 
     public static CollectibleController instance;
-	public GameObject prefab;
     private bool CanHaveApples;
 	public int maxNumOfApples; int prev1;
 	public float ratePerSecond; float prev2;
-    public SphereCollider spherCollider;
+	public SphereCollider collectibleCollider;
 	public List<Apple> appleList = new List<Apple>();
 	List<Apple> applePool = new List<Apple>();
 
@@ -43,7 +42,7 @@ public class CollectibleController : MonoBehaviour {
                 if (Time.deltaTime * ratePerSecond > Random.Range(0.0f, 1.0f))
                 {
                     //create apple
-                    Vector3 randomVector = Apple.AvoidOverlap(GlobeSize.instance.radius, spherCollider.radius) * GlobeSize.instance.radius;
+                    Vector3 randomVector = Apple.AvoidOverlap(GlobeSize.instance.radius, collectibleCollider.radius) * GlobeSize.instance.radius;
                     PhotonNetwork.InstantiateSceneObject(
 						"Apple", 
 						randomVector, 
@@ -51,6 +50,8 @@ public class CollectibleController : MonoBehaviour {
 						0, 
 						null
 					);
+
+					print("Randome Vec: " + randomVector + " Mag: " + randomVector.magnitude);
                 }
             }
         }
@@ -66,8 +67,7 @@ public class CollectibleController : MonoBehaviour {
 	}
 
 	public void setHeight(float globeHeight){
-		foreach(Apple apple in appleList) {
-			apple.setHeight(GlobeSize.instance.radius, true);
-		}
+		foreach(Apple apple in appleList) 
+			apple.setHeight(GlobeSize.instance.radius);
 	}
 }

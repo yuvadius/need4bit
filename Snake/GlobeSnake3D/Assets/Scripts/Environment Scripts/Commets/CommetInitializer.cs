@@ -6,12 +6,10 @@ using System.Collections;
 /// they wont all look the same. 
 /// </summary>
 public class CommetInitializer : MonoBehaviour {
+
 	public float startLifeTimeMin, startLifeTimeMax;
 	public float startSpeedMin, startSpeedMax;
-	//public float startSizeMin, startSizeMax;
 	public float emmisionRateMin, emmisionRateMax;
-	//public float shapeAngleMin, shapeAngleMax;
-	//public float speedScaleMin, speedScaleMax;
 
 	ParticleSystem system;
 
@@ -22,7 +20,9 @@ public class CommetInitializer : MonoBehaviour {
 		system.startLifetime = Random.Range(startLifeTimeMin, startLifeTimeMax);
 		system.startSpeed = Random.Range (startSpeedMin, startSpeedMax);
 
-        system.emissionRate = Random.Range (emmisionRateMin, emmisionRateMax);
+		//works
+		var em = system.emission;
+		em.rate = Random.Range(emmisionRateMin, emmisionRateMax);
 	}
 
 }

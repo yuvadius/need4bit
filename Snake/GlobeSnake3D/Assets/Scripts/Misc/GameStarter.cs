@@ -5,7 +5,6 @@ public class GameStarter : MonoBehaviour {
 
     public WelcomeTextFader welcomeFader;
     public TipTextFader tipFader;
-	public PlanetRotator planetRotator;
     public float startTime = 5f;
 
     bool hasStarted = false;
@@ -44,7 +43,7 @@ public class GameStarter : MonoBehaviour {
     IEnumerator rotateGlobe() {
 
 		while(hasStarted == false) {
-			planetRotator.SetTime(Time.time);
+			PlanetRotator.instance.SetTime(Time.time);
             yield return null;
         }
 
@@ -55,7 +54,7 @@ public class GameStarter : MonoBehaviour {
         while (timePassed < startTime) {
             float ratio = timePassed / startTime;
             currentTime += (1-ratio) * Time.deltaTime;
-			planetRotator.SetTime(currentTime);
+			PlanetRotator.instance.SetTime(currentTime);
             timePassed += Time.deltaTime;
             yield return null;
         }
@@ -68,7 +67,7 @@ public class GameStarter : MonoBehaviour {
         while (timePassed < startTime) {
             float ratio = timePassed / startTime;
             cameraController.lerpSpeed = Mathf.Lerp(0, 2f, ratio);
-			planetRotator.SetTime(1 - ratio);
+			PlanetRotator.instance.SetTime(1 - ratio);
             timePassed += Time.deltaTime;
             yield return null;
         }

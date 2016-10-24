@@ -25,6 +25,7 @@ public class MainController : MonoBehaviour {
     public float gameOverTime = 5;
     public float endCanvasStrength = 0.7f;
     public string recordKey = "apple_record";
+    public bool CR_running = false;
 
     public TiltSide snakeTilt;
     public LevelingSystem levelSystem;
@@ -46,12 +47,18 @@ public class MainController : MonoBehaviour {
     }
 
 	public void gameOver(){
-        MatchMaker.DestroyPlayer();
-        StartCoroutine(makeGameStop());
+        if (!CR_running)
+        {
+            MatchMaker.DestroyPlayer();
+            StartCoroutine(makeGameStop());
+        }
 	}
 
     public void Restart() {
-        SceneManager.LoadScene("main");
+        if (PhotonNetwork.connectionStateDetailed == ClientState.Joined)
+            SceneManager.LoadScene("main");
+        else
+            print("Can't restart if disconnected");
     }
 
     [ContextMenu("Clean Record")]
@@ -64,6 +71,7 @@ public class MainController : MonoBehaviour {
     }
 
 	IEnumerator makeGameStop(){
+        CR_running = true;
         snakeTilt.DieTilt();
         snakeAnim.SetTrigger("Die");
         SnakeController.instance.stop(gameOverTime);

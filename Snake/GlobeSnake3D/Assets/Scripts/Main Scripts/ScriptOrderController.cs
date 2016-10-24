@@ -11,7 +11,7 @@ public class ScriptOrderController : MonoBehaviour {
     public SnakeController snakeController;
     public TiltSide tiltSide;
     public AttachToPivot attachToPivot;
-	public AppleController appleController;
+    public CollectibleSystem collectibleSystem;
 	public BannanaController bannanaController;
     public LerpToCameraPoint lerpToCameraPoint;
     public FinalizeAdjucments finilizeAdjucments;
@@ -53,7 +53,7 @@ public class ScriptOrderController : MonoBehaviour {
 
     void Start()
     {
-        appleController = GameObject.Find("Apple System").GetComponent<AppleController>();
+        collectibleSystem = GameObject.Find("Collectible System").GetComponent<CollectibleSystem>();
     }
 
     void FixedUpdate()
@@ -62,7 +62,7 @@ public class ScriptOrderController : MonoBehaviour {
 			inputDriver.myUpdate();
             cameraController.myUpdate();
             snakeController.myUpdate();
-            appleController.myUpdate();
+            UpdateCollectibleSystems();
             bannanaController.myUpdate();
 
             rotateForward.myUpdate();
@@ -87,7 +87,13 @@ public class ScriptOrderController : MonoBehaviour {
             lerpToCameraPoint.myUpdate();
         }
         else if(PhotonNetwork.offlineMode == false && PhotonNetwork.isMasterClient)
-            appleController.myUpdate();//The master should always be spawning apples for everyone
+            UpdateCollectibleSystems();//The master should always be spawning collectibles for everyone
+    }
+
+    private void UpdateCollectibleSystems()
+    {
+        foreach (CollectibleController system in collectibleSystem.GetComponentsInChildren<CollectibleController>())
+            system.myUpdate();
     }
 
     public void StartGame() {

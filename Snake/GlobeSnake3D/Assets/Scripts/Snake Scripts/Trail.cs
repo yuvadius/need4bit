@@ -23,6 +23,7 @@ public class Trail : Photon.MonoBehaviour {
 	public TrailRunner trailer;
 	public bool isMine;
 	public bool shouldShowTrail;
+    public bool selfCollide;//Can the snake collide with itself
 	public GameObject trailGizmo;
 	public GameObject segment;
 	public List<SegmentScript> segments = new List<SegmentScript>();
@@ -75,8 +76,10 @@ public class Trail : Photon.MonoBehaviour {
 	public void AddSegment(bool addLocally) {
 		create++;
 
-		if(addLocally) {
+		if(addLocally) {			
 			MatchMaker.instance.mySync.CreateSegment();
+		} else {
+			isSet = true; //TODO: remove the necessety for isSet by having all initialize remote snake come through one waypoint
 		}
 	}
 
@@ -117,13 +120,11 @@ public class Trail : Photon.MonoBehaviour {
 
 	LinkedListNode<TrailPoint> trailRunner;
 	float degsAway; //remembers how many degrees between two points set.
-	float degToDis; //multiply degrees by this to get the distance
 	float degGap; //what is the gap by degrees
 
 	void initTrailRunner() {
 		trailRunner = trailPointList.First;
 		degsAway = 0;
-		degToDis = 2f * Mathf.PI * GlobeSize.instance.radius / 360f;
 		degGap = (gapSize * 360f) / (2f * GlobeSize.instance.radius * Mathf.PI);
     }
 
@@ -167,8 +168,7 @@ public class Trail : Photon.MonoBehaviour {
 	#endregion
 
 	void addSegment() {
-		SegmentScript segment = create_segment();
-		segment.myCollider.enabled = !isMine;
+		create_segment();
 		create--;
 	}
 
@@ -176,8 +176,10 @@ public class Trail : Photon.MonoBehaviour {
 	public SegmentScript create_segment() {
 		SegmentScript newSegment = Instantiate(segment).GetComponent<SegmentScript>();
 		newSegment.transform.SetParent(transform.parent);
-		newSegment.name = "Segment " + newSegment.transform.GetSiblingIndex();
-		segments.Add(newSegment);
+        segments.Add(newSegment);
+        newSegment.name = "Segment " + segments.Count;//Start segment count from 1
+        if ((segments.Count > 2 && selfCollide) || !isMine)
+            newSegment.myCollider.enabled = true;
 		return newSegment;
 	}
 

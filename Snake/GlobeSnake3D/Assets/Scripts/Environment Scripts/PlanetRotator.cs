@@ -3,12 +3,15 @@ using System.Collections;
 
 public class PlanetRotator : MonoBehaviour {
 
+	public static PlanetRotator instance;
+
 	public bool shouldSpin = true;
 	public MeshRenderer globeRenderer;
 
 	Material globeMat;
 
 	void Awake() {
+		instance = this;
 		//This is so that git will not constantly want to commit the material of the globe
 #if UNITY_EDITOR
 		globeMat = globeRenderer.material;

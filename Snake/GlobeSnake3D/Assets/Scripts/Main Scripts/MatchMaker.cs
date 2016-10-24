@@ -47,10 +47,14 @@ public class MatchMaker : PunBehaviour
 
     void OnGUI()
     {
+        //Make text responsive to screen size
+        GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(Screen.width / 480.0f, Screen.height / 320.0f, 1));
         if (PhotonNetwork.offlineMode)
             GUILayout.Label("Offline Mode");
+        else if (PhotonNetwork.connectionStateDetailed == ClientState.Joined)
+            GUILayout.Label("Connected/" + PhotonNetwork.GetPing().ToString());
         else
-            GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString() + "/" + PhotonNetwork.GetPing().ToString());
+            GUILayout.Label("Connecting");
         //Show top [maxScores] players in room(including urself)
         if (PhotonNetwork.connectionStateDetailed == ClientState.Joined && !PhotonNetwork.offlineMode)
         {
@@ -87,9 +91,15 @@ public class MatchMaker : PunBehaviour
         }
     }
 
+    public override void OnDisconnectedFromPhoton()
+    {
+        MainController.instance.gameOver();
+        PhotonNetwork.ConnectUsingSettings("0.1");
+    }
+
     public override void OnJoinedLobby()
     {
-        PhotonNetwork.JoinOrCreateRoom("Europe", null, null);
+        PhotonNetwork.JoinOrCreateRoom("America", null, null);
         SetPlayerProperties("Skin", -1);//Only here u can create new properties, strange i know
     }
 
@@ -119,7 +129,7 @@ public class MatchMaker : PunBehaviour
             Debug.Log("Your skin is: " + skin);
             snake = PhotonNetwork.Instantiate("Remote Snake " + skin, new Vector3(), Quaternion.identity, 0);
             instance.mySync = snake.GetComponent<SnakeSync>();
-            SnakeController.instance.skin.material = instance.mySync.GetComponentInChildren<SkinnedMeshRenderer>().material;
+            SnakeController.instance.skin.sharedMaterial = instance.mySync.GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterial;
             SnakeController.instance.trail.segment = instance.mySync.GetComponentInChildren<Trail>().segment;
             //Why are you destroying what you just instantiated? dont do that.
             foreach (Transform child in snake.transform)
@@ -161,7 +171,7 @@ public class MatchMaker : PunBehaviour
     public override void OnPhotonPlayerConnected(PhotonPlayer other)
     {
         Debug.Log("OnPhotonPlayerConnected() " + other.name); // not seen if you're the player connecting
-        if (SnakeController.instance.trail.segments.Count != 0 && isSnake)
+        if (isSnake)
         {
             mySync.syncTrail(other);
         }

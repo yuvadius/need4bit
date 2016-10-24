@@ -7,31 +7,15 @@ public class Apple : MonoBehaviour
 	public Leaf[] leaves;
 	public SphereCollider spherCollider;
 
-	bool isBeforeSet = true;
     public bool isNetworkApple;
-	Vector3 randomVector;
-	bool started = false;
-	public AppleController controller;
+	public CollectibleController controller;
 
 
     void Awake()
     {
-        controller = GameObject.Find("Apple System").GetComponent<AppleController>();
+        controller = GameObject.Find("Apple System").GetComponent<CollectibleController>();
         transform.parent = controller.transform;
         controller.appleList.Add(this);
-    }
-
-    void OnDestroy()
-    {
-        controller.destroy(this);
-        //We can also add a destroy animation here
-    }
-
-	void OnEnable() {
-		if(started == false && !isNetworkApple) {
-			SetRandomVector();
-			started = true;
-		}
 
 		int leafAmount = Random.Range(0, (int)Mathf.Pow(2, leaves.Length));
 		for(int i = 0; i < leaves.Length; ++i) {
@@ -40,16 +24,18 @@ public class Apple : MonoBehaviour
 	}
 
 	void Start() {
-		if( started == false) {
-			randomVector = transform.position.normalized;
-			started = true;
-		}
+		setHeight(GlobeSize.instance.radius);
+		GlobeSize.instance.radiusChangedAction += setHeight;
 	}
 
+    void OnDestroy()
+    {
+        controller.destroy(this);
+		GlobeSize.instance.radiusChangedAction -= setHeight;
+	}
 
 	public void OnDisable()
 	{
-		started = false;
 		for (int i = 0; i < leaves.Length; ++i)
 		{
 			leaves[i].AttachBack();
@@ -65,17 +51,6 @@ public class Apple : MonoBehaviour
             Random.Range(-10, 10)
             );
         return randomVector.normalized;
-    }
-
-    /// <summary>
-    /// Set a random vector value to the property "randomVector"
-    /// </summary>
-    private void SetRandomVector()
-    {
-        //pick a random normalized vector;
-        randomVector = GetRandomNormalVector();
-        transform.position = Vector3.zero;
-        transform.LookAt(randomVector * 100);
     }
     
     public static Vector3 AvoidOverlap(float height, float appleRadius, int retry = 10)
@@ -94,7 +69,7 @@ public class Apple : MonoBehaviour
         return random;
 	}
 
-	public void setController(AppleController controller)
+    public void setController(CollectibleController controller)
 	{
 		this.controller = controller;
 	}
@@ -103,22 +78,9 @@ public class Apple : MonoBehaviour
     /// Sets the apples position on the globe
     /// </summary>
     /// <param name="height">The globes radius</param>
-    /// <param name="radiusChanged">If the globe got bigger</param>
-	public void setHeight(float height, bool radiusChanged = false)
+	public void setHeight(float height)
 	{
-		if (isBeforeSet == true)
-		{
-			isBeforeSet = false;
-			gameObject.SetActive(true);
-		}
-		if (started == false)
-		{
-			OnEnable();
-		}
-        if (!radiusChanged)
-            randomVector = AvoidOverlap(height, spherCollider.radius);
-
-        transform.position = randomVector * height;
+        transform.position = transform.position.normalized * height;
 	}
 
 	public void destroy(Transform mouth)

@@ -28,7 +28,6 @@ public class Extrapolater : MonoBehaviour
 		}
 
 		double deltaTime = PhotonNetwork.time - payload.time;
-        Vector3 currentPos = pivot.position;
         float frames = (float)deltaTime / Time.fixedDeltaTime;
 
 		extrap(frames, payload);

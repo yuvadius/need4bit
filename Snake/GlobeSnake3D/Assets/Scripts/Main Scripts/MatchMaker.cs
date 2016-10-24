@@ -129,7 +129,7 @@ public class MatchMaker : PunBehaviour
             Debug.Log("Your skin is: " + skin);
             snake = PhotonNetwork.Instantiate("Remote Snake " + skin, new Vector3(), Quaternion.identity, 0);
             instance.mySync = snake.GetComponent<SnakeSync>();
-            SnakeController.instance.skin.material = instance.mySync.GetComponentInChildren<SkinnedMeshRenderer>().material;
+            SnakeController.instance.skin.sharedMaterial = instance.mySync.GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterial;
             SnakeController.instance.trail.segment = instance.mySync.GetComponentInChildren<Trail>().segment;
             //Why are you destroying what you just instantiated? dont do that.
             foreach (Transform child in snake.transform)

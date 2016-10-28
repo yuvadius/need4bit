@@ -50,8 +50,6 @@ public class CollectibleController : MonoBehaviour {
 						0, 
 						null
 					);
-
-					print("Randome Vec: " + randomVector + " Mag: " + randomVector.magnitude);
                 }
             }
         }

@@ -49,6 +49,7 @@ public class MainController : MonoBehaviour {
 	public void gameOver(){
         if (!CR_running)
         {
+            SnakeController.instance.snakeHeadCollider.enabled = false;
             MatchMaker.DestroyPlayer();
             StartCoroutine(makeGameStop());
         }

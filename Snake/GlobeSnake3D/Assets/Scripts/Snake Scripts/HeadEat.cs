@@ -58,7 +58,6 @@ public class HeadEat : MonoBehaviour {
             }
             else if (other.tag == "segment")
             {
-                GetComponent<Collider>().enabled = false;
                 MainController.instance.gameOver();
             }
             else if (other.tag != "head")

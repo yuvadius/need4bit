@@ -15,7 +15,8 @@ public class MatchMaker : PunBehaviour
     private static bool isSnake = false;
     private static int playerNumber;
     private static string skin = null;
-    public int maxScores;//max amount of scores in scoreboard
+    public int maxScores;//Max amount of scores in scoreboard
+    public int disconnectTimeout;//Amount of time before disconnect in milliseconds
 
     void Awake()
     {
@@ -41,6 +42,7 @@ public class MatchMaker : PunBehaviour
 
     void Start()
     {
+        PhotonNetwork.networkingPeer.DisconnectTimeout = disconnectTimeout; // milliseconds
         if(PhotonNetwork.connectionState != ConnectionState.Connected)
             PhotonNetwork.ConnectUsingSettings("0.1");
     }

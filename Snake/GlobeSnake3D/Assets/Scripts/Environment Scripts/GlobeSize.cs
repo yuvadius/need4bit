@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GlobeSize : MonoBehaviour {
@@ -6,20 +7,37 @@ public class GlobeSize : MonoBehaviour {
 
 	public MeshRenderer globeMesh;
 
+	public float increaseSpeed = 1;
+
 	public System.Action<float> radiusChangedAction;
 
 	float starterRadius = 1f; //this must the size of the globe in the scene metrics. by radius.
+
 	[SerializeField]
-	private float m_radiusMM = 1;
-	public float radius {
+	[HideInInspector]
+	private float _destinationRadius;
+	public float destinationRadius {
 		get {
-			return m_radiusMM;
+			return _destinationRadius;
 		}
 		set {
-			if(!Application.isPlaying || PhotonNetwork.isMasterClient) {
-				m_radiusMM = value;
-				innerRadiusChanged();
-            }
+			_destinationRadius = value;
+			if(!Application.isPlaying) {
+				radius = value;
+			}
+		}
+	}
+
+	[SerializeField]
+	[HideInInspector]
+	float _radius;
+	public float radius {
+		get {
+			return _radius;
+		}
+		set {
+			_radius = value;
+			innerRadiusChanged();
 		}
 	}
 
@@ -32,11 +50,16 @@ public class GlobeSize : MonoBehaviour {
 		}
 	}
 
-	private float _circumference;
-	public float circumference {
+	public float destinationSurface {
 		get {
-			return _circumference;
+			return 4 * Mathf.PI * destinationRadius * destinationRadius;
 		}
+		set {
+			destinationRadius = (Mathf.Sqrt(value / (4*Mathf.PI)));
+			if(!Application.isPlaying) {
+				radius = destinationRadius;
+			}
+        }
 	}
 
 	void Awake() {
@@ -45,16 +68,13 @@ public class GlobeSize : MonoBehaviour {
 			return;
 		} else {
 			instance = this;
-			transform.localScale = Vector3.one;
+			_destinationRadius = _radius = transform.localScale.x;
+            transform.localScale = Vector3.one;
 			starterRadius = globeMesh.bounds.extents.y;
 			DontDestroyOnLoad(gameObject);
-		}
-	}
-
-	void Start() {
-		float newScale = radius / starterRadius;
-		transform.localScale = new Vector3(newScale, newScale, newScale);
-		_circumference = 2 * Mathf.PI * radius;
+			scale();
+			StartCoroutine(scaleSmoothlyCo());
+        }
 	}
 
 	void scale() {
@@ -63,19 +83,34 @@ public class GlobeSize : MonoBehaviour {
 	}
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-		if(stream.isWriting)
-			stream.SendNext(radius);
-		else {
-			m_radiusMM = (float)stream.ReceiveNext();
+		if(stream.isWriting) {
+			stream.SendNext(destinationSurface);
+		} else {
+			destinationSurface = (float)stream.ReceiveNext();
 			innerRadiusChanged();
-        }
+		}
 	}
 
 	void innerRadiusChanged() {
 		scale();
-		_circumference = 2 * Mathf.PI * radius;
 		if(radiusChangedAction != null) {
 			radiusChangedAction(radius);
         }
+	}
+
+	//Shouldn't this somehow be in fixed update?
+	IEnumerator scaleSmoothlyCo() {
+		while(true) {
+			if( surface < destinationSurface) {
+
+				surface = Mathf.Clamp(surface + Time.deltaTime * increaseSpeed, surface, destinationSurface);
+
+			}else if( radius > destinationRadius) {
+
+				surface = Mathf.Clamp(surface - Time.deltaTime * increaseSpeed, destinationSurface, surface);
+
+			}
+			yield return null;
+		}
 	}
 }

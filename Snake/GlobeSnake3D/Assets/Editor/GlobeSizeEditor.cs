@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEditor;
 
@@ -11,18 +11,19 @@ public class GlobeSizeEditor : Editor {
 
 		base.OnInspectorGUI();
 
+		EditorGUILayout.LabelField("Surface: " + globe.surface);
+
+		float surfaceVal = EditorGUILayout.Slider(globe.destinationSurface, 10f, 1000f);
+
 		EditorGUILayout.LabelField("Radius: " + globe.radius);		
-		float radiusVal = EditorGUILayout.Slider(globe.radius, 0.5f, 10f);
-		if(radiusVal != globe.radius)
-			globe.radius = radiusVal;
 
 		EditorGUILayout.Space();
 
-		EditorGUILayout.LabelField("Surface: " + globe.surface);
-		float surfaceVal = EditorGUILayout.Slider(globe.surface, 1f, 1000f);
-		if(surfaceVal != globe.surface)
-			globe.surface = surfaceVal;
-    }
+		if(surfaceVal != globe.destinationSurface) {
+			globe.destinationSurface = surfaceVal;
+		}
+
+	}
 
 
 }

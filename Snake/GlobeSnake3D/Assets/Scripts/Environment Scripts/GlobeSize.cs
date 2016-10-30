@@ -7,6 +7,8 @@ public class GlobeSize : MonoBehaviour {
 
 	public MeshRenderer globeMesh;
 
+	public float minSurface, maxSurface;
+
 	public float increaseSpeed = 1;
 
 	public System.Action<float> radiusChangedAction;
@@ -110,6 +112,7 @@ public class GlobeSize : MonoBehaviour {
 				surface = Mathf.Clamp(surface - Time.deltaTime * increaseSpeed, destinationSurface, surface);
 
 			}
+			print("Size: " + transform.localScale.x);
 			yield return null;
 		}
 	}

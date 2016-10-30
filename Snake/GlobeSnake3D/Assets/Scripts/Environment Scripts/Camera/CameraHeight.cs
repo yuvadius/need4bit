@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class CameraHeight : MonoBehaviour
@@ -12,11 +12,12 @@ public class CameraHeight : MonoBehaviour
 
     public void myUpdate()
     {
-        
-        float currentHeight = flyHeight.get_current_height();
+		GlobeSize globe = GlobeSize.instance;
+		float globeRatio = (globe.surface - globe.minSurface) / (globe.maxSurface - globe.minSurface);
+
         float maxHeight = flyHeight.get_max_height();
 
-        float cameraHeight = currentHeight * (heightAtMaxLevel - heightAtGlobeLevel) / maxHeight + heightAtGlobeLevel;
+        float cameraHeight = globeRatio * (heightAtMaxLevel - heightAtGlobeLevel) / maxHeight + heightAtGlobeLevel;
 
         set_camera_height(cameraHeight);
     }

@@ -13,7 +13,7 @@ public class GlobeSizeEditor : Editor {
 
 		EditorGUILayout.LabelField("Surface: " + globe.surface);
 
-		float surfaceVal = EditorGUILayout.Slider(globe.destinationSurface, 10f, 1000f);
+		float surfaceVal = EditorGUILayout.Slider(globe.destinationSurface, globe.minSurface, globe.maxSurface);
 
 		EditorGUILayout.LabelField("Radius: " + globe.radius);		
 

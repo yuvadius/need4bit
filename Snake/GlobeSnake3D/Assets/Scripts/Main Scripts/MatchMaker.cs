@@ -18,6 +18,8 @@ public class MatchMaker : PunBehaviour
     public int maxScores;//Max amount of scores in scoreboard
     public int disconnectTimeout;//Amount of time before disconnect in milliseconds
 
+	public int segmentsStart = 0;
+
 	public string lobby = "America";
 
     void Awake()
@@ -135,7 +137,12 @@ public class MatchMaker : PunBehaviour
             instance.mySync = snake.GetComponent<SnakeSync>();
             SnakeController.instance.skin.sharedMaterial = instance.mySync.GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterial;
             SnakeController.instance.trail.segment = instance.mySync.GetComponentInChildren<Trail>().segment;
-            //Why are you destroying what you just instantiated? dont do that.
+            
+			for(int i = 0; i<instance.segmentsStart; ++i) {
+				SnakeController.instance.trail.AddSegment(true);
+            }
+			
+			//Why are you destroying what you just instantiated? dont do that.
             foreach (Transform child in snake.transform)
                 GameObject.Destroy(child.gameObject);
             snake.name = "Snake Syncer";

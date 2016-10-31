@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlanetRotator : MonoBehaviour {
@@ -11,6 +11,11 @@ public class PlanetRotator : MonoBehaviour {
 	Material globeMat;
 
 	void Awake() {
+		if( instance != null) {
+			DestroyImmediate(gameObject);
+			return;
+		}
+
 		instance = this;
 		//This is so that git will not constantly want to commit the material of the globe
 #if UNITY_EDITOR

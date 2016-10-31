@@ -18,6 +18,14 @@ public class CollectibleController : MonoBehaviour {
             instance = this;
     }
 
+	void Start() {
+		GlobeSize.instance.radiusChangedAction += setHeight;
+	}
+
+	void OnDestroy() {
+		GlobeSize.instance.radiusChangedAction -= setHeight;
+	}
+
     public void SetCanHaveApples(bool CanHaveApples)
     {
         this.CanHaveApples = CanHaveApples;

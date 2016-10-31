@@ -25,13 +25,11 @@ public class Apple : MonoBehaviour
 
 	void Start() {
 		setHeight(GlobeSize.instance.radius);
-		GlobeSize.instance.radiusChangedAction += setHeight;
 	}
 
     void OnDestroy()
     {
         controller.destroy(this);
-		GlobeSize.instance.radiusChangedAction -= setHeight;
 	}
 
 	public void OnDisable()

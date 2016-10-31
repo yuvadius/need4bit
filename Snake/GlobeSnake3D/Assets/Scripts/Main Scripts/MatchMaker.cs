@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -17,6 +17,8 @@ public class MatchMaker : PunBehaviour
     private static string skin = null;
     public int maxScores;//Max amount of scores in scoreboard
     public int disconnectTimeout;//Amount of time before disconnect in milliseconds
+
+	public string lobby = "America";
 
     void Awake()
     {
@@ -101,7 +103,7 @@ public class MatchMaker : PunBehaviour
 
     public override void OnJoinedLobby()
     {
-        PhotonNetwork.JoinOrCreateRoom("America", null, null);
+        PhotonNetwork.JoinOrCreateRoom(lobby, null, null);
         SetPlayerProperties("Skin", -1);//Only here u can create new properties, strange i know
     }
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -51,9 +51,9 @@ public class SnakeSync : Photon.MonoBehaviour
 
 	[PunRPC]
 	public void RPCAddSegment() {
-		if(!photonView.isMine)
+		if(!photonView.isMine) {
 			trail.AddSegment(false);
-		else
+        } else
 			Debug.Log("Should not be here ever, fix it Yhuda!");
 	}
 

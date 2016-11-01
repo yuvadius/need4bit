@@ -63,7 +63,7 @@ public class Trail : Photon.MonoBehaviour {
 
 		//going to go over all the segments and use the trail runner to find them a place to be
 		for(int i=0; i<segments.Count; ++i) 
-			setSegmentIntoPlace(segments[i]);
+			setSegmentIntoPlace(segments[i], i);
 
 		//erase any unused and not needed trail points
 		trim_tail();
@@ -128,24 +128,34 @@ public class Trail : Photon.MonoBehaviour {
 		degGap = (gapSize * 360f) / (2f * GlobeSize.instance.radius * Mathf.PI);
     }
 
-	void setSegmentIntoPlace(SegmentScript segment) {
+	void setSegmentIntoPlace(SegmentScript segment, int count) {
 
 		//move trail runner by gap amount
-		moveTrailRunner();
+		if( moveTrailRunner() ){
+			segment.myCollider.enabled = count > 2 || !isMine;
+		} else {
+			segment.myCollider.enabled = !isMine;
+        }
 
 		//set its position and rotation to the segment
 		segment.transform.position = trailer.pivot.position;
 		segment.transform.rotation = trailer.pivot.rotation;
 	}
+	
+	/// <summary>
+	/// moves the trail runner by a gap amount, and sets the trailer at the position and rotation of the next segment
+	/// </summary>
+	/// <returns> if the trailer was successfull in procedding by gap amount, or did trail ended </returns>
+	bool moveTrailRunner() {
 
-	void moveTrailRunner() {
-
+		bool result = true;
 		float gapToCover = degGap;
 
 		int count = 0;
 		while(true) {
 			if( trailRunner.Next.Next == null) {
-				break;
+				result = false;
+                break;
 			}
 
 			//TODO Optimization: keep ang between two positions in a cache
@@ -163,6 +173,7 @@ public class Trail : Photon.MonoBehaviour {
 		}
 
 		trailer.Move(trailRunner.Value.pos, trailRunner.Next.Value.pos, degsAway);
+		return result;
 	}
 
 	#endregion
@@ -176,6 +187,7 @@ public class Trail : Photon.MonoBehaviour {
 	public SegmentScript create_segment() {
 		SegmentScript newSegment = Instantiate(segment).GetComponent<SegmentScript>();
 		newSegment.transform.SetParent(transform.parent);
+		newSegment.transform.position = Vector3.zero;
         segments.Add(newSegment);
         newSegment.name = "Segment " + segments.Count;//Start segment count from 1
         if ((segments.Count > 2 && selfCollide) || !isMine)

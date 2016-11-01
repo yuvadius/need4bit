@@ -114,9 +114,7 @@ public class InputDriver : MonoBehaviour {
     }
 
     float getAngle(Vector2 vec) {
-
         return Mathf.Atan2(vec.x, vec.y) * Mathf.Rad2Deg;
-
     }
 
     Vector2 getSnakePlaceOnScreen() {
@@ -125,28 +123,6 @@ public class InputDriver : MonoBehaviour {
 
     Vector2 getSnakeForwardPlaceOnScreen() {
         return snakeCamera.WorldToScreenPoint(snakeHead.position + snakeHead.forward * 3);
-    }
-
-
-    Vector2 getSnakeDirection() {
-        
-        //Vector3 headRightProject = Vector3.Project(snakeHead.forward, snakeCamera.transform.right);
-        //Vector3 headForwardProject = Vector3.Project(snakeHead.forward, snakeCamera.transform.forward);
-
-        //print(snakeHead.InverseTransformVector(snakeHead.forward) + " " + snakeHead.forward);
-        
-
-        //float rightAim = (snakeCamera.transform.right - headRightProject).sqrMagnitude;
-        //float forwardAim = (snakeCamera.transform.forward - headForwardProject).sqrMagnitude;
-
-        //print(rightAim + " " + forwardAim);
-
-        //print( + " " + snakeCamera.transform.right);
-
-
-
-
-        return Vector2.one;
     }
 
     public void DetectMouseInput() {

@@ -18,31 +18,28 @@ public class RotateForward : MonoBehaviour {
 	float maxHeight, bonusSpeed;
 
 	// Use this for initialization
-	public void ManualStart () {
-        StartCoroutine(slow_start());
+	public void ManualStart (float waitTime, float slowTime) {
+        StartCoroutine(slow_start(waitTime, slowTime));
 	}
 
-    IEnumerator slow_start()
+    IEnumerator slow_start(float waitTime, float slowTime)
     {
         moveSpeedLock = true;
-        float seconds = 3.5f;
         float time = 0;
         currentSpeed = 0;
 
-        float wait = 2.5f;
-
-        while (wait > 0) {
-            wait -= Time.deltaTime;
+        while (waitTime > 0) {
+			waitTime -= Time.deltaTime;
             currentSpeed = 0;
 
             yield return null;
         }
 
-        while (time < seconds)
+        while (time < slowTime)
         {
             time += Time.deltaTime;
 
-            currentSpeed = time * speed / seconds;
+            currentSpeed = time * speed / slowTime;
             if (currentSpeed > speed)
                 currentSpeed = speed;
 

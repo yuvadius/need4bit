@@ -5,7 +5,10 @@ public class GameStarter : MonoBehaviour {
 
     public WelcomeTextFader welcomeFader;
     public TipTextFader tipFader;
-    public float startTime = 5f;
+    public float planetRotationTime = 5f;
+	public float waitTime = 0.3f;
+	public float slowTime = 1f;
+	public float cameraStartTime = 3f;
 
     bool hasStarted = false;
     CameraController cameraController;
@@ -34,7 +37,7 @@ public class GameStarter : MonoBehaviour {
 			hasStarted = true;
 			FindObjectOfType<ScriptOrderController>().StartGame();
             welcomeFader.StopFading();
-            snakeStarter.ManualStart();
+            snakeStarter.ManualStart(waitTime, slowTime);
             StartCoroutine(setCameraLerpHigh());
             tipFader.StartTipping();
         }
@@ -51,8 +54,8 @@ public class GameStarter : MonoBehaviour {
 
         float timePassed = 0;
 
-        while (timePassed < startTime) {
-            float ratio = timePassed / startTime;
+        while (timePassed < planetRotationTime) {
+            float ratio = timePassed / planetRotationTime;
             currentTime += (1-ratio) * Time.deltaTime;
 			PlanetRotator.instance.SetTime(currentTime);
             timePassed += Time.deltaTime;
@@ -62,19 +65,10 @@ public class GameStarter : MonoBehaviour {
     }
 
     IEnumerator setCameraLerpHigh() {
-
         float timePassed = 0;
-        while (timePassed < startTime) {
-            float ratio = timePassed / startTime;
-            cameraController.lerpSpeed = Mathf.Lerp(0, 2f, ratio);
-			PlanetRotator.instance.SetTime(1 - ratio);
-            timePassed += Time.deltaTime;
-            yield return null;
-        }
 
-        timePassed = 0;
-        while (timePassed < startTime) {
-            float ratio = timePassed / startTime;
+        while (timePassed < cameraStartTime) {
+            float ratio = timePassed / cameraStartTime;
             cameraController.lerpSpeed = Mathf.Lerp(2f, 30f, ratio);
             cameraLerper.lookAtLerpCoefficient = Mathf.Lerp(2f, 30f, ratio);
             timePassed += Time.deltaTime;

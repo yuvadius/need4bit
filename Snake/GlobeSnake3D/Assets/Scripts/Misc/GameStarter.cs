@@ -22,7 +22,7 @@ public class GameStarter : MonoBehaviour {
 
 	void Update () {
         if (hasStarted == false) {
-            if (Input.GetMouseButtonDown(0)) {
+            if (Input.GetMouseButtonUp(0)) {
                 startGame();
             }
         }
@@ -31,6 +31,8 @@ public class GameStarter : MonoBehaviour {
     void startGame() {
 		if (MatchMaker.CreatePlayer())
         {
+			FindObjectOfType<SnakeController> ().moveDevice.transform.rotation = FindObjectOfType<SpawnSignal> ().transform.rotation;
+			FindObjectOfType<SpawnSignal> ().StopThis ();
 			hasStarted = true;
 			FindObjectOfType<ScriptOrderController>().StartGame();
             welcomeFader.StopFading();

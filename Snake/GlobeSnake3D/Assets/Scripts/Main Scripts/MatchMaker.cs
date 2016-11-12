@@ -133,6 +133,7 @@ public class MatchMaker : PunBehaviour
                 PhotonNetwork.player.SetScore(0);
             }
             Debug.Log("Your skin is: " + skin);
+
             snake = PhotonNetwork.Instantiate("Remote Snake " + skin, new Vector3(), Quaternion.identity, 0);
             instance.mySync = snake.GetComponent<SnakeSync>();
             SnakeController.instance.skin.sharedMaterial = instance.mySync.GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterial;

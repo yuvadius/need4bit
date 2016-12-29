@@ -18,3 +18,4 @@ public class PlaceButton : MonoBehaviour
         print("I was clicked");
         Destroy(gameObject);
     }
+}

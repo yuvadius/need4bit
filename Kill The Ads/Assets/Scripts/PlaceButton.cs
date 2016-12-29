@@ -22,6 +22,7 @@ public class PlaceButton : MonoBehaviour
         if (n_ads >= 5)
         {
             SceneManager.LoadScene("GameOver");
+            n_ads = 0;
         }
     }
 

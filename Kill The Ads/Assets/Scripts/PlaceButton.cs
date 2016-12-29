@@ -1,15 +1,20 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
-public class PlaceButton : MonoBehaviour {
-    public GameObject ad;
-	// Use this for initialization
-	void Start () {
-        //transform.position = new Vector3(ad.position.x, ad.position.y);
+public class PlaceButton : MonoBehaviour
+{
+    void Start()
+    {
+        var collider2D = gameObject.GetComponent<BoxCollider2D>();
+        var renderer = gameObject.GetComponent<Renderer>();
+        float width = (renderer.bounds.size.x / 2) - (collider2D.size.x / 2);
+        float height = (renderer.bounds.size.y / 2) - (collider2D.size.y / 2);
+        gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(width, height);
     }
-	
-	// Update is called once per frame
-	void Update () {
-        transform.localPosition = new Vector3(0, 0);
+
+    void OnMouseDown()
+    {
+        print("I was clicked");
+        Destroy(gameObject);
     }
-}

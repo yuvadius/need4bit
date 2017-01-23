@@ -10,7 +10,7 @@ $(document).ready(function() {
 
 function GetEvents() {
   $.ajax({
-      url: "https://need4bit.com/SneakPic/Events/",
+      url: "http://need4bit.com/SneakPic/Events/",
       success: function(data){
         $(".feed").empty();
         aLinks = $(data).find("a");
@@ -18,7 +18,7 @@ function GetEvents() {
             href = $(this).attr("href");
             if(href.indexOf('/SneakPic/Events/') != -1) {
               name = href.replace('/SneakPic/Events/','').slice(0,-1);
-              $(".feed").append("<div onclick=\"GetPictures(this)\" name=\""+decodeURI(name)+"\" class=\"event greyscale\" style=\"background:url('https://need4bit.com"+href+"banner.jpg');background-size:cover;\">"+verticalCenter+decodeURI(name)+"</div></div></div>");
+              $(".feed").append("<div onclick=\"GetPictures(this)\" name=\""+decodeURI(name)+"\" class=\"event greyscale\" style=\"background:url('http://need4bit.com"+href+"banner.jpg');background-size:cover;\">"+verticalCenter+decodeURI(name)+"</div></div></div>");
             }
         });
       }
@@ -29,7 +29,7 @@ function GetPictures(selector) {
   items = [];
   imgCounter = 1;
   $.ajax({
-      url: "https://need4bit.com/SneakPic/Events/" + $(selector).attr("name") + "/images/",
+      url: "http://need4bit.com/SneakPic/Events/" + $(selector).attr("name") + "/images/",
       success: function(data){
         $(".feed").empty();
         aLinks = $(data).find("a");
@@ -42,9 +42,9 @@ function GetPictures(selector) {
                 $(".feed").append("<div onclick=\"clickImage(this)\" id=\""+imgCounter+"\" class=\"img\" style=\"background:url('"+img.src+"');background-size:cover;\"></div>");
                 imgCounter++;
               }
-              item = {src: "https://need4bit.com"+href, w: 625, h: 417};
+              item = {src: "http://need4bit.com"+href, w: 625, h: 417};
               items.push(item);
-              img.src = "https://need4bit.com"+href;
+              img.src = "http://need4bit.com"+href;
             }
         });
       }

@@ -65,9 +65,11 @@ public class PlayerController : MonoBehaviour {
 			
 			//Add one to the current value of our count variable.
 			count = count + 1;
-			
-			//Update the currently displayed count by calling the SetCountText function.
-			SetCountText ();
+
+            Grow(other.GetComponent<PickupController>().grow);
+
+            //Update the currently displayed count by calling the SetCountText function.
+            SetCountText ();
 		}
 		
 
@@ -84,4 +86,9 @@ public class PlayerController : MonoBehaviour {
 			//... then set the text property of our winText object to "You win!"
 			winText.text = "You win!";
 	}
+
+    void Grow(float grow)
+    {
+        transform.localScale += new Vector3(grow, grow, grow);
+    }
 }

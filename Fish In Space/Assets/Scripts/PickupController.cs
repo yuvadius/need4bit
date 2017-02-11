@@ -2,15 +2,20 @@
 using System.Collections;
 
 public class PickupController : MonoBehaviour {
-    public float grow;
+    public int score;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    void Start()
+    {
+        transform.parent = GameObject.Find("Pickups").transform;
+    }
+
+    public float GetVolume()
+    {
+        return Matchmaker.ScoreToVolume(score);
+    }
+
+    public int GetScore()
+    {
+        return score;
+    }
 }

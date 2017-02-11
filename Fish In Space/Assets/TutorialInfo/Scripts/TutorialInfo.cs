@@ -25,8 +25,11 @@ public class TutorialInfo : MonoBehaviour
 	// string to store Prefs Key with name of preference for showing the overlay info
 	public static string showAtStartPrefsKey = "showLaunchScreen";
 
+    //Reference to the Input field for the name
+    public InputField input;
 
-	void Awake()
+
+    void Awake()
 	{
 		ShowLaunchScreen();
 	}
@@ -49,10 +52,15 @@ public class TutorialInfo : MonoBehaviour
 	// continue to play, by ensuring the preference is set correctly, the overlay is not active, 
 	// and that the audio listener is enabled, and time scale is 1 (normal)
 	public void StartGame()
-	{		
-		overlay.SetActive (false);
-		mainListener.enabled = true;
-		Time.timeScale = 1f;
+	{
+        if (PhotonNetwork.connectionStateDetailed == ClientState.Joined || PhotonNetwork.offlineMode)
+        {
+            Matchmaker.CreatePlayer();
+            PhotonNetwork.playerName = input.text;
+            overlay.SetActive(false);
+            mainListener.enabled = true;
+            Time.timeScale = 1f;
+        }
 	}
 
 	// set the boolean storing show at start status to equal the UI toggle's status

@@ -1,94 +1,118 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//Adding this allows us to access members of the UI namespace including Text.
-using UnityEngine.UI;
+public class PlayerController : Photon.MonoBehaviour
+{
+    public float speed;				//Floating point variable to store the player's movement speed.
+    public SpriteRenderer sprite;   //Store a reference to the SpriteRenderer component required to flip the player.
+    public Rigidbody2D rb2d;		//Store a reference to the Rigidbody2D component required to use 2D Physics.
+    public bool isPlayer;           //Is this a player or an enemy AI.
 
-public class PlayerController : MonoBehaviour {
-
-	public float speed;				//Floating point variable to store the player's movement speed.
-	public Text countText;			//Store a reference to the UI Text component which will display the number of pickups collected.
-	public Text winText;			//Store a reference to the UI Text component which will display the 'You win' message.
-
-    private SpriteRenderer sprite;
-    private Rigidbody2D rb2d;		//Store a reference to the Rigidbody2D component required to use 2D Physics.
-	private int count;				//Integer to store the number of pickups collected so far.
-
-	// Use this for initialization
-	void Start()
+    // Use this for initialization
+    void Start()
 	{
-        sprite = GetComponent<SpriteRenderer>();
+        if (!isPlayer)
+            transform.parent = GameObject.Find("Enemy Manager").transform;
+        else if (!photonView.isMine)
+            transform.parent = GameObject.Find("Enemy Players").transform;
+    }
 
-        //Get and store a reference to the Rigidbody2D component so that we can access it.
-        rb2d = GetComponent<Rigidbody2D>();
-
-		//Initialize count to zero.
-		count = 0;
-
-		//Initialze winText to a blank string since we haven't won yet at beginning.
-		winText.text = "";
-
-		//Call our SetCountText function which will update the text with the current value for count.
-		SetCountText ();
-	}
-
-	//FixedUpdate is called at a fixed interval and is independent of frame rate. Put physics code here.
-	void FixedUpdate()
+    //FixedUpdate is called at a fixed interval and is independent of frame rate. Put physics code here.
+    void FixedUpdate()
 	{
-		//Store the current horizontal input in the float moveHorizontal.
-		float moveHorizontal = Input.GetAxis ("Horizontal");
+        if (photonView.isMine && isPlayer)
+        {
+            //Store the current horizontal input in the float moveHorizontal.
+            float moveHorizontal = Input.GetAxis("Horizontal");
 
-        //flip fish to the acceleration direction
-        if (moveHorizontal > 0)
+            //flip fish to the acceleration direction
+            if (moveHorizontal > 0)
+                sprite.flipX = true;
+            else if (moveHorizontal < 0)
+                sprite.flipX = false;
+
+            //Store the current vertical input in the float moveVertical.
+            float moveVertical = Input.GetAxis("Vertical");
+
+            //Use the two store floats to create a new Vector2 variable movement.
+            Vector2 movement = new Vector2(moveHorizontal, moveVertical);
+
+            //Call the AddForce function of our Rigidbody2D rb2d supplying movement multiplied by speed to move our player.
+            rb2d.AddForce(movement * speed);
+        }
+        else if (rb2d.velocity.x > 0)
             sprite.flipX = true;
-        else if (moveHorizontal < 0)
+        else if (rb2d.velocity.x < 0)
             sprite.flipX = false;
-
-        //Store the current vertical input in the float moveVertical.
-        float moveVertical = Input.GetAxis ("Vertical");
-
-		//Use the two store floats to create a new Vector2 variable movement.
-		Vector2 movement = new Vector2 (moveHorizontal, moveVertical);
-
-		//Call the AddForce function of our Rigidbody2D rb2d supplying movement multiplied by speed to move our player.
-		rb2d.AddForce (movement * speed);
-	}
+    }
 
 	//OnTriggerEnter2D is called whenever this object overlaps with a trigger collider.
 	void OnTriggerEnter2D(Collider2D other) 
 	{
-		//Check the provided Collider2D parameter other to see if it is tagged "PickUp", if it is...
-		if (other.gameObject.CompareTag ("PickUp")) 
-		{
-			//... then set the other object we just collided with to inactive.
-			other.gameObject.SetActive(false);
-			
-			//Add one to the current value of our count variable.
-			count = count + 1;
-
-            Grow(other.GetComponent<PickupController>().grow);
-
-            //Update the currently displayed count by calling the SetCountText function.
-            SetCountText ();
-		}
-		
-
+        if (photonView.isMine)
+        {
+            //Check the provided Collider2D parameter other to see if it is tagged "PickUp", if it is...
+            if (other.gameObject.CompareTag("PickUp"))
+            {
+                if (PhotonNetwork.isMasterClient)
+                    PhotonNetwork.Destroy(other.gameObject);
+                else
+                    photonView.RPC("DestroyPickup", PhotonTargets.MasterClient, other.gameObject.GetPhotonView().viewID);
+                //Grow because you just ate a pickup
+                Grow(other.GetComponent<PickupController>().GetVolume());
+            }
+            else if (other.gameObject.CompareTag("Player"))
+            {
+                if (other.gameObject.transform.localScale.x > transform.localScale.x)
+                    DestroyPlayer();
+                else if (transform.localScale.x > other.gameObject.transform.localScale.x)
+                    Grow(other.transform.GetComponent<PlayerController>().GetGrow());
+            }
+            else if (other.gameObject.CompareTag("Boundaries"))
+            {
+                DestroyPlayer();
+            }
+        }
 	}
 
-	//This function updates the text displaying the number of objects we've collected and displays our victory message if we've collected all of them.
-	void SetCountText()
-	{
-		//Set the text property of our our countText object to "Count: " followed by the number stored in our count variable.
-		countText.text = "Count: " + count.ToString ();
-
-		//Check if we've collected all 12 pickups. If we have...
-		if (count >= 12)
-			//... then set the text property of our winText object to "You win!"
-			winText.text = "You win!";
-	}
-
-    void Grow(float grow)
+    void Grow(float volume)
     {
-        transform.localScale += new Vector3(grow, grow, grow);
+        if (photonView.isMine)
+        {
+            float grow = Mathf.Sqrt(GetVolume() + volume);
+            transform.localScale = new Vector3(grow, grow, grow);
+        }
+    }
+
+    /// <summary>
+    /// How much you get to grow by eating this fish
+    /// </summary>
+    /// <returns>A float representing the volume tthat is your growth</returns>
+    float GetGrow()
+    {
+        return GetVolume();
+    }
+
+    void DestroyPlayer()
+    {
+        PhotonNetwork.Destroy(gameObject);
+        if (isPlayer)
+            GameObject.Find("Main Menu").GetComponent<TutorialInfo>().ShowLaunchScreen();
+    } 
+
+    [PunRPC]
+    void DestroyPickup(int pvID)
+    {
+        PhotonNetwork.Destroy(PhotonView.Find(pvID));
+    }
+
+    float GetVolume()
+    {
+        return transform.localScale.x * transform.localScale.y;
+    }
+
+    public int GetScore()
+    {
+        return Matchmaker.VolumeToScore(GetVolume());
     }
 }

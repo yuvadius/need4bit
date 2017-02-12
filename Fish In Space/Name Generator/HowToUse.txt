@@ -1,0 +1,2 @@
+Double click "scrape.bat" in this directory
+You will now append to "../Assets/BotNames/names.txt" a list of top 10 slither io names about every minute

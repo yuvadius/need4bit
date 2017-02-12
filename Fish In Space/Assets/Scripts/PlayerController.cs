@@ -12,9 +12,16 @@ public class PlayerController : Photon.MonoBehaviour
     void Start()
 	{
         if (!isPlayer)
+        {
             transform.parent = GameObject.Find("Enemy Manager").transform;
-        else if (!photonView.isMine)
-            transform.parent = GameObject.Find("Enemy Players").transform;
+            name = NameGenerator.GetRandomName();
+        }
+        else
+        {
+            name = photonView.name;
+            if (!photonView.isMine)
+                transform.parent = GameObject.Find("Enemy Players").transform;
+        }
     }
 
     //FixedUpdate is called at a fixed interval and is independent of frame rate. Put physics code here.

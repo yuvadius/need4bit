@@ -38,7 +38,8 @@ public class TutorialInfo : MonoBehaviour
 	// and enabling the overlay info parent game object
 	public void ShowLaunchScreen()
 	{
-		Time.timeScale = 0f;
+        Matchmaker.startedGame = false;
+        Time.timeScale = 0f;
 		mainListener.enabled = false;
 		overlay.SetActive (true);
 	}
@@ -55,8 +56,9 @@ public class TutorialInfo : MonoBehaviour
 	{
         if (PhotonNetwork.connectionStateDetailed == ClientState.Joined || PhotonNetwork.offlineMode)
         {
+            Matchmaker.startedGame = true;
             Matchmaker.CreatePlayer();
-            PhotonNetwork.playerName = input.text;
+            PhotonNetwork.playerName = input.text == "" ? " " : input.text;
             overlay.SetActive(false);
             mainListener.enabled = true;
             Time.timeScale = 1f;

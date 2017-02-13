@@ -3,12 +3,12 @@ using Photon;
 using System;
 using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Matchmaker : PunBehaviour
 {
     public static bool startedGame;//Is the game in process
     public string lobby = "Europe";
-    public int maxScoreboardCount;//Max players to show on scoreboard
 
     void Awake()
     {
@@ -23,21 +23,6 @@ public class Matchmaker : PunBehaviour
         PhotonNetwork.offlineMode = true;
         if (PhotonNetwork.room == null)
             PhotonNetwork.CreateRoom("Offline Mode");
-    }
-
-    void OnGUI()
-    {
-        GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString() + "/" + PhotonNetwork.GetPing().ToString());
-        if (startedGame)
-        {
-            GUI.contentColor = Color.yellow;
-            GUILayout.Label("Score: " + PhotonNetwork.player.GetScore());
-            PhotonPlayer[] playerList = PhotonNetwork.playerList;
-            //Sort array by descending order of score
-            Array.Sort(playerList, delegate (PhotonPlayer x, PhotonPlayer y) { return y.GetScore().CompareTo(x.GetScore()); });
-            for (int i = 0; i < playerList.Length && i < maxScoreboardCount; i++)
-                GUILayout.Label("#" + (i + 1) + "    " + playerList[i].NickName + ": " + playerList[i].GetScore());
-        }
     }
 
     void Start()
